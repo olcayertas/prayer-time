@@ -11,6 +11,7 @@ Directorate of Religious Affairs (Diyanet).**
 ![Concurrency](https://img.shields.io/badge/strict%20concurrency-complete-F05138?logo=swift&logoColor=white)
 ![Xcode](https://img.shields.io/badge/Xcode-26-147EFB?logo=xcode&logoColor=white)
 ![SwiftUI](https://img.shields.io/badge/UI-SwiftUI%20%2B%20WidgetKit-0A84FF)
+![Localization](https://img.shields.io/badge/i18n-EN%20·%20TR%20·%20AR-0A84FF)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 </div>
@@ -22,14 +23,16 @@ into a full window when you want more detail or to change settings.
 
 ## ✨ Features
 
-- **Menu bar countdown** — the next prayer with a live, jitter-free countdown (e.g. `İkindi  1:23:45`).
+- **Menu bar countdown** — the next prayer with a live, jitter-free countdown (e.g. `Afternoon  1:23:45`).
 - **Dropdown panel** — today's six times with the next one highlighted, location, and the
-  Gregorian + Hicri date.
-- **Main window** — sidebar with **Bugün** (rich today view), **Aylık** (monthly table), and
-  **Ayarlar** (settings). A Dock icon appears only while the window is open.
+  Gregorian + Hijri date.
+- **Main window** — sidebar with **Today** (rich view), **Monthly** (table), and **Settings**.
+  A Dock icon appears only while the window is open.
 - **Widget** — small / medium WidgetKit widget with the next prayer and a live countdown.
 - **Notifications** — optional local notifications at each prayer time.
 - **Location picker** — country → city → district, remembered across launches.
+- **Localized** — English, Turkish, and Arabic (right-to-left), including the app name and
+  locale-aware Gregorian + Hijri dates. [Adding a language →](docs/LOCALIZATION.md)
 
 ## 📋 Requirements
 
@@ -72,8 +75,10 @@ picker. Everything goes through a `PrayerTimesProvider` protocol, so the officia
 
 - **`Sources/Core`** — UI-free, shared by the app, widget, and tests:
   `PrayerDay`, `PrayerSchedule` (next-prayer math in `Europe/Istanbul`), `PrayerCache`,
-  `PrayerTimesProvider` / `PlacesProvider` (EzanVakti), `PrayerStore`, `NotificationScheduler`.
-- **`Sources/App`** — `MenuBarExtra` menu bar item + the main window (Today / Month / Settings).
+  `PrayerTimesProvider` / `PlacesProvider` (EzanVakti), `PrayerStore`, `NotificationScheduler`,
+  and the shared `Localizable.xcstrings`.
+- **`Sources/App`** — `MenuBarExtra` menu bar item + the main window (Today / Monthly / Settings),
+  plus `DateLocalizer` (locale-aware Gregorian + Hijri dates).
 - **`Sources/Widget`** — WidgetKit timeline provider and views.
 
 ### Notable decisions
@@ -87,12 +92,14 @@ picker. Everything goes through a `PrayerTimesProvider` protocol, so the officia
 - The menu bar uses a **plain `String` title with monospaced digits**: a rendered
   `MenuBarExtra` label hangs AppKit's status-item sizing on macOS 26. (This — not async/await —
   was the real cause of an earlier hang, so the data layer is free to use modern concurrency.)
+- **Localized via String Catalogs** (English source · Turkish · Arabic with RTL) — including the
+  app/widget names and locale-aware Gregorian + Hijri dates. See [docs/LOCALIZATION.md](docs/LOCALIZATION.md).
 
 ## 🗺️ Roadmap
 
 - Official Diyanet `AwqatSalah` provider
 - Location-aware widget (per-widget configuration)
-- TR / EN localization
+- [More languages](docs/LOCALIZATION.md) — prioritized by Muslim population
 - App icon and launch-at-login
 
 ## 📄 License

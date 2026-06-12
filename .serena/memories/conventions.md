@@ -1,7 +1,12 @@
 # Conventions
 
-- UI strings are Turkish. All times computed/displayed in Europe/Istanbul (`Config.timeZone`),
-  regardless of the Mac's own timezone.
+- Localized via String Catalogs: **English** source strings → Turkish + Arabic. UI/domain
+  strings in `Sources/Core/Localizable.xcstrings` (shared app+widget); app/widget names in
+  `Sources/{App,Widget}/InfoPlist.xcstrings`; dates via `Sources/App/DateLocalizer.swift`
+  (API long dates are Turkish-only). `developmentLanguage: en`. RTL auto (Arabic). Adding a
+  language = catalog edits only (see `docs/LOCALIZATION.md`).
+- All times computed/displayed in Europe/Istanbul (`Config.timeZone`), regardless of the Mac's
+  own timezone.
 - `Sources/Core` is UI-free and compiled into app + widget + tests (same module, no `@testable`).
 - Swift 6 language mode (complete strict concurrency). Networking is `async`/`await`
   (`URLSession.data(from:)`) behind a `Sendable` `PrayerTimesProvider`; the `@MainActor`

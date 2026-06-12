@@ -29,7 +29,14 @@ Developer account or team is required.
 
 ## Conventions
 
-- UI strings are Turkish; all times are **Europe/Istanbul** (`Config.timeZone`).
+- All times are **Europe/Istanbul** (`Config.timeZone`).
+- **Localized** via String Catalogs — source language is **English** (the `Text("…")` literal is
+  the key), translated to **Turkish + Arabic**. UI/domain strings live in
+  `Sources/Core/Localizable.xcstrings` (shared by app + widget); app/widget names in the
+  `InfoPlist.xcstrings` files; dates via `Sources/App/DateLocalizer.swift` (the Diyanet API's
+  long dates are Turkish-only). Adding a language = catalog edits only; see
+  [docs/LOCALIZATION.md](docs/LOCALIZATION.md). Use `String(localized:)` in `Sources/Core`
+  (non-SwiftUI). RTL is automatic (semantic `.leading`/`.trailing`, no `.left`/`.right`).
 - **Swift 6 language mode** (complete strict concurrency). Networking is **`async`/`await`**
   (`URLSession.data(from:)`) behind a `Sendable` `PrayerTimesProvider`; the `@MainActor`
   `PrayerStore` awaits it from a cancellable `Task`, and a `Task` loop drives the countdown.
