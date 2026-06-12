@@ -1,0 +1,14 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Widget name shown in the widget gallery",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "ودجت أوقات الصلاة" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Namaz Vakti Widget" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

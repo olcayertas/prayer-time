@@ -1,0 +1,300 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "About" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "حول" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Hakkında" } }
+      }
+    },
+    "Afternoon" : {
+      "comment" : "Prayer time: Diyanet İkindi (Asr)",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "العصر" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "İkindi" } }
+      }
+    },
+    "City" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "المدينة" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Şehir" } }
+      }
+    },
+    "Couldn't load today's times" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "تعذّر تحميل أوقات اليوم" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Bugünün vakitleri yüklenemedi" } }
+      }
+    },
+    "Country" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الدولة" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Ülke" } }
+      }
+    },
+    "Current" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الحالي" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Geçerli" } }
+      }
+    },
+    "Date" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "التاريخ" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Tarih" } }
+      }
+    },
+    "Dawn" : {
+      "comment" : "Prayer time: Diyanet İmsak (start of fast / Fajr)",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الفجر" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "İmsak" } }
+      }
+    },
+    "District" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "المنطقة" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "İlçe" } }
+      }
+    },
+    "extras.qibla" : {
+      "comment" : "Today extras row: qibla time",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Qibla time" } },
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "وقت القبلة" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Kıble Saati" } }
+      }
+    },
+    "extras.sunrise" : {
+      "comment" : "Today extras row: sunrise time (distinct from the Sunrise prayer slot)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Sunrise" } },
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الشروق" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Güneş Doğuşu" } }
+      }
+    },
+    "extras.sunset" : {
+      "comment" : "Today extras row: sunset time (distinct from the Sunset prayer slot)",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Sunset" } },
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الغروب" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Güneş Batışı" } }
+      }
+    },
+    "General" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "عام" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Genel" } }
+      }
+    },
+    "It's %@ time in %@." : {
+      "comment" : "Notification body; %1 prayer name, %2 location",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "حان وقت %1$@ في %2$@." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "%2$@ için %1$@ vakti girdi." } }
+      }
+    },
+    "Last updated" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "آخر تحديث" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Son güncelleme" } }
+      }
+    },
+    "Loading…" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "جارٍ التحميل…" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Yükleniyor…" } }
+      }
+    },
+    "Location" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الموقع" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Konum" } }
+      }
+    },
+    "Monthly" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "شهري" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Aylık" } }
+      }
+    },
+    "Next" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "التالية" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Sıradaki" } }
+      }
+    },
+    "Next prayer" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الصلاة التالية" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Sıradaki vakit" } }
+      }
+    },
+    "Night" : {
+      "comment" : "Prayer time: Diyanet Yatsı (Isha)",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "العشاء" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Yatsı" } }
+      }
+    },
+    "No data" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "لا توجد بيانات" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Veri yok" } }
+      }
+    },
+    "No data was received from the server." : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "لم تُستلَم بيانات من الخادم." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Sunucudan veri alınamadı." } }
+      }
+    },
+    "Noon" : {
+      "comment" : "Prayer time: Diyanet Öğle (Dhuhr)",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الظهر" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Öğle" } }
+      }
+    },
+    "Notifications" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "التنبيهات" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Bildirimler" } }
+      }
+    },
+    "Open app" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "افتح التطبيق" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Uygulamayı aç" } }
+      }
+    },
+    "Prayer notifications" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "تنبيهات الصلاة" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Vakit bildirimleri" } }
+      }
+    },
+    "Prayer times are sourced from the EzanVakti service, based on the Turkish Directorate of Religious Affairs (Diyanet)." : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "تُؤخذ أوقات الصلاة من خدمة EzanVakti المستندة إلى رئاسة الشؤون الدينية التركية (ديانت)." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Vakitler T.C. Diyanet İşleri Başkanlığı kaynaklı EzanVakti servisinden alınır." } }
+      }
+    },
+    "Prayer Times" : {
+      "comment" : "App name / menu-bar and window title",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "أوقات الصلاة" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Namaz Vakti" } }
+      }
+    },
+    "Quit" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "إنهاء" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Çıkış" } }
+      }
+    },
+    "Refresh" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "تحديث" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Yenile" } }
+      }
+    },
+    "Refresh now" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "حدّث الآن" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Şimdi yenile" } }
+      }
+    },
+    "remaining" : {
+      "comment" : "Suffix under the Today countdown",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "متبقٍ" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "kaldı" } }
+      }
+    },
+    "Save this location" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "احفظ هذا الموقع" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Bu konumu kaydet" } }
+      }
+    },
+    "Select…" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "اختر…" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Seçiniz" } }
+      }
+    },
+    "Settings" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الإعدادات" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Ayarlar" } }
+      }
+    },
+    "Sunrise" : {
+      "comment" : "Prayer time: Diyanet Güneş (sunrise / Shuruq)",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الشروق" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Güneş" } }
+      }
+    },
+    "Sunset" : {
+      "comment" : "Prayer time: Diyanet Akşam (Maghrib)",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "المغرب" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Akşam" } }
+      }
+    },
+    "The next prayer time and countdown." : {
+      "comment" : "Widget description",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "وقت الصلاة التالية والعدّ التنازلي." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Sıradaki namaz vakti ve geri sayım." } }
+      }
+    },
+    "The server returned an unexpected response (HTTP %lld)." : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "أرجع الخادم استجابة غير متوقعة (HTTP %lld)." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Sunucu beklenmeyen bir yanıt verdi (HTTP %lld)." } }
+      }
+    },
+    "Time %@" : {
+      "comment" : "Widget subtitle: the next prayer's clock time",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الوقت %@" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Vakit %@" } }
+      }
+    },
+    "Today" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "اليوم" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Bugün" } }
+      }
+    },
+    "Version" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الإصدار" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Sürüm" } }
+      }
+    },
+    "When on, you'll get a notification at each prayer time." : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "عند التفعيل، ستصلك إشعارات عند كل وقت صلاة." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Açıkken her namaz vaktinde bir bildirim gönderilir." } }
+      }
+    },
+    "%@ is not implemented yet." : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "%@ غير مُطبَّق بعد." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "%@ henüz uygulanmadı." } }
+      }
+    },
+    "%@ time" : {
+      "comment" : "Notification title, e.g. 'Noon time'",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "وقت %@" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "%@ vakti" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

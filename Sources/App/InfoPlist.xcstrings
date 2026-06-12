@@ -1,0 +1,14 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "App name shown in Finder, the Dock, and the menu bar",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "أوقات الصلاة" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Namaz Vakti" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}
