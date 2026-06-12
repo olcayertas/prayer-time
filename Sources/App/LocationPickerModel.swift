@@ -1,9 +1,9 @@
 import Foundation
 import Combine
 
-/// Loads the country → city → district hierarchy for the picker. Uses the completion-based
-/// `PlacesProvider` and bounces results to the main thread via GCD (the convention that
-/// works reliably in this app).
+/// Loads the country → city → district hierarchy for the picker. Uses the async
+/// `PlacesProvider`, which hops off the main actor for the request and resumes here on
+/// `@MainActor`. Each selection supersedes the previous in-flight load.
 @MainActor
 final class LocationPickerModel: ObservableObject {
     @Published var countries: [Country] = []
@@ -18,6 +18,8 @@ final class LocationPickerModel: ObservableObject {
     @Published var error: String?
 
     private let provider: PlacesProvider
+    /// The in-flight hierarchy load, cancelled whenever a newer selection starts one.
+    private var loadTask: Task<Void, Never>?
 
     init(provider: PlacesProvider = EzanVaktiProvider()) {
         self.provider = provider
@@ -30,20 +32,17 @@ final class LocationPickerModel: ObservableObject {
     func loadCountriesIfNeeded() {
         guard countries.isEmpty else { return }
         isLoading = true
-        provider.countries { [weak self] result in
-            Self.onMain {
-                guard let self else { return }
-                self.isLoading = false
-                switch result {
-                case .success(let list):
-                    self.countries = list
-                    let turkiye = list.first { $0.id == "2" } ?? list.first
-                    if let turkiye {
-                        self.selectCountry(turkiye.id)
-                    }
-                case .failure(let error):
-                    self.error = error.localizedDescription
+        loadTask?.cancel()
+        loadTask = Task { [provider] in
+            defer { isLoading = false }
+            do {
+                let list = try await provider.countries()
+                countries = list
+                if let turkiye = list.first(where: { $0.id == "2" }) ?? list.first {
+                    selectCountry(turkiye.id)
                 }
+            } catch {
+                self.error = error.localizedDescription
             }
         }
     }
@@ -54,13 +53,12 @@ final class LocationPickerModel: ObservableObject {
         selectedDistrictId = ""
         cities = []
         districts = []
-        provider.cities(countryId: id) { [weak self] result in
-            Self.onMain {
-                guard let self else { return }
-                switch result {
-                case .success(let list): self.cities = list
-                case .failure(let error): self.error = error.localizedDescription
-                }
+        loadTask?.cancel()
+        loadTask = Task { [provider] in
+            do {
+                cities = try await provider.cities(countryId: id)
+            } catch {
+                self.error = error.localizedDescription
             }
         }
     }
@@ -70,18 +68,13 @@ final class LocationPickerModel: ObservableObject {
         selectedDistrictId = ""
         districts = []
         guard !id.isEmpty else { return }
-        provider.districts(cityId: id) { [weak self] result in
-            Self.onMain {
-                guard let self else { return }
-                switch result {
-                case .success(let list): self.districts = list
-                case .failure(let error): self.error = error.localizedDescription
-                }
+        loadTask?.cancel()
+        loadTask = Task { [provider] in
+            do {
+                districts = try await provider.districts(cityId: id)
+            } catch {
+                self.error = error.localizedDescription
             }
         }
-    }
-
-    private static func onMain(_ work: @escaping @MainActor () -> Void) {
-        DispatchQueue.main.async { MainActor.assumeIsolated { work() } }
     }
 }

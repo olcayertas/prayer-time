@@ -27,7 +27,10 @@ final class PrayerStore: ObservableObject {
     private let provider: PrayerTimesProvider
     private let cache: PrayerCache
     private let scheduler = NotificationScheduler()
-    private var clockTimer: Timer?
+    /// Drives the once-a-second menu bar countdown; cancelled implicitly when the app exits.
+    private var clockTask: Task<Void, Never>?
+    /// The in-flight network refresh, kept so a new refresh (or location change) can cancel it.
+    private var refreshTask: Task<Void, Never>?
 
     init(
         provider: PrayerTimesProvider = EzanVaktiProvider(),
@@ -51,51 +54,53 @@ final class PrayerStore: ObservableObject {
 
     var hasData: Bool { !days.isEmpty }
 
-    /// Fetches the month and publishes it. Synchronous trigger: the request runs on
-    /// URLSession's background queue; the `@Published` updates are posted back via GCD.
-    /// On failure, cached data is kept.
+    /// Fetches the month and publishes it. The fetch + decode run off the main actor (the
+    /// URLSession async API hops to the cooperative pool); the `@Published` mutations run
+    /// back here on the main actor. A new call supersedes any in-flight fetch; on failure
+    /// the cached data is kept.
     func refresh() {
+        refreshTask?.cancel()
         isLoading = true
         let districtId = self.districtId
-        let cache = self.cache
-        provider.monthlyTimes(districtId: districtId) { [weak self] result in
-            switch result {
-            case .success(let days):
+        refreshTask = Task { [provider, cache] in
+            do {
+                let days = try await provider.monthlyTimes(districtId: districtId)
+                try Task.checkCancellation()
                 cache.save(days, districtId: districtId)
-                DispatchQueue.main.async {
-                    MainActor.assumeIsolated {
-                        guard let self else { return }
-                        self.days = days
-                        self.lastUpdated = Date()
-                        self.lastError = nil
-                        self.isLoading = false
-                        self.updateMenuTitle()
-                        if self.notificationsEnabled {
-                            self.scheduler.reschedule(schedule: self.schedule, locationName: self.locationName)
-                        }
-                        WidgetCenter.shared.reloadAllTimelines()
-                    }
-                }
-            case .failure(let error):
-                let message = error.localizedDescription
-                DispatchQueue.main.async {
-                    MainActor.assumeIsolated {
-                        guard let self else { return }
-                        self.lastError = message
-                        self.isLoading = false
-                    }
-                }
+                applyRefreshed(days)
+            } catch is CancellationError {
+                // Superseded by a newer refresh / location change — let that task own the state.
+            } catch {
+                lastError = error.localizedDescription
+                isLoading = false
             }
         }
     }
 
-    /// Ticks once a second to keep the menu bar countdown current.
-    private func startClock() {
-        let timer = Timer(timeInterval: 1, repeats: true) { [weak self] _ in
-            MainActor.assumeIsolated { self?.updateMenuTitle() }
+    /// Applies a freshly fetched month on the main actor: publishes it, refreshes the menu
+    /// title, reschedules notifications if enabled, and reloads the widget.
+    private func applyRefreshed(_ days: [PrayerDay]) {
+        self.days = days
+        lastUpdated = Date()
+        lastError = nil
+        isLoading = false
+        updateMenuTitle()
+        if notificationsEnabled {
+            scheduler.reschedule(schedule: schedule, locationName: locationName)
         }
-        RunLoop.main.add(timer, forMode: .common)
-        clockTimer = timer
+        WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    /// Ticks once a second to keep the menu bar countdown current. A `@MainActor` task loop:
+    /// it inherits this actor's isolation, so `updateMenuTitle()` is a direct call (no GCD
+    /// hop, no `assumeIsolated`), and `Task.sleep` is cancellation-aware.
+    private func startClock() {
+        clockTask = Task { [weak self] in
+            while !Task.isCancelled {
+                self?.updateMenuTitle()
+                try? await Task.sleep(for: .seconds(1))
+            }
+        }
     }
 
     /// Recomputes the menu bar title ("İkindi  1:23:45") from the current schedule.
@@ -121,14 +126,9 @@ final class PrayerStore: ObservableObject {
             scheduler.cancelAll()
             return
         }
-        scheduler.requestAuthorization { [weak self] granted in
-            guard granted else { return }
-            DispatchQueue.main.async {
-                MainActor.assumeIsolated {
-                    guard let self else { return }
-                    self.scheduler.reschedule(schedule: self.schedule, locationName: self.locationName)
-                }
-            }
+        Task {
+            guard await scheduler.requestAuthorization() else { return }
+            scheduler.reschedule(schedule: schedule, locationName: locationName)
         }
     }
 

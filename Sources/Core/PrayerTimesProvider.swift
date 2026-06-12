@@ -1,6 +1,6 @@
 import Foundation
 
-enum ProviderError: LocalizedError {
+enum ProviderError: LocalizedError, Sendable {
     case badResponse(Int)
     case noData
     case notImplemented(String)
@@ -22,11 +22,10 @@ enum ProviderError: LocalizedError {
 /// EzanVakti is the v1 implementation. The protocol is the seam for swapping in the
 /// official Diyanet `AwqatSalah` API later without touching the UI or store.
 ///
-/// Completion-handler based (not async/await) on purpose: in this menu-bar app the Swift
-/// concurrency continuations do not resume reliably, whereas URLSession's delegate queue
-/// and GCD do. The completion runs on a background queue.
-protocol PrayerTimesProvider {
-    func monthlyTimes(districtId: String, completion: @escaping (Result<[PrayerDay], Error>) -> Void)
+/// `Sendable` so an `any PrayerTimesProvider` can be held by the `@MainActor` store and
+/// awaited off the main actor.
+protocol PrayerTimesProvider: Sendable {
+    func monthlyTimes(districtId: String) async throws -> [PrayerDay]
 }
 
 /// Community wrapper around Diyanet's published tables. No auth, no key.
@@ -45,29 +44,18 @@ struct EzanVaktiProvider: PrayerTimesProvider {
         return URLSession(configuration: config)
     }
 
-    func monthlyTimes(districtId: String, completion: @escaping (Result<[PrayerDay], Error>) -> Void) {
+    func monthlyTimes(districtId: String) async throws -> [PrayerDay] {
         let url = baseURL.appending(path: "vakitler").appending(path: districtId)
-        let task = session.dataTask(with: url) { data, response, error in
-            if let error {
-                completion(.failure(error))
-                return
-            }
-            if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
-                completion(.failure(ProviderError.badResponse(http.statusCode)))
-                return
-            }
-            guard let data else {
-                completion(.failure(ProviderError.noData))
-                return
-            }
-            do {
-                let days = try JSONDecoder().decode([PrayerDay].self, from: data)
-                completion(.success(days))
-            } catch {
-                completion(.failure(error))
-            }
+        let (data, response) = try await session.data(from: url)
+        try Self.validate(response)
+        return try JSONDecoder().decode([PrayerDay].self, from: data)
+    }
+
+    /// Throws `ProviderError.badResponse` for non-2xx HTTP statuses; passes everything else.
+    static func validate(_ response: URLResponse) throws {
+        if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
+            throw ProviderError.badResponse(http.statusCode)
         }
-        task.resume()
     }
 }
 
@@ -77,7 +65,7 @@ struct EzanVaktiProvider: PrayerTimesProvider {
 /// strict per-endpoint rate limits, so it is not shippable in a client yet. Left as a
 /// concrete drop-in target: implement `monthlyTimes` here and inject it into `PrayerStore`.
 struct AwqatSalahProvider: PrayerTimesProvider {
-    func monthlyTimes(districtId: String, completion: @escaping (Result<[PrayerDay], Error>) -> Void) {
-        completion(.failure(ProviderError.notImplemented("Resmi Diyanet AwqatSalah API")))
+    func monthlyTimes(districtId: String) async throws -> [PrayerDay] {
+        throw ProviderError.notImplemented("Resmi Diyanet AwqatSalah API")
     }
 }

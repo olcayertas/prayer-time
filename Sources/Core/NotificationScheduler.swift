@@ -3,7 +3,7 @@ import UserNotifications
 
 /// Schedules local notifications at upcoming prayer times. Local-only (no push), so it
 /// needs runtime authorization but no special entitlement.
-struct NotificationScheduler {
+struct NotificationScheduler: Sendable {
     let timeZone: TimeZone
 
     init(timeZone: TimeZone = Config.timeZone) {
@@ -12,11 +12,9 @@ struct NotificationScheduler {
 
     private var center: UNUserNotificationCenter { .current() }
 
-    /// Prompts for alert+sound permission. `granted` is delivered on a background queue.
-    func requestAuthorization(_ completion: @escaping (Bool) -> Void = { _ in }) {
-        center.requestAuthorization(options: [.alert, .sound]) { granted, _ in
-            completion(granted)
-        }
+    /// Prompts for alert+sound permission; returns whether it was granted.
+    func requestAuthorization() async -> Bool {
+        (try? await center.requestAuthorization(options: [.alert, .sound])) ?? false
     }
 
     /// Replaces all pending requests with the prayer times in the next `daysAhead` days.

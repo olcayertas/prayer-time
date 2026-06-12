@@ -1,7 +1,7 @@
 import WidgetKit
 import SwiftUI
 
-struct PrayerEntry: TimelineEntry {
+struct PrayerEntry: TimelineEntry, Sendable {
     let date: Date
     let nextPrayer: Prayer?
     let nextDate: Date?
@@ -22,23 +22,23 @@ struct PrayerTimelineProvider: TimelineProvider {
                     day: nil, locationName: locationName)
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (PrayerEntry) -> Void) {
+    func getSnapshot(in context: Context, completion: @escaping @Sendable (PrayerEntry) -> Void) {
         let days = PrayerCache().load(districtId: districtId) ?? []
         completion(entries(from: days, now: Date()).first ?? placeholder(in: context))
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<PrayerEntry>) -> Void) {
+    func getTimeline(in context: Context, completion: @escaping @Sendable (Timeline<PrayerEntry>) -> Void) {
         let cache = PrayerCache()
         if let cached = cache.load(districtId: districtId), !cached.isEmpty {
             completion(makeTimeline(from: cached))
             return
         }
-        EzanVaktiProvider().monthlyTimes(districtId: districtId) { result in
-            switch result {
-            case .success(let days):
+        Task {
+            do {
+                let days = try await EzanVaktiProvider().monthlyTimes(districtId: districtId)
                 cache.save(days, districtId: districtId)
                 completion(makeTimeline(from: days))
-            case .failure:
+            } catch {
                 let entry = PrayerEntry(date: Date(), nextPrayer: nil, nextDate: nil,
                                         day: nil, locationName: locationName)
                 completion(Timeline(entries: [entry], policy: .after(Date().addingTimeInterval(3600))))

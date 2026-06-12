@@ -2,9 +2,11 @@ import AppKit
 import Combine
 
 /// Enforces a single running instance and gives the menu bar status item fixed-width digits.
+@MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private weak var statusButton: NSStatusBarButton?
-    private var titleObserver: AnyCancellable?
+    /// Re-applies the monospaced font whenever `menuTitle` changes; cancelled when the app exits.
+    private var titleObserver: Task<Void, Never>?
 
     /// Single-instance guard: if another copy is already running, the newly launched one
     /// activates the existing instance and exits before its menu bar item is created.
@@ -22,14 +24,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Force fixed-width (tabular) digits on the MenuBarExtra status item so the
-        // countdown doesn't shift as the digits change. MenuBarExtra rebuilds the button's
-        // attributed title in the proportional system font on every per-second update, so
-        // re-apply the monospaced font right after each title change (deferred so it runs
-        // after SwiftUI has set the new title).
-        DispatchQueue.main.async { [weak self] in self?.applyMonospacedDigits() }
-        titleObserver = PrayerStore.shared.$menuTitle.sink { [weak self] _ in
-            DispatchQueue.main.async { self?.applyMonospacedDigits() }
+        // Force fixed-width (tabular) digits on the MenuBarExtra status item so the countdown
+        // doesn't shift as the digits change. MenuBarExtra rebuilds the button's attributed
+        // title in the proportional system font on every per-second update, so re-apply the
+        // monospaced font on every `menuTitle` change. `$menuTitle.values` yields the current
+        // value first and then each update, all delivered here on the main actor.
+        titleObserver = Task { [weak self] in
+            for await _ in PrayerStore.shared.$menuTitle.values {
+                self?.applyMonospacedDigits()
+            }
         }
     }
 
