@@ -20,17 +20,17 @@ struct MonthView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 16)
         }
-        .navigationTitle("Aylık")
+        .navigationTitle("Monthly")
         .overlay {
             if store.days.isEmpty {
-                ProgressView("Yükleniyor…")
+                ProgressView("Loading…")
             }
         }
     }
 
     private var headerRow: some View {
         HStack(spacing: 0) {
-            cell("Tarih", width: 100, align: .leading, bold: true)
+            cell(String(localized: "Date"), width: 100, align: .leading, bold: true)
             ForEach(Prayer.allCases) { cell($0.displayName, bold: true) }
         }
         .padding(.vertical, 8)

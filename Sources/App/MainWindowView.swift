@@ -3,11 +3,20 @@ import AppKit
 
 /// Sections in the main window sidebar. Add cases here to grow the app.
 enum AppSection: String, CaseIterable, Identifiable {
-    case today = "Bugün"
-    case month = "Aylık"
-    case settings = "Ayarlar"
+    case today
+    case month
+    case settings
 
     var id: String { rawValue }
+
+    /// Localized sidebar label and navigation title.
+    var title: LocalizedStringKey {
+        switch self {
+        case .today: return "Today"
+        case .month: return "Monthly"
+        case .settings: return "Settings"
+        }
+    }
 
     var systemImage: String {
         switch self {
@@ -27,7 +36,7 @@ struct MainWindowView: View {
     var body: some View {
         NavigationSplitView {
             List(AppSection.allCases, selection: $section) { item in
-                Label(item.rawValue, systemImage: item.systemImage)
+                Label(item.title, systemImage: item.systemImage)
                     .tag(item)
             }
             .navigationSplitViewColumnWidth(min: 170, ideal: 190, max: 230)

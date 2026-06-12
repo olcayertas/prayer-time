@@ -7,26 +7,26 @@ struct LocationPickerView: View {
 
     var body: some View {
         Group {
-            LabeledContent("Geçerli", value: store.locationName)
+            LabeledContent("Current", value: store.locationName)
 
-            Picker("Ülke", selection: Binding(
+            Picker("Country", selection: Binding(
                 get: { model.selectedCountryId },
                 set: { model.selectCountry($0) }
             )) {
                 ForEach(model.countries) { Text($0.name).tag($0.id) }
             }
 
-            Picker("Şehir", selection: Binding(
+            Picker("City", selection: Binding(
                 get: { model.selectedCityId },
                 set: { model.selectCity($0) }
             )) {
-                Text("Seçiniz").tag("")
+                Text("Select…").tag("")
                 ForEach(model.cities) { Text($0.name).tag($0.id) }
             }
             .disabled(model.cities.isEmpty)
 
-            Picker("İlçe", selection: $model.selectedDistrictId) {
-                Text("Seçiniz").tag("")
+            Picker("District", selection: $model.selectedDistrictId) {
+                Text("Select…").tag("")
                 ForEach(model.districts) { Text($0.name).tag($0.id) }
             }
             .disabled(model.districts.isEmpty)
@@ -35,7 +35,7 @@ struct LocationPickerView: View {
                 Text(error).font(.caption).foregroundStyle(.red)
             }
 
-            Button("Bu konumu kaydet") {
+            Button("Save this location") {
                 if let district = model.selectedDistrict {
                     store.selectLocation(districtId: district.id, name: district.name)
                 }

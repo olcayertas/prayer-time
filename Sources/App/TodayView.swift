@@ -22,14 +22,14 @@ struct TodayView: View {
                         grid(today: today, current: current, next: upcoming?.prayer)
                         extras(today: today)
                     } else {
-                        ProgressView("Yükleniyor…")
+                        ProgressView("Loading…")
                             .frame(maxWidth: .infinity, minHeight: 220)
                     }
                 }
                 .padding(24)
             }
         }
-        .navigationTitle("Bugün")
+        .navigationTitle("Today")
     }
 
     private func header(today: PrayerDay?) -> some View {
@@ -37,8 +37,8 @@ struct TodayView: View {
             Text(store.locationName).font(.largeTitle.bold())
             if let today {
                 HStack(spacing: 8) {
-                    if let gregorian = today.miladiTarihUzun { Text(gregorian) }
-                    if let hicri = today.hicriTarihUzun {
+                    if let gregorian = DateLocalizer.gregorianLong(today.miladiTarihKisa) { Text(gregorian) }
+                    if let hicri = DateLocalizer.hijriLong(today.hicriTarihKisa) {
                         Text("·").foregroundStyle(.tertiary)
                         Text(hicri)
                     }
@@ -58,7 +58,7 @@ struct TodayView: View {
                     .foregroundStyle(Color.accentColor)
                     .frame(width: 64)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Sıradaki vakit").font(.subheadline).foregroundStyle(.secondary)
+                    Text("Next prayer").font(.subheadline).foregroundStyle(.secondary)
                     Text(upcoming.prayer.displayName).font(.title.weight(.semibold))
                 }
                 Spacer()
@@ -67,10 +67,10 @@ struct TodayView: View {
                         .font(.system(size: 42, weight: .bold, design: .rounded))
                         .monospacedDigit()
                         .foregroundStyle(Color.accentColor)
-                    Text("kaldı").font(.caption).foregroundStyle(.secondary)
+                    Text("remaining").font(.caption).foregroundStyle(.secondary)
                 }
             } else {
-                Text("Bugünün vakitleri yüklenemedi").foregroundStyle(.secondary)
+                Text("Couldn't load today's times").foregroundStyle(.secondary)
             }
         }
         .padding(22)
@@ -111,9 +111,15 @@ struct TodayView: View {
 
     private func extras(today: PrayerDay) -> some View {
         HStack(spacing: 28) {
-            if let sunrise = today.gunesDogus { infoItem("sunrise.fill", "Güneş Doğuşu", sunrise) }
-            if let sunset = today.gunesBatis { infoItem("sunset.fill", "Güneş Batışı", sunset) }
-            if let qibla = today.kibleSaati { infoItem("location.north.line.fill", "Kıble Saati", qibla) }
+            if let sunrise = today.gunesDogus {
+                infoItem("sunrise.fill", String(localized: "extras.sunrise", defaultValue: "Sunrise"), sunrise)
+            }
+            if let sunset = today.gunesBatis {
+                infoItem("sunset.fill", String(localized: "extras.sunset", defaultValue: "Sunset"), sunset)
+            }
+            if let qibla = today.kibleSaati {
+                infoItem("location.north.line.fill", String(localized: "extras.qibla", defaultValue: "Qibla time"), qibla)
+            }
             Spacer()
         }
         .padding(.top, 4)

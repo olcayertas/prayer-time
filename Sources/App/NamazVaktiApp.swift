@@ -14,7 +14,7 @@ struct NamazVaktiApp: App {
         }
         .menuBarExtraStyle(.window)
 
-        Window("Namaz Vakti", id: "main") {
+        Window("Prayer Times", id: "main") {
             MainWindowView(store: store)
         }
         .defaultSize(width: 760, height: 560)

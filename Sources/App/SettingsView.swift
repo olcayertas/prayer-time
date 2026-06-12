@@ -6,38 +6,38 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
-            Section("Konum") {
+            Section("Location") {
                 LocationPickerView(store: store)
             }
 
-            Section("Bildirimler") {
-                Toggle("Vakit bildirimleri", isOn: Binding(
+            Section("Notifications") {
+                Toggle("Prayer notifications", isOn: Binding(
                     get: { store.notificationsEnabled },
                     set: { store.setNotifications(enabled: $0) }
                 ))
-                Text("Açıkken her namaz vaktinde bir bildirim gönderilir.")
+                Text("When on, you'll get a notification at each prayer time.")
                     .font(.caption).foregroundStyle(.secondary)
             }
 
-            Section("Genel") {
-                Button("Şimdi yenile") { store.refresh() }
+            Section("General") {
+                Button("Refresh now") { store.refresh() }
                     .disabled(store.isLoading)
                 if let updated = store.lastUpdated {
-                    LabeledContent("Son güncelleme", value: updated.formatted(date: .abbreviated, time: .shortened))
+                    LabeledContent("Last updated", value: updated.formatted(date: .abbreviated, time: .shortened))
                 }
                 if let error = store.lastError {
                     Text(error).font(.caption).foregroundStyle(.red)
                 }
             }
 
-            Section("Hakkında") {
-                LabeledContent("Sürüm", value: appVersion)
-                Text("Vakitler T.C. Diyanet İşleri Başkanlığı kaynaklı EzanVakti servisinden alınır.")
+            Section("About") {
+                LabeledContent("Version", value: appVersion)
+                Text("Prayer times are sourced from the EzanVakti service, based on the Turkish Directorate of Religious Affairs (Diyanet).")
                     .font(.caption).foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
-        .navigationTitle("Ayarlar")
+        .navigationTitle("Settings")
     }
 
     private var appVersion: String {

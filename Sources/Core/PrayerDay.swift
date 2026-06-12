@@ -9,12 +9,12 @@ enum Prayer: String, CaseIterable, Codable, Sendable, Identifiable {
     /// Turkish display name as shown on the Diyanet site.
     var displayName: String {
         switch self {
-        case .imsak: return "İmsak"
-        case .gunes: return "Güneş"
-        case .ogle: return "Öğle"
-        case .ikindi: return "İkindi"
-        case .aksam: return "Akşam"
-        case .yatsi: return "Yatsı"
+        case .imsak: return String(localized: "Dawn", comment: "Prayer time: Diyanet İmsak (start of fast / Fajr)")
+        case .gunes: return String(localized: "Sunrise", comment: "Prayer time: Diyanet Güneş (sunrise / Shuruq)")
+        case .ogle: return String(localized: "Noon", comment: "Prayer time: Diyanet Öğle (Dhuhr)")
+        case .ikindi: return String(localized: "Afternoon", comment: "Prayer time: Diyanet İkindi (Asr)")
+        case .aksam: return String(localized: "Sunset", comment: "Prayer time: Diyanet Akşam (Maghrib)")
+        case .yatsi: return String(localized: "Night", comment: "Prayer time: Diyanet Yatsı (Isha)")
         }
     }
 

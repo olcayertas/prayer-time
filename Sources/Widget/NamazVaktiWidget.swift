@@ -95,11 +95,11 @@ struct NamazVaktiWidgetEntryView: View {
                 Text(timerInterval: entry.date...nextDate, countsDown: true)
                     .font(.system(.title2, design: .rounded)).monospacedDigit()
                 if let day = entry.day {
-                    Text("Vakit \(day.time(for: next))")
+                    Text("Time \(day.time(for: next))")
                         .font(.caption2).foregroundStyle(.secondary)
                 }
             } else {
-                Text("Namaz Vakti").font(.headline)
+                Text("Prayer Times").font(.headline)
             }
             Spacer(minLength: 0)
         }
@@ -113,13 +113,13 @@ struct NamazVaktiWidgetEntryView: View {
                     .font(.caption2).foregroundStyle(.secondary).lineLimit(1)
                 Spacer(minLength: 0)
                 if let next = entry.nextPrayer, let nextDate = entry.nextDate {
-                    Text("Sıradaki").font(.caption2).foregroundStyle(.secondary)
+                    Text("Next").font(.caption2).foregroundStyle(.secondary)
                     Label(next.displayName, systemImage: next.symbolName)
                         .font(.headline)
                     Text(timerInterval: entry.date...nextDate, countsDown: true)
                         .font(.system(.title2, design: .rounded)).monospacedDigit()
                 } else {
-                    Text("Namaz Vakti").font(.headline)
+                    Text("Prayer Times").font(.headline)
                 }
                 Spacer(minLength: 0)
             }
@@ -151,8 +151,8 @@ struct NamazVaktiWidget: Widget {
             NamazVaktiWidgetEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
-        .configurationDisplayName("Namaz Vakti")
-        .description("Sıradaki namaz vakti ve geri sayım.")
+        .configurationDisplayName("Prayer Times")
+        .description("The next prayer time and countdown.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }

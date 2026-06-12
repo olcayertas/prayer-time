@@ -5,6 +5,7 @@ options:
     macOS: "14.0"
   createIntermediateGroups: true
   groupSortPosition: top
+  developmentLanguage: en
 
 settings:
   base:
@@ -27,7 +28,7 @@ targets:
     info:
       path: Sources/App/Info.plist
       properties:
-        CFBundleDisplayName: Namaz Vakti
+        CFBundleDisplayName: Prayer Times
         LSUIElement: true
     entitlements:
       path: Sources/App/NamazVakti.entitlements
@@ -51,7 +52,7 @@ targets:
     info:
       path: Sources/Widget/Info.plist
       properties:
-        CFBundleDisplayName: Namaz Vakti Widget
+        CFBundleDisplayName: Prayer Times Widget
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:

@@ -32,8 +32,9 @@ struct NotificationScheduler: Sendable {
             components.timeZone = timeZone
 
             let content = UNMutableNotificationContent()
-            content.title = "\(prayer.displayName) vakti"
-            content.body = "\(locationName) için \(prayer.displayName) vakti girdi."
+            content.title = String(localized: "\(prayer.displayName) time", comment: "Notification title, e.g. 'Noon time'")
+            content.body = String(localized: "It's \(prayer.displayName) time in \(locationName).",
+                                  comment: "Notification body; args: 1 prayer name, 2 location")
             content.sound = .default
 
             let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)

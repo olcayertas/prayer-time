@@ -8,11 +8,11 @@ enum ProviderError: LocalizedError, Sendable {
     var errorDescription: String? {
         switch self {
         case .badResponse(let code):
-            return "Sunucu beklenmeyen bir yanıt verdi (HTTP \(code))."
+            return String(localized: "The server returned an unexpected response (HTTP \(code)).")
         case .noData:
-            return "Sunucudan veri alınamadı."
+            return String(localized: "No data was received from the server.")
         case .notImplemented(let what):
-            return "\(what) henüz uygulanmadı."
+            return String(localized: "\(what) is not implemented yet.")
         }
     }
 }

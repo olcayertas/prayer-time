@@ -41,7 +41,7 @@ struct MenuPanelView: View {
             get: { store.notificationsEnabled },
             set: { store.setNotifications(enabled: $0) }
         )) {
-            Label("Vakit bildirimleri", systemImage: "bell")
+            Label("Prayer notifications", systemImage: "bell")
         }
         .toggleStyle(.switch)
         .controlSize(.small)
@@ -54,10 +54,10 @@ struct MenuPanelView: View {
             Text(store.locationName)
                 .font(.headline)
             if let today {
-                if let gregorian = today.miladiTarihUzun {
+                if let gregorian = DateLocalizer.gregorianLong(today.miladiTarihKisa) {
                     Text(gregorian).font(.caption).foregroundStyle(.secondary)
                 }
-                if let hicri = today.hicriTarihUzun {
+                if let hicri = DateLocalizer.hijriLong(today.hicriTarihKisa) {
                     Text(hicri).font(.caption).foregroundStyle(.secondary)
                 }
             }
@@ -74,7 +74,7 @@ struct MenuPanelView: View {
                     .foregroundStyle(.tint)
                     .frame(width: 34)
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("Sıradaki vakit")
+                    Text("Next prayer")
                         .font(.caption).foregroundStyle(.secondary)
                     Text(upcoming.prayer.displayName)
                         .font(.title3).fontWeight(.semibold)
@@ -85,7 +85,7 @@ struct MenuPanelView: View {
                     .monospacedDigit()
                     .foregroundStyle(.tint)
             } else {
-                Text("Bugünün vakitleri yüklenemedi")
+                Text("Couldn't load today's times")
                     .font(.callout).foregroundStyle(.secondary)
             }
         }
@@ -126,10 +126,10 @@ struct MenuPanelView: View {
         HStack(spacing: 8) {
             if store.isLoading {
                 ProgressView().controlSize(.small)
-                Text("Yükleniyor…").foregroundStyle(.secondary)
+                Text("Loading…").foregroundStyle(.secondary)
             } else {
                 Image(systemName: "wifi.exclamationmark").foregroundStyle(.secondary)
-                Text(store.lastError ?? "Veri yok").foregroundStyle(.secondary)
+                Text(store.lastError ?? String(localized: "No data")).foregroundStyle(.secondary)
             }
         }
         .font(.callout)
@@ -144,7 +144,7 @@ struct MenuPanelView: View {
                 openWindow(id: "main")
                 NSApp.activate(ignoringOtherApps: true)
             } label: {
-                Label("Uygulamayı aç", systemImage: "macwindow")
+                Label("Open app", systemImage: "macwindow")
                     .frame(maxWidth: .infinity)
             }
             .controlSize(.large)
@@ -156,7 +156,7 @@ struct MenuPanelView: View {
                     if store.isLoading {
                         ProgressView().controlSize(.small)
                     } else {
-                        Label("Yenile", systemImage: "arrow.clockwise")
+                        Label("Refresh", systemImage: "arrow.clockwise")
                     }
                 }
                 .buttonStyle(.borderless)
@@ -164,7 +164,7 @@ struct MenuPanelView: View {
 
                 Spacer()
 
-                Button("Çıkış") { NSApplication.shared.terminate(nil) }
+                Button("Quit") { NSApplication.shared.terminate(nil) }
                     .buttonStyle(.borderless)
                     .keyboardShortcut("q")
             }

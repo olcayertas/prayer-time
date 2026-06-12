@@ -12,7 +12,7 @@ final class PrayerStore: ObservableObject {
     static let shared = PrayerStore()
 
     @Published private(set) var days: [PrayerDay] = []
-    @Published private(set) var menuTitle: String = "Namaz Vakti"
+    @Published private(set) var menuTitle: String = String(localized: "Prayer Times")
     @Published private(set) var isLoading = false
     @Published private(set) var lastError: String?
     @Published private(set) var lastUpdated: Date?
@@ -106,7 +106,7 @@ final class PrayerStore: ObservableObject {
     /// Recomputes the menu bar title ("İkindi  1:23:45") from the current schedule.
     private func updateMenuTitle() {
         guard let upcoming = schedule.upcoming(now: Date()) else {
-            menuTitle = "Namaz Vakti"
+            menuTitle = String(localized: "Prayer Times")
             return
         }
         let total = max(0, Int(upcoming.remaining))
