@@ -1,63 +1,99 @@
-# Namaz Vakti
+<div align="center">
 
-A minimal macOS app that shows Muslim prayer times (namaz vakitleri) from the Turkish
-Directorate of Religious Affairs (Diyanet), delivered through three surfaces:
+# 🕌 Namaz Vakti
 
-- **Menu bar** — the next prayer and a live countdown (e.g. `İkindi  3:32:16`); click for a
-  panel with today's six times (next highlighted), location, and the Gregorian + Hicri date.
-- **Widget** — small / medium WidgetKit widget with the next prayer, a live countdown, and
-  today's times.
-- **Notifications** — optional local notifications at each prayer time (toggle in the panel).
+**A native macOS menu bar app for Muslim prayer times — powered by the Turkish
+Directorate of Religious Affairs (Diyanet).**
 
-v1 is a single hardcoded location: **Küçükçekmece** (Diyanet district id `9543`).
+[![CI](https://github.com/olcayertas/NamazVakti/actions/workflows/ci.yml/badge.svg)](https://github.com/olcayertas/NamazVakti/actions/workflows/ci.yml)
+![Platform](https://img.shields.io/badge/platform-macOS%2014%2B-000000?logo=apple&logoColor=white)
+![Swift](https://img.shields.io/badge/Swift-5.0-F05138?logo=swift&logoColor=white)
+![Xcode](https://img.shields.io/badge/Xcode-26-147EFB?logo=xcode&logoColor=white)
+![SwiftUI](https://img.shields.io/badge/UI-SwiftUI%20%2B%20WidgetKit-0A84FF)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Build & run
+</div>
 
-Requires [XcodeGen](https://github.com/yonsh/XcodeGen) (`brew install xcodegen`) and Xcode.
+---
+
+Namaz Vakti lives in your menu bar with a live countdown to the next prayer, and opens
+into a full window when you want more detail or to change settings.
+
+## ✨ Features
+
+- **Menu bar countdown** — the next prayer with a live, jitter-free countdown (e.g. `İkindi  1:23:45`).
+- **Dropdown panel** — today's six times with the next one highlighted, location, and the
+  Gregorian + Hicri date.
+- **Main window** — sidebar with **Bugün** (rich today view), **Aylık** (monthly table), and
+  **Ayarlar** (settings). A Dock icon appears only while the window is open.
+- **Widget** — small / medium WidgetKit widget with the next prayer and a live countdown.
+- **Notifications** — optional local notifications at each prayer time.
+- **Location picker** — country → city → district, remembered across launches.
+
+## 📋 Requirements
+
+- macOS 14 (Sonoma) or later
+- Xcode 26+ to build
+- [XcodeGen](https://github.com/yonaskolb/XcodeGen) — `brew install xcodegen`
+
+## 🚀 Build & run
 
 ```sh
-xcodegen generate                       # regenerate the .xcodeproj from project.yml
+brew install xcodegen
+xcodegen generate                       # regenerate NamazVakti.xcodeproj from project.yml
 xcodebuild -scheme NamazVakti -destination 'platform=macOS' \
   -derivedDataPath build/DerivedData build
 open build/DerivedData/Build/Products/Debug/NamazVakti.app
 ```
 
-Tests (pure schedule + decoding logic, no network):
+Run the tests (pure schedule + decoding logic, no network):
 
 ```sh
 xcodebuild test -scheme NamazVakti -destination 'platform=macOS' -derivedDataPath build/DerivedData
 ```
 
-The project uses **local ad-hoc signing** — no Apple Developer account or team is needed.
-Regenerate the project (`xcodegen generate`) whenever you add or remove source files.
+Uses **local ad-hoc signing** — no Apple Developer account required. Re-run
+`xcodegen generate` whenever you add or remove source files.
 
-## Architecture
+## 🧭 Data source
 
-- `Sources/Core` — shared, UI-free logic (compiled into the app, widget, and test targets):
-  - `PrayerDay` — `Codable` model of one day (Turkish JSON field names).
-  - `PrayerTimesProvider` — data-source seam. `EzanVaktiProvider` (no-auth wrapper of Diyanet
-    data, `GET ezanvakti.emushaf.net/vakitler/{id}`) is the v1 impl; `AwqatSalahProvider`
-    (official Diyanet API) is a stubbed future drop-in.
-  - `PrayerSchedule` — next-prayer / countdown math in `Europe/Istanbul`.
-  - `PrayerCache` — per-process monthly cache (a JSON file in Application Support).
-  - `PrayerStore` — `@MainActor` observable: loads cache, refreshes, drives the menu title,
-    notifications, and widget reloads.
-  - `NotificationScheduler` — schedules `UNCalendarNotificationTrigger`s for upcoming times.
-- `Sources/App` — `MenuBarExtra` app (menu bar title + dropdown panel).
-- `Sources/Widget` — WidgetKit timeline provider and views.
+Prayer times come from the no-auth **EzanVakti** wrapper of Diyanet's published tables:
 
-## Notable v1 decisions
+```
+GET https://ezanvakti.emushaf.net/vakitler/{districtId}   # one call = a full month
+```
 
-- **No App Group.** App Groups require a paid Apple Developer account, so the app and the
-  widget each cache their own monthly JSON; the widget fetches independently if its cache is
-  empty.
-- **Completion-handler networking + GCD**, not async/await — the most robust path observed in
-  this menu-bar/sandbox context.
-- The menu bar uses a **plain `String` title** (not a rendered SwiftUI label): a rendered
+The hierarchy endpoints (`/ulkeler`, `/sehirler/{id}`, `/ilceler/{id}`) drive the location
+picker. Everything goes through a `PrayerTimesProvider` protocol, so the official Diyanet
+`AwqatSalah` API can be dropped in later without touching the UI.
+
+## 🏗️ Architecture
+
+- **`Sources/Core`** — UI-free, shared by the app, widget, and tests:
+  `PrayerDay`, `PrayerSchedule` (next-prayer math in `Europe/Istanbul`), `PrayerCache`,
+  `PrayerTimesProvider` / `PlacesProvider` (EzanVakti), `PrayerStore`, `NotificationScheduler`.
+- **`Sources/App`** — `MenuBarExtra` menu bar item + the main window (Today / Month / Settings).
+- **`Sources/Widget`** — WidgetKit timeline provider and views.
+
+### Notable decisions
+
+- **No App Group** (avoids needing a paid Apple Developer account) — the app and the widget
+  each cache their own monthly JSON.
+- **Completion-handler networking + GCD**, not async/await — the most reliable path in this
+  menu-bar / sandbox context.
+- The menu bar uses a **plain `String` title with monospaced digits**: a rendered
   `MenuBarExtra` label hangs AppKit's status-item sizing on macOS 26.
 
-## Deferred (post-v1)
+## 🗺️ Roadmap
 
-Country/city/district location picker, the official `AwqatSalah` provider, weekly/monthly
-tables, qibla + moon phase, per-prayer notification settings, multiple locations, app icon,
-launch-at-login.
+- Official Diyanet `AwqatSalah` provider
+- Location-aware widget (per-widget configuration)
+- TR / EN localization
+- App icon and launch-at-login
+
+## 📄 License
+
+Released under the [MIT License](LICENSE) © 2026 Olcay Ertaş.
+
+Prayer-time data © T.C. Diyanet İşleri Başkanlığı, accessed via the community EzanVakti
+service. This project is not affiliated with or endorsed by Diyanet.
