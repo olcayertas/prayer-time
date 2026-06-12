@@ -44,7 +44,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let attributed = button.attributedTitle
         if attributed.length > 0 {
             let mutable = NSMutableAttributedString(attributedString: attributed)
-            mutable.addAttribute(.font, value: font, range: NSRange(location: 0, length: mutable.length))
+            mutable.addAttribute(
+              .font,
+              value: font,
+              range: NSRange(location: 0, length: mutable.length)
+            )
             button.attributedTitle = mutable
         }
     }

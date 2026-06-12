@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xcodegen:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(open build/*)",
+      "Bash(pgrep:*)",
+      "Bash(pkill:*)",
+      "Bash(sample:*)",
+      "Bash(pluginkit:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)"
+    ]
+  }
+}

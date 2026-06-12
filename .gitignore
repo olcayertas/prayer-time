@@ -10,3 +10,9 @@ xcuserdata/
 
 # SwiftPM
 .build/
+
+# Claude Code — personal local overrides (CLAUDE.md, settings.json, commands are shared)
+.claude/settings.local.json
+
+# Serena — its own .serena/.gitignore excludes cache/ and project.local.yml;
+# project.yml + memories/ are committed so onboarding is shared.
