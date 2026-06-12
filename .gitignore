@@ -11,6 +11,9 @@ xcuserdata/
 # SwiftPM
 .build/
 
+# JetBrains IDEs (WebStorm / IntelliJ)
+.idea/
+
 # Claude Code — personal local overrides (CLAUDE.md, settings.json, commands are shared)
 .claude/settings.local.json
 
