@@ -5,8 +5,30 @@
       "comment" : "Widget name shown in the widget gallery",
       "extractionState" : "manual",
       "localizations" : {
-        "ar" : { "stringUnit" : { "state" : "translated", "value" : "ودجت أوقات الصلاة" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Namaz Vakti Widget" } }
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ودجت أوقات الصلاة"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Namaz Vakti Widget"
+          }
+        }
+      }
+    },
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "NamazVaktiWidget"
+          }
+        }
       }
     }
   },
