@@ -1,0 +1,88 @@
+name: NamazVakti
+options:
+  bundleIdPrefix: com.olcayertas
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    # Local ad-hoc signing — no Apple Developer account / team required.
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    DEVELOPMENT_TEAM: ""
+    ENABLE_HARDENED_RUNTIME: NO
+
+targets:
+  NamazVakti:
+    type: application
+    platform: macOS
+    sources:
+      - Sources/App
+      - Sources/Core
+    info:
+      path: Sources/App/Info.plist
+      properties:
+        CFBundleDisplayName: Namaz Vakti
+        LSUIElement: true
+    entitlements:
+      path: Sources/App/NamazVakti.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.olcayertas.NamazVakti
+        PRODUCT_NAME: NamazVakti
+    dependencies:
+      - target: NamazVaktiWidget
+        embed: true
+
+  NamazVaktiWidget:
+    type: app-extension
+    platform: macOS
+    sources:
+      - Sources/Widget
+      - Sources/Core
+    info:
+      path: Sources/Widget/Info.plist
+      properties:
+        CFBundleDisplayName: Namaz Vakti Widget
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Sources/Widget/NamazVaktiWidget.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.olcayertas.NamazVakti.Widget
+
+  NamazVaktiCoreTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - Tests/CoreTests
+      - Sources/Core
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.olcayertas.NamazVaktiCoreTests
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  NamazVakti:
+    build:
+      targets:
+        NamazVakti: all
+        NamazVaktiCoreTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - NamazVaktiCoreTests
