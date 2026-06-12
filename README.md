@@ -7,7 +7,8 @@ Directorate of Religious Affairs (Diyanet).**
 
 [![CI](https://github.com/olcayertas/NamazVakti/actions/workflows/ci.yml/badge.svg)](https://github.com/olcayertas/NamazVakti/actions/workflows/ci.yml)
 ![Platform](https://img.shields.io/badge/platform-macOS%2014%2B-000000?logo=apple&logoColor=white)
-![Swift](https://img.shields.io/badge/Swift-5.0-F05138?logo=swift&logoColor=white)
+![Swift](https://img.shields.io/badge/Swift-6.0-F05138?logo=swift&logoColor=white)
+![Concurrency](https://img.shields.io/badge/strict%20concurrency-complete-F05138?logo=swift&logoColor=white)
 ![Xcode](https://img.shields.io/badge/Xcode-26-147EFB?logo=xcode&logoColor=white)
 ![SwiftUI](https://img.shields.io/badge/UI-SwiftUI%20%2B%20WidgetKit-0A84FF)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -79,10 +80,13 @@ picker. Everything goes through a `PrayerTimesProvider` protocol, so the officia
 
 - **No App Group** (avoids needing a paid Apple Developer account) — the app and the widget
   each cache their own monthly JSON.
-- **Completion-handler networking + GCD**, not async/await — the most reliable path in this
-  menu-bar / sandbox context.
+- **Swift 6 language mode** with complete strict concurrency. Networking is `async`/`await`
+  (`URLSession.data(from:)`) behind a `Sendable` `PrayerTimesProvider`; the `@MainActor`
+  `PrayerStore` awaits it from a cancellable `Task`, and a structured `Task` (not a GCD timer)
+  drives the once-a-second countdown.
 - The menu bar uses a **plain `String` title with monospaced digits**: a rendered
-  `MenuBarExtra` label hangs AppKit's status-item sizing on macOS 26.
+  `MenuBarExtra` label hangs AppKit's status-item sizing on macOS 26. (This — not async/await —
+  was the real cause of an earlier hang, so the data layer is free to use modern concurrency.)
 
 ## 🗺️ Roadmap
 

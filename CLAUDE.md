@@ -30,8 +30,11 @@ Developer account or team is required.
 ## Conventions
 
 - UI strings are Turkish; all times are **Europe/Istanbul** (`Config.timeZone`).
-- Networking is **completion-handler `URLSession` + GCD**, not async/await (async continuations
-  were unreliable in this menu-bar/sandbox context).
+- **Swift 6 language mode** (complete strict concurrency). Networking is **`async`/`await`**
+  (`URLSession.data(from:)`) behind a `Sendable` `PrayerTimesProvider`; the `@MainActor`
+  `PrayerStore` awaits it from a cancellable `Task`, and a `Task` loop drives the countdown.
+  (An earlier "async is unreliable here" note was a misdiagnosis — the real cause was the
+  rendered `MenuBarExtra` label; see the warning below.)
 - **No App Group** (avoids needing a paid account) — the app and the widget cache independently.
 - Data comes from the keyless **EzanVakti** wrapper behind `PrayerTimesProvider` (the official
   Diyanet `AwqatSalah` API is a future drop-in).

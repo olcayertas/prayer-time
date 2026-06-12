@@ -3,9 +3,11 @@
 - UI strings are Turkish. All times computed/displayed in Europe/Istanbul (`Config.timeZone`),
   regardless of the Mac's own timezone.
 - `Sources/Core` is UI-free and compiled into app + widget + tests (same module, no `@testable`).
-- Networking is COMPLETION-HANDLER `URLSession` + GCD (`DispatchQueue.main.async` +
-  `MainActor.assumeIsolated`), NOT async/await — async continuations proved unreliable in this
-  menu-bar/sandbox/SDK combination.
+- Swift 6 language mode (complete strict concurrency). Networking is `async`/`await`
+  (`URLSession.data(from:)`) behind a `Sendable` `PrayerTimesProvider`; the `@MainActor`
+  `PrayerStore` awaits it from a cancellable `Task`, and a `Task` loop drives the menu-bar
+  countdown. (An earlier note claimed async continuations were unreliable here — that was a
+  misdiagnosis; the real cause was the rendered MenuBarExtra label, see below.)
 - `PrayerCache` = per-process JSON file in Application Support (no App Group → app & widget each
   cache their own copy; widget fetches independently if its cache is empty).
 - Data-source seam: `PrayerTimesProvider` (EzanVakti now; official `AwqatSalah` is a future

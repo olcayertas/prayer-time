@@ -1,6 +1,6 @@
 # Tech Stack
 
-- Swift, language mode 5.0 (`SWIFT_VERSION`); built with Xcode 26.5 / Swift 6.3 toolchain.
+- Swift, **language mode 6.0** (`SWIFT_VERSION` — Swift 6, complete strict concurrency); built with Xcode 26.5 / Swift 6.3 toolchain.
 - SwiftUI + AppKit + WidgetKit + UserNotifications. Deployment target macOS 14.0.
 - Project generation: XcodeGen (`brew install xcodegen`); single spec `project.yml`. No `.xcworkspace`.
 - No SwiftPM / third-party dependencies.
