@@ -5,7 +5,7 @@
 **A native macOS menu bar app for Muslim prayer times — powered by the Turkish
 Directorate of Religious Affairs (Diyanet).**
 
-[![CI](https://github.com/olcayertas/NamazVakti/actions/workflows/ci.yml/badge.svg)](https://github.com/olcayertas/NamazVakti/actions/workflows/ci.yml)
+[![CI](https://github.com/olcayertas/prayer-time/actions/workflows/ci.yml/badge.svg)](https://github.com/olcayertas/prayer-time/actions/workflows/ci.yml)
 ![Platform](https://img.shields.io/badge/platform-macOS%2014%2B-000000?logo=apple&logoColor=white)
 ![Swift](https://img.shields.io/badge/Swift-6.0-F05138?logo=swift&logoColor=white)
 ![Concurrency](https://img.shields.io/badge/strict%20concurrency-complete-F05138?logo=swift&logoColor=white)

@@ -9,7 +9,8 @@ on:
 jobs:
   build-test:
     name: Build & Test
-    runs-on: macos-14
+    # macos-15 defaults to Xcode 16.x; Swift 6 language mode (SWIFT_VERSION 6.0) needs Xcode 16+.
+    runs-on: macos-15
 
     steps:
       - name: Checkout
