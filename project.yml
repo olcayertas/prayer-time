@@ -18,6 +18,13 @@ settings:
     CODE_SIGN_IDENTITY: "-"
     DEVELOPMENT_TEAM: ""
     ENABLE_HARDENED_RUNTIME: NO
+    # Xcode "Update to recommended settings" — pinned here so `xcodegen generate` keeps them
+    # (the generated .xcodeproj is gitignored, so accepting them in Xcode's UI is otherwise
+    # lost on the next regenerate). Project-level, so every target inherits them.
+    DEAD_CODE_STRIPPING: YES
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED: YES
+    STRING_CATALOG_GENERATE_SYMBOLS: YES
 
 targets:
   NamazVakti:
