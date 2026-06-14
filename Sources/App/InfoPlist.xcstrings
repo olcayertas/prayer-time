@@ -11,6 +11,12 @@
             "value" : "أوقات الصلاة"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prayer Times"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",

@@ -11,6 +11,12 @@
             "value" : "ودجت أوقات الصلاة"
           }
         },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prayer Times Widget"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
