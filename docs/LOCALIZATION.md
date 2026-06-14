@@ -8,10 +8,12 @@ roadmap for new languages.
 
 - **`Sources/Core/Localizable.xcstrings`** — one String Catalog with every UI/domain string
   (prayer names, errors, notification formats, buttons, labels). It's in `Sources/Core`, so it
-  compiles into **both** the app and the widget bundles.
-- **`Sources/App/InfoPlist.xcstrings`** / **`Sources/Widget/InfoPlist.xcstrings`** — the
-  localized app and widget **names** (`CFBundleDisplayName`).
-- **`Sources/App/DateLocalizer.swift`** — the Diyanet API returns the long Gregorian and Hijri
+  compiles into **every** target — both apps and both widgets.
+- **`Sources/{App,iOS}/InfoPlist.xcstrings`** / **`Sources/Widget/InfoPlist.xcstrings`** — the
+  localized app and widget **names** (`CFBundleDisplayName`). ⚠️ Each key MUST also carry an `en`
+  value; without it the compiled `en.lproj/InfoPlist.strings` falls back to the literal key, so the
+  app shows "CFBundleDisplayName" instead of "Prayer Times".
+- **`Sources/Shared/DateLocalizer.swift`** — the Diyanet API returns the long Gregorian and Hijri
   dates as Turkish-only text, so we reformat the numeric short dates (`dd.MM.yyyy`) locally with
   a locale-aware `DateFormatter` (Hijri via the `islamicUmmAlQura` calendar). The Diyanet Hijri
   numbers are preserved; only the month names / digits get localized.
@@ -29,8 +31,8 @@ roadmap for new languages.
    every key. (Or edit the JSON directly — each key gets a `"<lang>": { "stringUnit": … }`.)
    - Mind the **positional specifiers** where word order differs, e.g. the notification body
      `It's %@ time in %@.` → Turkish `%2$@ için %1$@ vakti girdi.`
-2. Add the same language to **`Sources/App/InfoPlist.xcstrings`** and
-   **`Sources/Widget/InfoPlist.xcstrings`** with the translated app/widget name.
+2. Add the same language to **`Sources/App/InfoPlist.xcstrings`**, **`Sources/iOS/InfoPlist.xcstrings`**,
+   and **`Sources/Widget/InfoPlist.xcstrings`** with the translated app/widget name (keep the `en` value).
 3. `xcodegen generate && xcodebuild … build`, then confirm a `<lang>.lproj` appears in both
    `NamazVakti.app/Contents/Resources` and the widget `.appex`.
 4. Smoke-test: `…/NamazVakti.app/Contents/MacOS/NamazVakti -AppleLanguages "(<lang>)"`.

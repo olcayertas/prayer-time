@@ -1,17 +1,21 @@
 # Conventions
 
 - Localized via String Catalogs: **English** source strings → Turkish + Arabic. UI/domain
-  strings in `Sources/Core/Localizable.xcstrings` (shared app+widget); app/widget names in
-  `Sources/{App,Widget}/InfoPlist.xcstrings`; dates via `Sources/App/DateLocalizer.swift`
-  (API long dates are Turkish-only). `developmentLanguage: en`. RTL auto (Arabic). Adding a
-  language = catalog edits only (see `docs/LOCALIZATION.md`).
+  strings in `Sources/Core/Localizable.xcstrings` (shared by every target); app/widget names in
+  `Sources/{App,iOS,Widget}/InfoPlist.xcstrings` — each `CFBundleDisplayName` MUST include an `en`
+  value or the compiled `en.lproj/InfoPlist.strings` shows the literal key. Dates via
+  `Sources/Shared/DateLocalizer.swift` (API long dates are Turkish-only). `developmentLanguage: en`.
+  RTL auto (Arabic). Adding a language = catalog edits only (see `docs/LOCALIZATION.md`).
 - All times computed/displayed in Europe/Istanbul (`Config.timeZone`), regardless of the Mac's
   own timezone.
-- `Sources/Core` is UI-free and compiled into app + widget + tests (same module, no `@testable`).
+- `Sources/Core` (logic) + `Sources/Shared` (cross-platform SwiftUI) compile into both apps;
+  `Sources/Core` also into the widgets + tests (same module, no `@testable`). `Sources/App` is
+  macOS-only, `Sources/iOS` is iOS-only.
 - Swift 6 language mode (complete strict concurrency). Networking is `async`/`await`
   (`URLSession.data(from:)`) behind a `Sendable` `PrayerTimesProvider`; the `@MainActor`
-  `PrayerStore` awaits it from a cancellable `Task`, and a `Task` loop drives the menu-bar
-  countdown. (An earlier note claimed async continuations were unreliable here — that was a
+  `PrayerStore` awaits it from a cancellable `Task`; a macOS-only `Task` loop drives the menu-bar
+  countdown (`startClock()` is gated `#if os(macOS)`; iOS uses `TimelineView` in TodayView).
+  (An earlier note claimed async continuations were unreliable here — that was a
   misdiagnosis; the real cause was the rendered MenuBarExtra label, see below.)
 - `PrayerCache` = per-process JSON file in Application Support (no App Group → app & widget each
   cache their own copy; widget fetches independently if its cache is empty).

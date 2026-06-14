@@ -2,11 +2,11 @@
 
 # 🕌 Namaz Vakti
 
-**A native macOS menu bar app for Muslim prayer times — powered by the Turkish
+**Native macOS (menu bar) and iOS apps for Muslim prayer times — powered by the Turkish
 Directorate of Religious Affairs (Diyanet).**
 
 [![CI](https://github.com/olcayertas/prayer-time/actions/workflows/ci.yml/badge.svg)](https://github.com/olcayertas/prayer-time/actions/workflows/ci.yml)
-![Platform](https://img.shields.io/badge/platform-macOS%2014%2B-000000?logo=apple&logoColor=white)
+![Platform](https://img.shields.io/badge/platform-macOS%2014%2B%20·%20iOS%2017%2B-000000?logo=apple&logoColor=white)
 ![Swift](https://img.shields.io/badge/Swift-6.0-F05138?logo=swift&logoColor=white)
 ![Concurrency](https://img.shields.io/badge/strict%20concurrency-complete-F05138?logo=swift&logoColor=white)
 ![Xcode](https://img.shields.io/badge/Xcode-26-147EFB?logo=xcode&logoColor=white)
@@ -18,16 +18,19 @@ Directorate of Religious Affairs (Diyanet).**
 
 ---
 
-Namaz Vakti lives in your menu bar with a live countdown to the next prayer, and opens
-into a full window when you want more detail or to change settings.
+On **macOS**, Namaz Vakti lives in your menu bar with a live countdown to the next prayer and
+opens into a full window for more detail. On **iOS**, it's a tabbed app (Today / Monthly /
+Settings). Both are built from the same Core logic and the same SwiftUI views.
 
 ## ✨ Features
 
 - **Menu bar countdown** — the next prayer with a live, jitter-free countdown (e.g. `Afternoon  1:23:45`).
 - **Dropdown panel** — today's six times with the next one highlighted, location, and the
   Gregorian + Hijri date.
-- **Main window** — sidebar with **Today** (rich view), **Monthly** (table), and **Settings**.
-  A Dock icon appears only while the window is open.
+- **Main window** (macOS) — sidebar with **Today** (rich view), **Monthly** (table), and
+  **Settings**. A Dock icon appears only while the window is open.
+- **iOS app** — the same Today / Monthly / Settings as a tab bar, with a responsive Today hero
+  and a compact, icon-headed month table tuned for phone widths.
 - **Widget** — small / medium WidgetKit widget with the next prayer and a live countdown.
 - **Notifications** — optional local notifications at each prayer time.
 - **Location picker** — country → city → district, remembered across launches.
@@ -36,7 +39,7 @@ into a full window when you want more detail or to change settings.
 
 ## 📋 Requirements
 
-- macOS 14 (Sonoma) or later
+- macOS 14 (Sonoma) or later, and/or iOS 17 or later
 - Xcode 26+ to build
 - [XcodeGen](https://github.com/yonaskolb/XcodeGen) — `brew install xcodegen`
 
@@ -48,6 +51,15 @@ xcodegen generate                       # regenerate NamazVakti.xcodeproj from p
 xcodebuild -scheme NamazVakti -destination 'platform=macOS' \
   -derivedDataPath build/DerivedData build
 open build/DerivedData/Build/Products/Debug/NamazVakti.app
+```
+
+For **iOS**, build for the Simulator and launch it on a booted device:
+
+```sh
+xcodebuild -scheme NamazVaktiiOS -destination 'generic/platform=iOS Simulator' \
+  -derivedDataPath build/DerivedData build
+xcrun simctl install booted build/DerivedData/Build/Products/Debug-iphonesimulator/NamazVaktiiOS.app
+xcrun simctl launch booted com.olcayertas.NamazVakti.iOS
 ```
 
 Run the tests (pure schedule + decoding logic, no network):
@@ -73,13 +85,17 @@ picker. Everything goes through a `PrayerTimesProvider` protocol, so the officia
 
 ## 🏗️ Architecture
 
-- **`Sources/Core`** — UI-free, shared by the app, widget, and tests:
+- **`Sources/Core`** — UI-free, shared by every target:
   `PrayerDay`, `PrayerSchedule` (next-prayer math in `Europe/Istanbul`), `PrayerCache`,
   `PrayerTimesProvider` / `PlacesProvider` (EzanVakti), `PrayerStore`, `NotificationScheduler`,
   and the shared `Localizable.xcstrings`.
-- **`Sources/App`** — `MenuBarExtra` menu bar item + the main window (Today / Monthly / Settings),
-  plus `DateLocalizer` (locale-aware Gregorian + Hijri dates).
-- **`Sources/Widget`** — WidgetKit timeline provider and views.
+- **`Sources/Shared`** — cross-platform SwiftUI used by both apps: the Today / Monthly / Settings
+  views, the location picker, `DateLocalizer` (locale-aware Gregorian + Hijri dates), and a
+  `Color.cardBackground` shim. Today's hero and the month table adapt to compact (phone) widths.
+- **`Sources/App`** (macOS) — `MenuBarExtra` menu bar item + the `MainWindowView` sidebar shell.
+- **`Sources/iOS`** (iOS) — `PrayerTimesApp` entry point + `RootTabView` tab bar.
+- **`Sources/Widget`** — WidgetKit timeline provider and views, built into both the macOS and iOS
+  widget extensions.
 
 ### Notable decisions
 

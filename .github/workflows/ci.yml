@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-test:
-    name: Build & Test
+    name: Build & Test (macOS)
     # macos-15 defaults to Xcode 16.x; Swift 6 language mode (SWIFT_VERSION 6.0) needs Xcode 16+.
     runs-on: macos-15
 
@@ -30,3 +30,27 @@ jobs:
             -destination 'platform=macOS' \
             -derivedDataPath build/DerivedData \
             CODE_SIGNING_ALLOWED=YES
+
+  build-ios:
+    name: Build (iOS Simulator)
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      # Simulator build needs no signing; the app target builds the embedded widget too.
+      - name: Build iOS app + widget
+        run: |
+          xcodebuild build \
+            -project NamazVakti.xcodeproj \
+            -scheme NamazVaktiiOS \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO

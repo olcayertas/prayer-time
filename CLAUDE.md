@@ -1,30 +1,42 @@
 # NamazVakti — Claude Code guide
 
-macOS **menu bar** app for Diyanet prayer times (SwiftUI + WidgetKit). UI is Turkish.
+macOS **menu bar** app **+ iOS** app for Diyanet prayer times (SwiftUI + WidgetKit), sharing
+one `Core` and one set of SwiftUI views. Localized **EN · TR · AR**.
 
 ## Build / test / run
 
 This is an **XcodeGen** project — `NamazVakti.xcodeproj` is generated and **gitignored**.
+Two app targets share `Sources/Core` + `Sources/Shared`: **`NamazVakti`** (macOS) and
+**`NamazVaktiiOS`** (iOS), each embedding its own widget extension.
 
 ```sh
 xcodegen generate          # REQUIRED after adding/removing any source file
-# build (app + embedded widget)
+
+# macOS (menu bar app + widget) — build / test (Core logic, no network) / run
 xcodebuild -project NamazVakti.xcodeproj -scheme NamazVakti -destination 'platform=macOS' -derivedDataPath build/DerivedData build
-# test (pure Core logic, no network)
 xcodebuild test -project NamazVakti.xcodeproj -scheme NamazVakti -destination 'platform=macOS' -derivedDataPath build/DerivedData
-# run
 open build/DerivedData/Build/Products/Debug/NamazVakti.app
+
+# iOS (app + widget) — build for the Simulator, then install/launch on a booted device
+xcodebuild -project NamazVakti.xcodeproj -scheme NamazVaktiiOS -destination 'generic/platform=iOS Simulator' -derivedDataPath build/DerivedData build
+xcrun simctl install booted build/DerivedData/Build/Products/Debug-iphonesimulator/NamazVaktiiOS.app
+xcrun simctl launch booted com.olcayertas.NamazVakti.iOS
 ```
 
-Slash commands wrap these: `/build`, `/test`, `/run`. Signing is local **ad-hoc** — no Apple
-Developer account or team is required.
+Slash commands wrap the macOS flow: `/build`, `/test`, `/run`. Signing is local **ad-hoc**
+(macOS) / unsigned Simulator build (iOS) — no Apple Developer account or team is required.
 
 ## Layout
 
-- `Sources/Core/` — UI-free logic (model, `PrayerSchedule`, providers, `PrayerStore`, cache),
-  compiled into the app, widget, and test targets.
-- `Sources/App/` — `MenuBarExtra` + main window (Today / Month / Settings) + `AppDelegate`.
-- `Sources/Widget/` — WidgetKit timeline + views.
+- `Sources/Core/` — UI-free logic (model, `PrayerSchedule`, providers, `PrayerStore`, cache,
+  `Localizable.xcstrings`), compiled into every target.
+- `Sources/Shared/` — cross-platform SwiftUI used by **both** apps: `TodayView`, `MonthView`,
+  `SettingsView`, `LocationPickerView` (+model), `CountdownFormatter`, `DateLocalizer`,
+  `AppSection`, and `PlatformColor` (`Color.cardBackground` — the one per-platform shim).
+- `Sources/App/` — **macOS** shell: `MenuBarExtra` + `AppDelegate` + `MainWindowView` (sidebar).
+- `Sources/iOS/` — **iOS** shell: `PrayerTimesApp` (`@main`) + `RootTabView` (tabbed Today / Monthly / Settings).
+- `Sources/Widget/` — WidgetKit timeline + views, shared by the macOS widget and the iOS widget
+  (`NamazVaktiWidgetiOS` lists the `.swift` explicitly so the macOS Info.plist/entitlements don't leak in).
 - `Tests/CoreTests/` — schedule + JSON-decoding tests.
 
 ## Conventions
@@ -32,8 +44,10 @@ Developer account or team is required.
 - All times are **Europe/Istanbul** (`Config.timeZone`).
 - **Localized** via String Catalogs — source language is **English** (the `Text("…")` literal is
   the key), translated to **Turkish + Arabic**. UI/domain strings live in
-  `Sources/Core/Localizable.xcstrings` (shared by app + widget); app/widget names in the
-  `InfoPlist.xcstrings` files; dates via `Sources/App/DateLocalizer.swift` (the Diyanet API's
+  `Sources/Core/Localizable.xcstrings` (shared by every target); app/widget names in the
+  `InfoPlist.xcstrings` files (each key needs an **`en`** value, else the compiled
+  `en.lproj/InfoPlist.strings` falls back to the literal key); dates via
+  `Sources/Shared/DateLocalizer.swift` (the Diyanet API's
   long dates are Turkish-only). Adding a language = catalog edits only; see
   [docs/LOCALIZATION.md](docs/LOCALIZATION.md). Use `String(localized:)` in `Sources/Core`
   (non-SwiftUI). RTL is automatic (semantic `.leading`/`.trailing`, no `.left`/`.right`).
@@ -63,4 +77,5 @@ new file is not in the project.
 
 1. `xcodegen generate` (if files were added/removed)
 2. `/test` is green
-3. For UI changes: `/run`, then confirm the menu bar counts down and the main thread is idle.
+3. For UI changes: `/run` (macOS — confirm the menu bar counts down and the main thread is idle),
+   and/or build + `simctl launch` the iOS app and confirm the Today countdown ticks.
