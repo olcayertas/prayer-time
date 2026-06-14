@@ -1,32 +1,6 @@
 import SwiftUI
 import AppKit
 
-/// Sections in the main window sidebar. Add cases here to grow the app.
-enum AppSection: String, CaseIterable, Identifiable {
-    case today
-    case month
-    case settings
-
-    var id: String { rawValue }
-
-    /// Localized sidebar label and navigation title.
-    var title: LocalizedStringKey {
-        switch self {
-        case .today: return "Today"
-        case .month: return "Monthly"
-        case .settings: return "Settings"
-        }
-    }
-
-    var systemImage: String {
-        switch self {
-        case .today: return "sun.max.fill"
-        case .month: return "calendar"
-        case .settings: return "gearshape.fill"
-        }
-    }
-}
-
 /// The main desktop window: a sidebar + detail layout. Shows a Dock icon only while open
 /// (the app is otherwise a menu bar agent).
 struct MainWindowView: View {

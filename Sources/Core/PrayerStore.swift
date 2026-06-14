@@ -47,7 +47,11 @@ final class PrayerStore: ObservableObject {
         self.notificationsEnabled = defaults.bool(forKey: Self.notificationsKey)
         updateMenuTitle()
         refresh()
+        #if os(macOS)
+        // 1 Hz menu-bar countdown. iOS has no menu bar — TodayView drives its own
+        // countdown via TimelineView — so the clock would be pure wasted work there.
         startClock()
+        #endif
     }
 
     var schedule: PrayerSchedule { PrayerSchedule(days: days) }

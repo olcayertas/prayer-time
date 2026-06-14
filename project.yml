@@ -3,6 +3,7 @@ options:
   bundleIdPrefix: com.olcayertas
   deploymentTarget:
     macOS: "14.0"
+    iOS: "17.0"
   createIntermediateGroups: true
   groupSortPosition: top
   developmentLanguage: en
@@ -25,6 +26,7 @@ targets:
     sources:
       - Sources/App
       - Sources/Core
+      - Sources/Shared
     info:
       path: Sources/App/Info.plist
       properties:
@@ -41,6 +43,31 @@ targets:
         PRODUCT_NAME: NamazVakti
     dependencies:
       - target: NamazVaktiWidget
+        embed: true
+
+  NamazVaktiiOS:
+    type: application
+    platform: iOS
+    sources:
+      - Sources/iOS
+      - Sources/Core
+      - Sources/Shared
+    info:
+      path: Sources/iOS/Info.plist
+      properties:
+        CFBundleDisplayName: Prayer Times
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.olcayertas.NamazVakti.iOS
+        PRODUCT_NAME: NamazVaktiiOS
+        TARGETED_DEVICE_FAMILY: "1,2"
+    dependencies:
+      - target: NamazVaktiWidgetiOS
         embed: true
 
   NamazVaktiWidget:
@@ -63,6 +90,26 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.olcayertas.NamazVakti.Widget
+
+  NamazVaktiWidgetiOS:
+    type: app-extension
+    platform: iOS
+    sources:
+      # Reuse the cross-platform widget code + its localized name, but NOT the macOS
+      # widget's Info.plist / entitlements (which sit in the same folder). Add any new
+      # widget .swift files here too.
+      - Sources/Widget/NamazVaktiWidget.swift
+      - Sources/Widget/InfoPlist.xcstrings
+      - Sources/Core
+    info:
+      path: Sources/WidgetiOS/Info.plist
+      properties:
+        CFBundleDisplayName: Prayer Times Widget
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.olcayertas.NamazVakti.iOS.Widget
 
   NamazVaktiCoreTests:
     type: bundle.unit-test
@@ -87,3 +134,10 @@ schemes:
       config: Debug
       targets:
         - NamazVaktiCoreTests
+
+  NamazVaktiiOS:
+    build:
+      targets:
+        NamazVaktiiOS: all
+    run:
+      config: Debug

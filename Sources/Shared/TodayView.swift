@@ -1,5 +1,4 @@
 import SwiftUI
-import AppKit
 
 /// Rich view of today's prayer times: hero countdown, the six times, and extras.
 struct TodayView: View {
@@ -51,23 +50,14 @@ struct TodayView: View {
     }
 
     private func hero(upcoming: UpcomingPrayer?) -> some View {
-        HStack(spacing: 20) {
+        Group {
             if let upcoming {
-                Image(systemName: upcoming.prayer.symbolName)
-                    .font(.system(size: 44))
-                    .foregroundStyle(Color.accentColor)
-                    .frame(width: 64)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Next prayer").font(.subheadline).foregroundStyle(.secondary)
-                    Text(upcoming.prayer.displayName).font(.title.weight(.semibold))
-                }
-                Spacer()
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text(CountdownFormatter.string(upcoming.remaining))
-                        .font(.system(size: 42, weight: .bold, design: .rounded))
-                        .monospacedDigit()
-                        .foregroundStyle(Color.accentColor)
-                    Text("remaining").font(.caption).foregroundStyle(.secondary)
+                // Wide (macOS / iPad) shows it all on one row; a narrow phone can't fit the
+                // big H:MM:SS countdown beside the name, so fall back to a stacked layout
+                // that gives the countdown its own full-width line.
+                ViewThatFits(in: .horizontal) {
+                    heroRow(upcoming)
+                    heroStacked(upcoming)
                 }
             } else {
                 Text("Couldn't load today's times").foregroundStyle(.secondary)
@@ -76,6 +66,52 @@ struct TodayView: View {
         .padding(22)
         .frame(maxWidth: .infinity)
         .background(Color.accentColor.opacity(0.12), in: RoundedRectangle(cornerRadius: 16))
+    }
+
+    private func heroLabel(_ upcoming: UpcomingPrayer) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text("Next prayer").font(.subheadline).foregroundStyle(.secondary)
+            Text(upcoming.prayer.displayName).font(.title.weight(.semibold)).lineLimit(1)
+        }
+    }
+
+    private func heroCountdown(_ upcoming: UpcomingPrayer) -> some View {
+        Text(CountdownFormatter.string(upcoming.remaining))
+            .font(.system(size: 42, weight: .bold, design: .rounded))
+            .monospacedDigit()
+            .foregroundStyle(Color.accentColor)
+            .lineLimit(1)
+    }
+
+    /// One-row hero. `.fixedSize()` makes the name + countdown report their full intrinsic
+    /// width so `ViewThatFits` can tell when the row no longer fits and switch to stacked.
+    private func heroRow(_ upcoming: UpcomingPrayer) -> some View {
+        HStack(spacing: 20) {
+            Image(systemName: upcoming.prayer.symbolName)
+                .font(.system(size: 44)).foregroundStyle(Color.accentColor).frame(width: 64)
+            heroLabel(upcoming).fixedSize()
+            Spacer(minLength: 16)
+            VStack(alignment: .trailing, spacing: 2) {
+                heroCountdown(upcoming).fixedSize()
+                Text("remaining").font(.caption).foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private func heroStacked(_ upcoming: UpcomingPrayer) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 14) {
+                Image(systemName: upcoming.prayer.symbolName)
+                    .font(.system(size: 36)).foregroundStyle(Color.accentColor)
+                heroLabel(upcoming)
+                Spacer(minLength: 0)
+            }
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                heroCountdown(upcoming).minimumScaleFactor(0.7)
+                Text("remaining").font(.caption).foregroundStyle(.secondary)
+                Spacer(minLength: 0)
+            }
+        }
     }
 
     private func grid(today: PrayerDay, current: Prayer?, next: Prayer?) -> some View {
@@ -99,7 +135,7 @@ struct TodayView: View {
                 .padding(.vertical, 14)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(isNext ? Color.accentColor.opacity(0.15) : Color(nsColor: .controlBackgroundColor))
+                        .fill(isNext ? Color.accentColor.opacity(0.15) : Color.cardBackground)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
