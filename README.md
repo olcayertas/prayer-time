@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/screenshots/app-icon.png" width="116" alt="Namaz Vakti app icon">
+
 # 🕌 Namaz Vakti
 
 **Native macOS (menu bar) and iOS apps for Muslim prayer times — powered by the Turkish
@@ -22,6 +24,23 @@ On **macOS**, Namaz Vakti lives in your menu bar with a live countdown to the ne
 opens into a full window for more detail. On **iOS**, it's a tabbed app (Today / Monthly /
 Settings). Both are built from the same Core logic and the same SwiftUI views.
 
+## 📸 Screenshots
+
+|  Today  |  Monthly  |  Settings  |
+| :-----: | :-------: | :--------: |
+| <img src="docs/screenshots/ios-today.png" width="240" alt="Today — live countdown to the next prayer"> | <img src="docs/screenshots/ios-monthly.png" width="240" alt="Monthly — the cached month as a table"> | <img src="docs/screenshots/ios-settings.png" width="240" alt="Settings — location, notifications, and the Live Activity toggle"> |
+
+**Lock Screen widgets** — rectangular, circular, and inline _(preview)_
+
+<img src="docs/screenshots/lock-screen-widget.png" width="660" alt="Lock Screen widget previews: rectangular, circular, and inline">
+
+**Dynamic Island & Live Activity** — the next prayer with a live countdown _(preview)_
+
+<img src="docs/screenshots/dynamic-island.png" width="660" alt="Dynamic Island previews: expanded, compact, and minimal">
+
+> The Lock Screen and Dynamic Island images are previews — those surfaces don't render into
+> headless Simulator captures, but their live rendering is verified in the device logs.
+
 ## ✨ Features
 
 - **Menu bar countdown** — the next prayer with a live, jitter-free countdown (e.g. `Afternoon  1:23:45`).
@@ -31,7 +50,11 @@ Settings). Both are built from the same Core logic and the same SwiftUI views.
   **Settings**. A Dock icon appears only while the window is open.
 - **iOS app** — the same Today / Monthly / Settings as a tab bar, with a responsive Today hero
   and a compact, icon-headed month table tuned for phone widths.
-- **Widget** — small / medium WidgetKit widget with the next prayer and a live countdown.
+- **Home Screen widget** — small / medium WidgetKit widget with the next prayer and a live countdown.
+- **Lock Screen widgets** (iOS) — rectangular, circular, and inline accessory families.
+- **Dynamic Island & Live Activity** (iOS) — a user-toggled next-prayer countdown in the
+  Dynamic Island (compact / minimal / expanded) and on the Lock Screen.
+- **App icon** — a flat crescent & star, shipped for both apps.
 - **Notifications** — optional local notifications at each prayer time.
 - **Location picker** — country → city → district, remembered across launches.
 - **Localized** — English, Turkish, and Arabic (right-to-left), including the app name and
@@ -94,8 +117,10 @@ picker. Everything goes through a `PrayerTimesProvider` protocol, so the officia
   `Color.cardBackground` shim. Today's hero and the month table adapt to compact (phone) widths.
 - **`Sources/App`** (macOS) — `MenuBarExtra` menu bar item + the `MainWindowView` sidebar shell.
 - **`Sources/iOS`** (iOS) — `PrayerTimesApp` entry point + `RootTabView` tab bar.
-- **`Sources/Widget`** — WidgetKit timeline provider and views, built into both the macOS and iOS
-  widget extensions.
+- **`Sources/Widget`** — WidgetKit timeline provider and views (Home Screen + iOS Lock Screen
+  accessory families), built into both the macOS and iOS widget extensions.
+- **`Sources/LiveActivity`** (iOS) — the ActivityKit attributes and the Live Activity / Dynamic
+  Island UI, shared by the iOS app and its widget.
 
 ### Notable decisions
 
@@ -116,7 +141,7 @@ picker. Everything goes through a `PrayerTimesProvider` protocol, so the officia
 - Official Diyanet `AwqatSalah` provider
 - Location-aware widget (per-widget configuration)
 - [More languages](docs/LOCALIZATION.md) — prioritized by Muslim population
-- App icon and launch-at-login
+- Launch at login (macOS); localized Live Activity / Settings strings
 
 ## 📄 License
 
