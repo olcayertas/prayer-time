@@ -41,6 +41,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.olcayertas.NamazVakti
         PRODUCT_NAME: NamazVakti
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
     dependencies:
       - target: NamazVaktiWidget
         embed: true
@@ -66,6 +67,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.olcayertas.NamazVakti.iOS
         PRODUCT_NAME: NamazVaktiiOS
         TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
     dependencies:
       - target: NamazVaktiWidgetiOS
         embed: true
