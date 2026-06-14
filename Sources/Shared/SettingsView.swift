@@ -19,6 +19,12 @@ struct SettingsView: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
 
+            #if os(iOS)
+            Section("Live Activity") {
+                LiveActivityToggle(store: store)
+            }
+            #endif
+
             Section("General") {
                 Button("Refresh now") { store.refresh() }
                     .disabled(store.isLoading)

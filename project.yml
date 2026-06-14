@@ -53,11 +53,13 @@ targets:
       - Sources/iOS
       - Sources/Core
       - Sources/Shared
+      - Sources/LiveActivity/PrayerActivityAttributes.swift
     info:
       path: Sources/iOS/Info.plist
       properties:
         CFBundleDisplayName: Prayer Times
         UILaunchScreen: {}
+        NSSupportsLiveActivities: true
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationLandscapeLeft
@@ -103,6 +105,7 @@ targets:
       - Sources/Widget/NamazVaktiWidget.swift
       - Sources/Widget/InfoPlist.xcstrings
       - Sources/Core
+      - Sources/LiveActivity
     info:
       path: Sources/WidgetiOS/Info.plist
       properties:

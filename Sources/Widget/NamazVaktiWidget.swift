@@ -222,5 +222,8 @@ struct NamazVaktiWidget: Widget {
 struct NamazVaktiWidgetBundle: WidgetBundle {
     var body: some Widget {
         NamazVaktiWidget()
+        #if os(iOS)
+        PrayerLiveActivity()
+        #endif
     }
 }
