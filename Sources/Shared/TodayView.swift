@@ -34,6 +34,9 @@ struct TodayView: View {
             }
         }
         .navigationTitle("Today")
+        #if os(iOS)
+        .toolbar(.hidden, for: .navigationBar)
+        #endif
     }
 
     private func header(today: PrayerDay?) -> some View {

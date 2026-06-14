@@ -38,6 +38,9 @@ struct MonthView: View {
             .padding(.bottom, 16)
         }
         .navigationTitle("Monthly")
+        #if os(iOS)
+        .toolbar(.hidden, for: .navigationBar)
+        #endif
         .overlay {
             if store.days.isEmpty {
                 ProgressView("Loading…")
