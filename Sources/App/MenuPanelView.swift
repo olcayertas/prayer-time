@@ -66,11 +66,14 @@ struct MenuPanelView: View {
         .padding(12)
     }
 
+    @ScaledMetric(relativeTo: .title) private var heroIconSize: CGFloat = 26
+    @ScaledMetric(relativeTo: .title2) private var heroCountdownSize: CGFloat = 24
+
     private func hero(upcoming: UpcomingPrayer?) -> some View {
         HStack(spacing: 12) {
             if let upcoming {
                 Image(systemName: upcoming.prayer.symbolName)
-                    .font(.system(size: 26))
+                    .font(.system(size: heroIconSize))
                     .foregroundStyle(.tint)
                     .frame(width: 34)
                 VStack(alignment: .leading, spacing: 1) {
@@ -81,7 +84,7 @@ struct MenuPanelView: View {
                 }
                 Spacer()
                 Text(CountdownFormatter.string(upcoming.remaining))
-                    .font(.system(size: 24, weight: .semibold, design: .rounded))
+                    .font(.system(size: heroCountdownSize, weight: .semibold, design: .rounded))
                     .monospacedDigit()
                     .foregroundStyle(.tint)
             } else {

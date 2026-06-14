@@ -6,6 +6,11 @@ struct TodayView: View {
 
     private let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
 
+    // Hero point sizes — fixed by design, but scaled with Dynamic Type via @ScaledMetric.
+    @ScaledMetric(relativeTo: .largeTitle) private var countdownSize: CGFloat = 42
+    @ScaledMetric(relativeTo: .largeTitle) private var heroIconSize: CGFloat = 44
+    @ScaledMetric(relativeTo: .title2) private var heroIconCompactSize: CGFloat = 36
+
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
             let now = context.date
@@ -77,7 +82,7 @@ struct TodayView: View {
 
     private func heroCountdown(_ upcoming: UpcomingPrayer) -> some View {
         Text(CountdownFormatter.string(upcoming.remaining))
-            .font(.system(size: 42, weight: .bold, design: .rounded))
+            .font(.system(size: countdownSize, weight: .bold, design: .rounded))
             .monospacedDigit()
             .foregroundStyle(Color.accentColor)
             .lineLimit(1)
@@ -88,7 +93,7 @@ struct TodayView: View {
     private func heroRow(_ upcoming: UpcomingPrayer) -> some View {
         HStack(spacing: 20) {
             Image(systemName: upcoming.prayer.symbolName)
-                .font(.system(size: 44)).foregroundStyle(Color.accentColor).frame(width: 64)
+                .font(.system(size: heroIconSize)).foregroundStyle(Color.accentColor).frame(width: 64)
             heroLabel(upcoming).fixedSize()
             Spacer(minLength: 16)
             VStack(alignment: .trailing, spacing: 2) {
@@ -102,7 +107,7 @@ struct TodayView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 14) {
                 Image(systemName: upcoming.prayer.symbolName)
-                    .font(.system(size: 36)).foregroundStyle(Color.accentColor)
+                    .font(.system(size: heroIconCompactSize)).foregroundStyle(Color.accentColor)
                 heroLabel(upcoming)
                 Spacer(minLength: 0)
             }
