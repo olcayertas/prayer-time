@@ -79,8 +79,13 @@ struct NamazVaktiWidgetEntryView: View {
 
     var body: some View {
         switch family {
-        case .systemMedium: mediumView
-        default: smallView
+        #if os(iOS)
+        case .accessoryRectangular: rectangularView.containerBackground(.clear, for: .widget)
+        case .accessoryCircular: circularView.containerBackground(.clear, for: .widget)
+        case .accessoryInline: inlineView
+        #endif
+        case .systemMedium: mediumView.containerBackground(.fill.tertiary, for: .widget)
+        default: smallView.containerBackground(.fill.tertiary, for: .widget)
         }
     }
 
@@ -141,6 +146,54 @@ struct NamazVaktiWidgetEntryView: View {
             }
         }
     }
+
+    #if os(iOS)
+    /// Lock Screen rectangular: next prayer + a live countdown.
+    private var rectangularView: some View {
+        VStack(alignment: .leading, spacing: 1) {
+            if let next = entry.nextPrayer, let nextDate = entry.nextDate {
+                Label(next.displayName, systemImage: next.symbolName)
+                    .font(.headline).lineLimit(1)
+                Text(timerInterval: entry.date...nextDate, countsDown: true)
+                    .font(.system(.title3, design: .rounded)).monospacedDigit()
+                if let day = entry.day {
+                    Text("Time \(day.time(for: next))")
+                        .font(.caption2).foregroundStyle(.secondary)
+                }
+            } else {
+                Text("Prayer Times").font(.headline)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// Lock Screen circular: the next prayer's icon over a live countdown.
+    private var circularView: some View {
+        ZStack {
+            AccessoryWidgetBackground()
+            if let next = entry.nextPrayer, let nextDate = entry.nextDate {
+                VStack(spacing: 0) {
+                    Image(systemName: next.symbolName).font(.caption)
+                    Text(timerInterval: entry.date...nextDate, countsDown: true)
+                        .font(.system(.caption2, design: .rounded))
+                        .monospacedDigit().minimumScaleFactor(0.6).lineLimit(1)
+                }
+            } else {
+                Image(systemName: "moon.stars.fill")
+            }
+        }
+    }
+
+    /// Lock Screen inline (beside the clock): next prayer + its time.
+    @ViewBuilder
+    private var inlineView: some View {
+        if let next = entry.nextPrayer, let day = entry.day {
+            Label("\(next.displayName) \(day.time(for: next))", systemImage: next.symbolName)
+        } else {
+            Label("Prayer Times", systemImage: "moon.stars.fill")
+        }
+    }
+    #endif
 }
 
 struct NamazVaktiWidget: Widget {
@@ -149,11 +202,19 @@ struct NamazVaktiWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: PrayerTimelineProvider()) { entry in
             NamazVaktiWidgetEntryView(entry: entry)
-                .containerBackground(.fill.tertiary, for: .widget)
         }
         .configurationDisplayName("Prayer Times")
         .description("The next prayer time and countdown.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies(Self.supportedFamilies)
+    }
+
+    /// Home Screen on every platform; iOS adds the three Lock Screen accessory families.
+    private static var supportedFamilies: [WidgetFamily] {
+        #if os(iOS)
+        [.systemSmall, .systemMedium, .accessoryRectangular, .accessoryCircular, .accessoryInline]
+        #else
+        [.systemSmall, .systemMedium]
+        #endif
     }
 }
 
