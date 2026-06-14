@@ -26,20 +26,34 @@ Settings). Both are built from the same Core logic and the same SwiftUI views.
 
 ## 📸 Screenshots
 
-|  Today  |  Monthly  |  Settings  |
-| :-----: | :-------: | :--------: |
-| <img src="docs/screenshots/ios-today.png" width="240" alt="Today — live countdown to the next prayer"> | <img src="docs/screenshots/ios-monthly.png" width="240" alt="Monthly — the cached month as a table"> | <img src="docs/screenshots/ios-settings.png" width="240" alt="Settings — location, notifications, and the Live Activity toggle"> |
+### macOS
 
-**Lock Screen widgets** — rectangular, circular, and inline _(preview)_
+|  Menu bar  |  Main window  |
+| :--------: | :-----------: |
+| <img src="docs/screenshots/macos-menubar.png" width="250" alt="macOS menu-bar dropdown — today's times with a live countdown"> | <img src="docs/screenshots/macos-window.png" width="560" alt="macOS Today window — hero countdown and the six prayer times"> |
 
-<img src="docs/screenshots/lock-screen-widget.png" width="660" alt="Lock Screen widget previews: rectangular, circular, and inline">
+### iOS
 
-**Dynamic Island & Live Activity** — the next prayer with a live countdown _(preview)_
+|  Today  |  Today (dark)  |  Monthly  |  Settings  |
+| :-----: | :------------: | :-------: | :--------: |
+| <img src="docs/screenshots/ios-today.png" width="200" alt="Today — live countdown to the next prayer"> | <img src="docs/screenshots/ios-today-dark.png" width="200" alt="Today in dark mode"> | <img src="docs/screenshots/ios-monthly.png" width="200" alt="Monthly — the cached month as a table"> | <img src="docs/screenshots/ios-settings.png" width="200" alt="Settings — location, notifications, and the Live Activity toggle"> |
 
-<img src="docs/screenshots/dynamic-island.png" width="660" alt="Dynamic Island previews: expanded, compact, and minimal">
+### Lock Screen, Live Activity & Dynamic Island
 
-> The Lock Screen and Dynamic Island images are previews — those surfaces don't render into
-> headless Simulator captures, but their live rendering is verified in the device logs.
+The next-prayer **Live Activity** and a **prayer-time notification**, live on the Lock Screen:
+
+<img src="docs/screenshots/ios-lock-screen.png" width="260" alt="Live Activity and a prayer-time notification on the iOS Lock Screen">
+
+**Dynamic Island** — the same Live Activity, compact / minimal / expanded _(preview)_
+
+<img src="docs/screenshots/dynamic-island.png" width="640" alt="Dynamic Island previews: expanded, compact, and minimal">
+
+**Lock Screen widgets** — rectangular, circular, and inline accessory families _(preview)_
+
+<img src="docs/screenshots/lock-screen-widget.png" width="640" alt="Lock Screen widget previews: rectangular, circular, and inline">
+
+> The Dynamic Island and Lock Screen-widget images are previews — those surfaces don't render
+> into headless Simulator captures (the Lock Screen shot above is a real-device capture).
 
 ## ✨ Features
 
@@ -59,6 +73,7 @@ Settings). Both are built from the same Core logic and the same SwiftUI views.
 - **Location picker** — country → city → district, remembered across launches.
 - **Localized** — English, Turkish, and Arabic (right-to-left), including the app name and
   locale-aware Gregorian + Hijri dates. [Adding a language →](docs/LOCALIZATION.md)
+- **Accessibility** — full Dynamic Type scaling (including the hero countdown) and automatic dark mode.
 
 ## 📋 Requirements
 
