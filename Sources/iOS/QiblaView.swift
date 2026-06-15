@@ -11,12 +11,16 @@ struct QiblaView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                content
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: 24) {
+                    content
+                }
+                .padding(24)
+                // Fill the viewport so the content centers vertically; still scrolls if it
+                // outgrows the screen (e.g. large Dynamic Type).
+                .frame(maxWidth: .infinity, minHeight: proxy.size.height)
             }
-            .padding(24)
-            .frame(maxWidth: .infinity)
         }
         .navigationTitle("Qibla")
         .toolbar(.hidden, for: .navigationBar)
@@ -55,7 +59,7 @@ struct QiblaView: View {
                     ProgressView()
                     Text("Finding your location…").foregroundStyle(.secondary)
                 }
-                .frame(maxWidth: .infinity, minHeight: 320)
+                .frame(maxWidth: .infinity)
             } else {
                 liveCompass
             }
@@ -140,7 +144,7 @@ struct QiblaView: View {
             action()
                 .padding(.top, 4)
         }
-        .frame(maxWidth: .infinity, minHeight: 320)
+        .frame(maxWidth: .infinity)
         .padding(.horizontal, 8)
     }
 }
