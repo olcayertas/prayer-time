@@ -83,7 +83,10 @@ struct QiblaView: View {
                     .font(.headline)
                     .foregroundStyle(.green)
             } else if let bearing = qibla.qiblaBearing {
-                Text("\(Int(bearing.rounded()))° from North")
+                // Interpolate a pre-formatted String (not the Int) so the catalog key is the stable
+                // "%@° from North" — matches Xcode's extraction and avoids %lld/%@ duplicate keys.
+                let degrees = String(Int(bearing.rounded()))
+                Text("\(degrees)° from North")
                     .font(.system(.title2, design: .rounded).weight(.semibold))
                     .monospacedDigit()
             }
@@ -176,7 +179,7 @@ private struct CompassDial: View {
         .onChange(of: heading) { _, new in update(to: new) }
         .accessibilityElement()
         .accessibilityLabel(Text("Qibla compass"))
-        .accessibilityValue(Text("\(Int(qiblaBearing.rounded())) degrees from north"))
+        .accessibilityValue(Text("\(String(Int(qiblaBearing.rounded()))) degrees from north"))
     }
 
     /// The qibla's angle on screen, measured clockwise from the top (= the direction the phone

@@ -1,266 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%lld degrees from north" : {
-      "comment" : "Qibla compass VoiceOver value",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld درجة من الشمال"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kuzeyden %lld derece"
-          }
-        }
-      }
-    },
-    "%lld° from North" : {
-      "comment" : "Qibla bearing readout",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld° من الشمال"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kuzeyden %lld°"
-          }
-        }
-      }
-    },
-    "Allow Location" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "السماح بالموقع"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konuma izin ver"
-          }
-        }
-      }
-    },
-    "Allow location for Prayer Times in Settings to find the Qibla." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "للعثور على القبلة، اسمح بالوصول إلى الموقع لتطبيق أوقات الصلاة في الإعدادات."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kıble'yi bulmak için Ayarlar'dan Namaz Vakti'ne konum izni verin."
-          }
-        }
-      }
-    },
-    "Facing the Qibla" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "في اتجاه القبلة"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kıble'ye dönük"
-          }
-        }
-      }
-    },
-    "Find the Qibla" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ابحث عن القبلة"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kıble'yi bul"
-          }
-        }
-      }
-    },
-    "Finding your location…" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جارٍ تحديد موقعك…"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konumunuz bulunuyor…"
-          }
-        }
-      }
-    },
-    "Improving accuracy…" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جارٍ تحسين الدقة…"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Doğruluk artırılıyor…"
-          }
-        }
-      }
-    },
-    "Location access needed" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يلزم الوصول إلى الموقع"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konum erişimi gerekli"
-          }
-        }
-      }
-    },
-    "Move your phone in a figure 8 to calibrate the compass." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "حرّك هاتفك على شكل الرقم ٨ لمعايرة البوصلة."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pusulayı kalibre etmek için telefonunuzu 8 şeklinde hareket ettirin."
-          }
-        }
-      }
-    },
-    "No compass" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لا توجد بوصلة"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pusula yok"
-          }
-        }
-      }
-    },
-    "Open Settings" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "افتح الإعدادات"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ayarları aç"
-          }
-        }
-      }
-    },
-    "Prayer Times uses your location to point the compass toward the Kaaba in Mecca." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يستخدم تطبيق أوقات الصلاة موقعك لتوجيه البوصلة نحو الكعبة في مكة."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Namaz Vakti, pusulayı Mekke'deki Kâbe'ye doğru yöneltmek için konumunuzu kullanır."
-          }
-        }
-      }
-    },
-    "Qibla" : {
-      "comment" : "Qibla finder section title",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "القبلة"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kıble"
-          }
-        }
-      }
-    },
-    "Qibla compass" : {
-      "comment" : "Qibla compass VoiceOver label",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "بوصلة القبلة"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kıble pusulası"
-          }
-        }
-      }
-    },
-    "This device doesn't have a compass, so the Qibla direction can't be shown here." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لا يحتوي هذا الجهاز على بوصلة، لذا لا يمكن عرض اتجاه القبلة هنا."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bu cihazda pusula bulunmadığından Kıble yönü burada gösterilemez."
-          }
-        }
-      }
-    },
     "·" : {
       "comment" : "A period.",
       "isCommentAutoGenerated" : true
@@ -273,6 +13,23 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "%@ degrees from north" : {
+      "comment" : "Qibla compass VoiceOver value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ درجة من الشمال"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kuzeyden %@ derece"
           }
         }
       }
@@ -312,6 +69,23 @@
         }
       }
     },
+    "%@° from North" : {
+      "comment" : "Qibla bearing readout",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@° من الشمال"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kuzeyden %@°"
+          }
+        }
+      }
+    },
     "About" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -343,6 +117,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "İkindi"
+          }
+        }
+      }
+    },
+    "Allow Location" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "السماح بالموقع"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konuma izin ver"
+          }
+        }
+      }
+    },
+    "Allow location for Prayer Times in Settings to find the Qibla." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "للعثور على القبلة، اسمح بالوصول إلى الموقع لتطبيق أوقات الصلاة في الإعدادات."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kıble'yi bulmak için Ayarlar'dan Namaz Vakti'ne konum izni verin."
           }
         }
       }
@@ -538,6 +346,56 @@
         }
       }
     },
+    "Facing the Qibla" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "في اتجاه القبلة"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kıble'ye dönük"
+          }
+        }
+      }
+    },
+    "Find the Qibla" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ابحث عن القبلة"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kıble'yi bul"
+          }
+        }
+      }
+    },
+    "Finding your location…" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ تحديد موقعك…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konumunuz bulunuyor…"
+          }
+        }
+      }
+    },
     "General" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -551,6 +409,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Genel"
+          }
+        }
+      }
+    },
+    "Improving accuracy…" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ تحسين الدقة…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doğruluk artırılıyor…"
           }
         }
       }
@@ -623,6 +498,23 @@
         }
       }
     },
+    "Location access needed" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يلزم الوصول إلى الموقع"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konum erişimi gerekli"
+          }
+        }
+      }
+    },
     "Monthly" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -636,6 +528,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aylık"
+          }
+        }
+      }
+    },
+    "Move your phone in a figure 8 to calibrate the compass." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حرّك هاتفك على شكل الرقم ٨ لمعايرة البوصلة."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pusulayı kalibre etmek için telefonunuzu 8 şeklinde hareket ettirin."
           }
         }
       }
@@ -686,6 +595,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Yatsı"
+          }
+        }
+      }
+    },
+    "No compass" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد بوصلة"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pusula yok"
           }
         }
       }
@@ -776,6 +702,23 @@
         }
       }
     },
+    "Open Settings" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتح الإعدادات"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayarları aç"
+          }
+        }
+      }
+    },
     "Prayer notifications" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -822,6 +765,57 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vakitler T.C. Diyanet İşleri Başkanlığı kaynaklı EzanVakti servisinden alınır."
+          }
+        }
+      }
+    },
+    "Prayer Times uses your location to point the compass toward the Kaaba in Mecca." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يستخدم تطبيق أوقات الصلاة موقعك لتوجيه البوصلة نحو الكعبة في مكة."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Namaz Vakti, pusulayı Mekke'deki Kâbe'ye doğru yöneltmek için konumunuzu kullanır."
+          }
+        }
+      }
+    },
+    "Qibla" : {
+      "comment" : "Qibla finder section title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "القبلة"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kıble"
+          }
+        }
+      }
+    },
+    "Qibla compass" : {
+      "comment" : "Qibla compass VoiceOver label",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بوصلة القبلة"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kıble pusulası"
           }
         }
       }
@@ -1011,6 +1005,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sunucu beklenmeyen bir yanıt verdi (HTTP %lld)."
+          }
+        }
+      }
+    },
+    "This device doesn't have a compass, so the Qibla direction can't be shown here." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يحتوي هذا الجهاز على بوصلة، لذا لا يمكن عرض اتجاه القبلة هنا."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu cihazda pusula bulunmadığından Kıble yönü burada gösterilemez."
           }
         }
       }
