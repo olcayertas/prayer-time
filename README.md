@@ -34,9 +34,9 @@ Settings). Both are built from the same Core logic and the same SwiftUI views.
 
 ### iOS
 
-|  Today  |  Today (dark)  |  Monthly  |  Settings  |
-| :-----: | :------------: | :-------: | :--------: |
-| <img src="docs/screenshots/ios-today.png" width="200" alt="Today — live countdown to the next prayer"> | <img src="docs/screenshots/ios-today-dark.png" width="200" alt="Today in dark mode"> | <img src="docs/screenshots/ios-monthly.png" width="200" alt="Monthly — the cached month as a table"> | <img src="docs/screenshots/ios-settings.png" width="200" alt="Settings — location, notifications, and the Live Activity toggle"> |
+|  Today  |  Today (dark)  |  Monthly  |  Qibla  |  Settings  |
+| :-----: | :------------: | :-------: | :-----: | :--------: |
+| <img src="docs/screenshots/ios-today.png" width="190" alt="Today — live countdown to the next prayer"> | <img src="docs/screenshots/ios-today-dark.png" width="190" alt="Today in dark mode"> | <img src="docs/screenshots/ios-monthly.png" width="190" alt="Monthly — the cached month as a table"> | <img src="docs/screenshots/ios-qibla.png" width="190" alt="Qibla finder — a live compass pointing toward the Kaaba"> | <img src="docs/screenshots/ios-settings.png" width="190" alt="Settings — location, notifications, and the Live Activity toggle"> |
 
 ### Lock Screen, Live Activity & Dynamic Island
 
