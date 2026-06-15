@@ -9,7 +9,7 @@ struct MainWindowView: View {
 
     var body: some View {
         NavigationSplitView {
-            List(AppSection.allCases, selection: $section) { item in
+            List(AppSection.displayed, selection: $section) { item in
                 Label(item.title, systemImage: item.systemImage)
                     .tag(item)
             }
@@ -19,6 +19,7 @@ struct MainWindowView: View {
             case .today: TodayView(store: store)
             case .month: MonthView(store: store)
             case .settings: SettingsView(store: store)
+            case .qibla: EmptyView() // iOS-only; filtered from `displayed`, so never selected here
             }
         }
         .frame(minWidth: 660, minHeight: 480)

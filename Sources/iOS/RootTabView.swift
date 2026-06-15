@@ -15,6 +15,9 @@ struct RootTabView: View {
             NavigationStack { MonthView(store: store) }
                 .tag(AppSection.month)
                 .tabItem { Label(AppSection.month.title, systemImage: AppSection.month.systemImage) }
+            NavigationStack { QiblaView(store: store) }
+                .tag(AppSection.qibla)
+                .tabItem { Label(AppSection.qibla.title, systemImage: AppSection.qibla.systemImage) }
             NavigationStack { SettingsView(store: store) }
                 .tag(AppSection.settings)
                 .tabItem { Label(AppSection.settings.title, systemImage: AppSection.settings.systemImage) }

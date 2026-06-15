@@ -67,6 +67,10 @@ targets:
         CFBundleDisplayName: Prayer Times
         UILaunchScreen: {}
         NSSupportsLiveActivities: true
+        # Qibla compass: location feeds the bearing to Mecca + enables true-north heading.
+        # Only when-in-use is requested (no "always", no precise/temporary upgrade, and no motion
+        # key — heading via CoreLocation is gated by location permission, not Motion & Fitness).
+        NSLocationWhenInUseUsageDescription: "Prayer Times uses your location to point the compass toward the Qibla (the Kaaba in Mecca)."
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationLandscapeLeft

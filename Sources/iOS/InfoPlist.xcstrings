@@ -36,6 +36,30 @@
           }
         }
       }
+    },
+    "NSLocationWhenInUseUsageDescription" : {
+      "comment" : "Shown in the system location-permission prompt for the Qibla compass",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يستخدم تطبيق أوقات الصلاة موقعك لتوجيه البوصلة نحو القبلة (الكعبة في مكة)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prayer Times uses your location to point the compass toward the Qibla (the Kaaba in Mecca)."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Namaz Vakti, pusulayı Kıble'ye (Mekke'deki Kâbe) doğru yöneltmek için konumunuzu kullanır."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
