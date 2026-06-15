@@ -29,12 +29,16 @@ Slash commands wrap the macOS flow: `/build`, `/test`, `/run`. Signing is local 
 ## Layout
 
 - `Sources/Core/` — UI-free logic (model, `PrayerSchedule`, providers, `PrayerStore`, cache,
-  `Localizable.xcstrings`), compiled into every target.
+  `Qibla` great-circle bearing, `Localizable.xcstrings`), compiled into every target.
 - `Sources/Shared/` — cross-platform SwiftUI used by **both** apps: `TodayView`, `MonthView`,
   `SettingsView`, `LocationPickerView` (+model), `CountdownFormatter`, `DateLocalizer`,
   `AppSection`, and `PlatformColor` (`Color.cardBackground` — the one per-platform shim).
 - `Sources/App/` — **macOS** shell: `MenuBarExtra` + `AppDelegate` + `MainWindowView` (sidebar).
-- `Sources/iOS/` — **iOS** shell: `PrayerTimesApp` (`@main`) + `RootTabView` (tabbed Today / Monthly / Settings).
+- `Sources/iOS/` — **iOS** shell: `PrayerTimesApp` (`@main`) + `RootTabView` (tabbed Today / Monthly /
+  Qibla / Settings) + the Qibla compass (`QiblaController` over CoreLocation + `QiblaView`). The Qibla
+  tab is iOS-only (needs a magnetometer) — `AppSection.displayed` filters it out on macOS. The
+  Simulator has **no magnetometer**, so the compass shows a "No compass" state there; verify the live
+  needle on a real iPhone.
 - `Sources/Widget/` — WidgetKit timeline + views, shared by the macOS widget and the iOS widget
   (`NamazVaktiWidgetiOS` lists the `.swift` explicitly so the macOS Info.plist/entitlements don't leak in).
 - `Tests/CoreTests/` — schedule + JSON-decoding tests.

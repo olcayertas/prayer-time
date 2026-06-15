@@ -7,14 +7,16 @@ SwiftUI + WidgetKit. Remote: github.com/olcayertas/prayer-time (folder name diff
 - `Sources/Core/` — UI-free logic, compiled into every target (no framework, same-module):
   `PrayerDay`, `PrayerSchedule` (next-prayer/countdown math), `PrayerCache`, `PrayerTimesProvider` +
   `PlacesProvider` (EzanVakti), `PrayerStore` (@MainActor observable), `NotificationScheduler`,
-  `Place` (Country/City/District), `Config`, `Localizable.xcstrings`.
+  `Place` (Country/City/District), `Config`, `Qibla` (pure great-circle bearing to the Kaaba), `Localizable.xcstrings`.
 - `Sources/Shared/` — cross-platform SwiftUI used by BOTH apps: `TodayView`, `MonthView`,
   `SettingsView`, `LocationPicker{Model,View}`, `CountdownFormatter`, `DateLocalizer`, `AppSection`,
   `PlatformColor` (`Color.cardBackground`). TodayView's hero (`ViewThatFits`) and MonthView
   (icons + smaller font when `horizontalSizeClass == .compact`) adapt to narrow phone widths.
 - `Sources/App/` — macOS shell only: `NamazVaktiApp` (MenuBarExtra + Window scenes), `MenuPanelView`
   (dropdown), `MainWindowView` (sidebar), `AppDelegate` (single-instance guard + status-item font).
-- `Sources/iOS/` — iOS shell only: `PrayerTimesApp` (@main WindowGroup) + `RootTabView` (tabs).
+- `Sources/iOS/` — iOS shell only: `PrayerTimesApp` (@main WindowGroup) + `RootTabView` (tabs) +
+  Qibla compass (`QiblaController` over CoreLocation heading/location, `QiblaView`). iOS-only (needs a
+  magnetometer); `AppSection.displayed` filters the `.qibla` case off the macOS sidebar.
 - `Sources/Widget/` — WidgetKit timeline + views; built into both `NamazVaktiWidget` (macOS, folder
   include) and `NamazVaktiWidgetiOS` (iOS, explicit `.swift` include so macOS Info.plist doesn't leak).
 - `Tests/CoreTests/` — pure logic (schedule edge cases, JSON decoding).

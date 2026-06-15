@@ -68,6 +68,8 @@ The next-prayer **Live Activity** and a **prayer-time notification**, live on th
 - **Lock Screen widgets** (iOS) — rectangular, circular, and inline accessory families.
 - **Dynamic Island & Live Activity** (iOS) — a user-toggled next-prayer countdown in the
   Dynamic Island (compact / minimal / expanded) and on the Lock Screen.
+- **Qibla finder** (iOS) — a live compass that points to the Kaaba, using your location for a
+  true-north bearing, with figure-8 calibration and a "facing the Qibla" cue (and haptic).
 - **App icon** — a flat crescent & star, shipped for both apps.
 - **Notifications** — optional local notifications at each prayer time.
 - **Location picker** — country → city → district, remembered across launches.
@@ -126,12 +128,15 @@ picker. Everything goes through a `PrayerTimesProvider` protocol, so the officia
 - **`Sources/Core`** — UI-free, shared by every target:
   `PrayerDay`, `PrayerSchedule` (next-prayer math in `Europe/Istanbul`), `PrayerCache`,
   `PrayerTimesProvider` / `PlacesProvider` (EzanVakti), `PrayerStore`, `NotificationScheduler`,
+  `Qibla` (great-circle bearing to the Kaaba — pure, so it's unit-tested without a device),
   and the shared `Localizable.xcstrings`.
 - **`Sources/Shared`** — cross-platform SwiftUI used by both apps: the Today / Monthly / Settings
   views, the location picker, `DateLocalizer` (locale-aware Gregorian + Hijri dates), and a
   `Color.cardBackground` shim. Today's hero and the month table adapt to compact (phone) widths.
 - **`Sources/App`** (macOS) — `MenuBarExtra` menu bar item + the `MainWindowView` sidebar shell.
-- **`Sources/iOS`** (iOS) — `PrayerTimesApp` entry point + `RootTabView` tab bar.
+- **`Sources/iOS`** (iOS) — `PrayerTimesApp` entry point + `RootTabView` tab bar, and the Qibla
+  compass (`QiblaController` wrapping CoreLocation heading/location + `QiblaView`). The compass is
+  iOS-only — Macs have no magnetometer, so it's filtered out of the macOS sidebar.
 - **`Sources/Widget`** — WidgetKit timeline provider and views (Home Screen + iOS Lock Screen
   accessory families), built into both the macOS and iOS widget extensions.
 - **`Sources/LiveActivity`** (iOS) — the ActivityKit attributes and the Live Activity / Dynamic
