@@ -71,6 +71,8 @@ targets:
       path: Sources/iOS/Info.plist
       properties:
         CFBundleDisplayName: Prayer Times
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         UILaunchScreen: {}
         NSSupportsLiveActivities: true
         # Location serves two features: prayer times for the current city (Automatic mode) and the
@@ -134,6 +136,8 @@ targets:
       path: Sources/WidgetiOS/Info.plist
       properties:
         CFBundleDisplayName: Prayer Times Widget
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
