@@ -38,6 +38,8 @@ targets:
       path: Sources/App/Info.plist
       properties:
         CFBundleDisplayName: Prayer Times
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         LSUIElement: true
         # Dynamic location (Automatic mode): show prayer times for the user's current city.
         # When-in-use only; a sandboxed agent needs the matching entitlement below.
@@ -104,6 +106,8 @@ targets:
       path: Sources/Widget/Info.plist
       properties:
         CFBundleDisplayName: Prayer Times Widget
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:
