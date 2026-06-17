@@ -39,11 +39,15 @@ targets:
       properties:
         CFBundleDisplayName: Prayer Times
         LSUIElement: true
+        # Dynamic location (Automatic mode): show prayer times for the user's current city.
+        # When-in-use only; a sandboxed agent needs the matching entitlement below.
+        NSLocationWhenInUseUsageDescription: "Prayer Times uses your location to show prayer times for where you are."
     entitlements:
       path: Sources/App/NamazVakti.entitlements
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true
+        com.apple.security.personal-information.location: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.olcayertas.NamazVakti
@@ -67,10 +71,10 @@ targets:
         CFBundleDisplayName: Prayer Times
         UILaunchScreen: {}
         NSSupportsLiveActivities: true
-        # Qibla compass: location feeds the bearing to Mecca + enables true-north heading.
-        # Only when-in-use is requested (no "always", no precise/temporary upgrade, and no motion
+        # Location serves two features: prayer times for the current city (Automatic mode) and the
+        # Qibla compass. When-in-use only (no "always", no precise/temporary upgrade, and no motion
         # key — heading via CoreLocation is gated by location permission, not Motion & Fitness).
-        NSLocationWhenInUseUsageDescription: "Prayer Times uses your location to point the compass toward the Qibla (the Kaaba in Mecca)."
+        NSLocationWhenInUseUsageDescription: "Prayer Times uses your location to show prayer times for where you are and to point the Qibla compass toward the Kaaba in Mecca."
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationLandscapeLeft

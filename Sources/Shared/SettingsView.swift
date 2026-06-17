@@ -1,4 +1,9 @@
 import SwiftUI
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
 
 /// App settings, shown in the main window's "Ayarlar" section.
 struct SettingsView: View {
@@ -7,7 +12,20 @@ struct SettingsView: View {
     var body: some View {
         Form {
             Section("Location") {
-                LocationPickerView(store: store)
+                Picker("Mode", selection: Binding(
+                    get: { store.locationMode },
+                    set: { store.setLocationMode($0) }
+                )) {
+                    Text("Automatic").tag(LocationMode.automatic)
+                    Text("Pinned").tag(LocationMode.pinned)
+                }
+                .pickerStyle(.segmented)
+
+                if store.locationMode == .automatic {
+                    AutomaticLocationStatusView(store: store)
+                } else {
+                    LocationPickerView(store: store)
+                }
             }
 
             Section("Notifications") {
@@ -53,5 +71,61 @@ struct SettingsView: View {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "—"
         return "\(version) (\(build))"
+    }
+}
+
+/// Shows the automatically-tracked location + the pipeline status (locating / resolving / using a
+/// city / denied or unavailable fallbacks).
+private struct AutomaticLocationStatusView: View {
+    @ObservedObject var store: PrayerStore
+
+    var body: some View {
+        LabeledContent("Current", value: store.locationName)
+        statusLine
+    }
+
+    @ViewBuilder private var statusLine: some View {
+        switch store.trackingStatus {
+        case .idle, .locating:
+            locatingRow("Locating…")
+        case .resolving:
+            locatingRow("Finding your city…")
+        case .resolved(let name):
+            Label("Using \(name)", systemImage: "location.fill")
+                .font(.caption).foregroundStyle(.secondary)
+        case .permissionDenied:
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Location access is off — showing \(store.locationName).")
+                    .font(.caption).foregroundStyle(.secondary)
+                OpenLocationSettingsButton()
+            }
+        case .unavailable:
+            Text("Couldn't determine your location — showing \(store.locationName).")
+                .font(.caption).foregroundStyle(.secondary)
+        }
+    }
+
+    private func locatingRow(_ text: LocalizedStringKey) -> some View {
+        HStack(spacing: 6) {
+            ProgressView().controlSize(.small)
+            Text(text).font(.caption).foregroundStyle(.secondary)
+        }
+    }
+}
+
+/// Deep-links to the system location-permission settings (per platform).
+private struct OpenLocationSettingsButton: View {
+    var body: some View {
+        Button("Open Settings") {
+            #if os(iOS)
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url)
+            }
+            #elseif os(macOS)
+            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices") {
+                NSWorkspace.shared.open(url)
+            }
+            #endif
+        }
     }
 }

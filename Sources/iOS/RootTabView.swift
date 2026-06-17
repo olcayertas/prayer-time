@@ -27,6 +27,7 @@ struct RootTabView: View {
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active {
+                store.onForeground()   // re-check current location / freshen the cache
                 LiveActivityController.shared.sync(schedule: store.schedule, locationName: store.locationName)
             }
         }

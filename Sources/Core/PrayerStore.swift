@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import CoreLocation
 import WidgetKit
 
 /// Owns the prayer-times data for the menu bar app: loads cache immediately, refreshes
@@ -19,14 +20,23 @@ final class PrayerStore: ObservableObject {
     @Published private(set) var notificationsEnabled: Bool = false
     @Published private(set) var districtId: String
     @Published private(set) var locationName: String
+    /// Automatic (track device location) vs pinned (manual picker). Persisted; default automatic.
+    @Published private(set) var locationMode: LocationMode
+    /// Transient state of the automatic pipeline, for the Settings UI. Not persisted.
+    @Published private(set) var trackingStatus: LocationTrackingStatus = .idle
 
     static let notificationsKey = "notificationsEnabled"
     static let selectedDistrictIdKey = "selectedDistrictId"
     static let selectedDistrictNameKey = "selectedDistrictName"
+    static let locationModeKey = "locationMode"
 
     private let provider: PrayerTimesProvider
     private let cache: PrayerCache
+    private let tracker: LocationTracker
+    private let resolver: LocationResolver
     private let scheduler = NotificationScheduler()
+    /// The in-flight automatic location → resolve → select pipeline, cancellable on mode change.
+    private var locationTask: Task<Void, Never>?
     /// Drives the once-a-second menu bar countdown; cancelled implicitly when the app exits.
     private var clockTask: Task<Void, Never>?
     /// The in-flight network refresh, kept so a new refresh (or location change) can cancel it.
@@ -34,19 +44,32 @@ final class PrayerStore: ObservableObject {
 
     init(
         provider: PrayerTimesProvider = EzanVaktiProvider(),
-        cache: PrayerCache = PrayerCache()
+        cache: PrayerCache = PrayerCache(),
+        tracker: LocationTracker = LocationTracker(),
+        resolver: LocationResolver = LocationResolver()
     ) {
         let defaults = UserDefaults.standard
         let savedId = defaults.string(forKey: Self.selectedDistrictIdKey) ?? Config.defaultDistrictId
         let savedName = defaults.string(forKey: Self.selectedDistrictNameKey) ?? Config.defaultLocationName
+        // Automatic by default for new installs. Existing users with a saved district also default
+        // automatic but fall back to that district if permission is denied (no data change).
+        let savedMode = defaults.string(forKey: Self.locationModeKey)
+            .flatMap(LocationMode.init(rawValue:)) ?? .automatic
         self.districtId = savedId
         self.locationName = savedName
+        self.locationMode = savedMode
         self.provider = provider
         self.cache = cache
+        self.tracker = tracker
+        self.resolver = resolver
         self.days = cache.load(districtId: savedId) ?? []
         self.notificationsEnabled = defaults.bool(forKey: Self.notificationsKey)
         updateMenuTitle()
-        refresh()
+        // Show cached times immediately; only hit the network if the cached month is stale.
+        refreshIfStale()
+        if savedMode == .automatic {
+            startAutomaticTracking()   // requests permission on first launch
+        }
         #if os(macOS)
         // 1 Hz menu-bar countdown. iOS has no menu bar — TodayView drives its own
         // countdown via TimelineView — so the clock would be pure wasted work there.
@@ -148,5 +171,123 @@ final class PrayerStore: ObservableObject {
         days = cache.load(districtId: newId) ?? []
         updateMenuTitle()
         refresh()
+    }
+
+    // MARK: - Cache freshness
+
+    /// True when the in-memory month already includes today's Istanbul date.
+    var isCacheFresh: Bool { schedule.day(on: Date()) != nil }
+
+    /// Fetches only when the cached month is missing or no longer covers today (e.g. month
+    /// rollover), so a still-valid cache makes no network request.
+    func refreshIfStale() {
+        if isCacheFresh {
+            applyCachedSideEffects()
+        } else {
+            refresh()
+        }
+    }
+
+    /// Side effects for the "cache already covers today, no fetch" path: keep the menu title,
+    /// notifications, and widget coherent without bumping `lastUpdated` (we didn't fetch).
+    private func applyCachedSideEffects() {
+        updateMenuTitle()
+        if notificationsEnabled {
+            scheduler.reschedule(schedule: schedule, locationName: locationName)
+        }
+        WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    // MARK: - Location mode + automatic tracking
+
+    /// Switches between automatic (track device location) and pinned (manual picker) modes.
+    func setLocationMode(_ mode: LocationMode) {
+        guard mode != locationMode else { return }
+        locationMode = mode
+        UserDefaults.standard.set(mode.rawValue, forKey: Self.locationModeKey)
+        switch mode {
+        case .automatic:
+            startAutomaticTracking()
+        case .pinned:
+            locationTask?.cancel()
+            trackingStatus = .idle
+            // Keep the current district; the picker overwrites it via selectLocation.
+        }
+    }
+
+    /// Single entry point both platforms call on launch / foreground: re-check location in
+    /// automatic mode, or just freshen the cache in pinned mode.
+    func onForeground() {
+        if locationMode == .automatic {
+            startAutomaticTracking()
+        } else {
+            refreshIfStale()
+        }
+    }
+
+    /// Runs the automatic pipeline: ensure permission → one-shot fix → resolve to a district →
+    /// switch to it (reusing the per-district cache). Falls back to the saved district on any
+    /// denial/failure/no-match. No-op in pinned mode.
+    func startAutomaticTracking() {
+        guard locationMode == .automatic else { return }
+        locationTask?.cancel()
+        locationTask = Task { [weak self] in
+            guard let self else { return }
+            var status = tracker.authorizationStatus
+            if status == .notDetermined {
+                trackingStatus = .locating
+                status = await tracker.requestWhenInUseAuthorization()
+            }
+            if Task.isCancelled { return }
+            // `.authorizedWhenInUse` is unavailable on macOS, so branch on the cross-platform helper
+            // rather than a switch with that case label.
+            if status.isAuthorizedForLocation {
+                trackingStatus = .locating
+                let coordinate = await tracker.requestCoordinate()
+                if Task.isCancelled { return }
+                guard let coordinate else {
+                    trackingStatus = .unavailable
+                    refreshIfStale()
+                    return
+                }
+                await resolveAndApply(coordinate)
+            } else if status == .denied || status == .restricted {
+                trackingStatus = .permissionDenied
+                refreshIfStale()
+            } else {
+                trackingStatus = .unavailable
+                refreshIfStale()
+            }
+        }
+    }
+
+    private func resolveAndApply(_ coordinate: CLLocationCoordinate2D) async {
+        trackingStatus = .resolving
+        do {
+            let match = try await resolver.resolve(coordinate: coordinate)
+            if Task.isCancelled { return }
+            if let match {
+                trackingStatus = .resolved(match.name)
+                applyAutomaticSelection(districtId: match.id, name: match.name)
+            } else {
+                trackingStatus = .unavailable
+                refreshIfStale()
+            }
+        } catch {
+            trackingStatus = .unavailable
+            refreshIfStale()
+        }
+    }
+
+    /// Applies an automatically-resolved district. On a real change, routes through
+    /// `selectLocation` (persists + swaps cache + force-refresh) — which becomes the denial
+    /// fallback next launch. On no change, only fetches if the cached month is stale, so
+    /// re-resolving the same place makes no network request. Never flips `locationMode`.
+    private func applyAutomaticSelection(districtId newId: String, name newName: String) {
+        if newId == districtId {
+            refreshIfStale()
+        } else {
+            selectLocation(districtId: newId, name: newName)
+        }
     }
 }

@@ -21,7 +21,7 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Prayer Times uses your location to point the compass toward the Qibla (the Kaaba in Mecca).</string>
+	<string>Prayer Times uses your location to show prayer times for where you are and to point the Qibla compass toward the Kaaba in Mecca.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>UILaunchScreen</key>

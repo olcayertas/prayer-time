@@ -26,6 +26,7 @@ struct MainWindowView: View {
         .onAppear {
             NSApp.setActivationPolicy(.regular)
             NSApp.activate(ignoringOtherApps: true)
+            store.onForeground()   // re-check current location / freshen the cache on open
         }
         .onDisappear {
             NSApp.setActivationPolicy(.accessory)

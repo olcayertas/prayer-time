@@ -36,6 +36,30 @@
           }
         }
       }
+    },
+    "NSLocationWhenInUseUsageDescription" : {
+      "comment" : "System location-permission prompt (Automatic location mode)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يستخدم تطبيق أوقات الصلاة موقعك لعرض أوقات الصلاة لمكانك."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prayer Times uses your location to show prayer times for where you are."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Namaz Vakti, bulunduğunuz yerin namaz vakitlerini göstermek için konumunuzu kullanır."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

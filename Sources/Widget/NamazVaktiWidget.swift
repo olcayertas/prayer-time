@@ -14,6 +14,9 @@ struct PrayerEntry: TimelineEntry, Sendable {
 /// One entry per upcoming prayer boundary; the live countdown uses `Text(timerInterval:)`,
 /// so no per-second entries are needed.
 struct PrayerTimelineProvider: TimelineProvider {
+    // The widget is a separate process with no App Group, so it can't read the app's selected /
+    // auto-tracked location — it stays on the default district. (The in-app surfaces follow the
+    // user's Automatic/Pinned choice via PrayerStore.) Fixing this would require an App Group.
     private let districtId = Config.defaultDistrictId
     private let locationName = Config.defaultLocationName
 
