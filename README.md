@@ -72,7 +72,9 @@ The next-prayer **Live Activity** and a **prayer-time notification**, live on th
   true-north bearing, with figure-8 calibration and a "facing the Qibla" cue (and haptic).
 - **App icon** — a flat crescent & star, shipped for both apps.
 - **Notifications** — optional local notifications at each prayer time.
-- **Location picker** — country → city → district, remembered across launches.
+- **Location** — **Automatic** mode tracks your current city (reverse-geocoded to the nearest
+  Diyanet district) or **Pinned** mode keeps a city you choose (country → city → district). Each
+  location's month is cached, so revisiting one makes no extra request.
 - **Localized** — English, Turkish, and Arabic (right-to-left), including the app name and
   locale-aware Gregorian + Hijri dates. [Adding a language →](docs/LOCALIZATION.md)
 - **Accessibility** — full Dynamic Type scaling (including the hero countdown) and automatic dark mode.
@@ -129,7 +131,8 @@ picker. Everything goes through a `PrayerTimesProvider` protocol, so the officia
   `PrayerDay`, `PrayerSchedule` (next-prayer math in `Europe/Istanbul`), `PrayerCache`,
   `PrayerTimesProvider` / `PlacesProvider` (EzanVakti), `PrayerStore`, `NotificationScheduler`,
   `Qibla` (great-circle bearing to the Kaaba — pure, so it's unit-tested without a device),
-  and the shared `Localizable.xcstrings`.
+  `LocationTracker` (CoreLocation) + `LocationResolver` (reverse-geocode → Diyanet district, with a
+  pure, unit-tested Turkish-aware name matcher), and the shared `Localizable.xcstrings`.
 - **`Sources/Shared`** — cross-platform SwiftUI used by both apps: the Today / Monthly / Settings
   views, the location picker, `DateLocalizer` (locale-aware Gregorian + Hijri dates), and a
   `Color.cardBackground` shim. Today's hero and the month table adapt to compact (phone) widths.
@@ -145,7 +148,10 @@ picker. Everything goes through a `PrayerTimesProvider` protocol, so the officia
 ### Notable decisions
 
 - **No App Group** (avoids needing a paid Apple Developer account) — the app and the widget
-  each cache their own monthly JSON.
+  each cache their own monthly JSON. One consequence: the widget can't read the app's selected /
+  auto-tracked location, so it stays on the default district while the in-app surfaces follow it.
+- **Automatic location is Turkey-focused** — it reverse-geocodes to a Diyanet (EzanVakti) district;
+  outside Türkiye, or when permission is denied, it falls back to the pinned/default city.
 - **Swift 6 language mode** with complete strict concurrency. Networking is `async`/`await`
   (`URLSession.data(from:)`) behind a `Sendable` `PrayerTimesProvider`; the `@MainActor`
   `PrayerStore` awaits it from a cancellable `Task`, and a structured `Task` (not a GCD timer)

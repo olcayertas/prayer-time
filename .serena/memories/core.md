@@ -7,7 +7,9 @@ SwiftUI + WidgetKit. Remote: github.com/olcayertas/prayer-time (folder name diff
 - `Sources/Core/` — UI-free logic, compiled into every target (no framework, same-module):
   `PrayerDay`, `PrayerSchedule` (next-prayer/countdown math), `PrayerCache`, `PrayerTimesProvider` +
   `PlacesProvider` (EzanVakti), `PrayerStore` (@MainActor observable), `NotificationScheduler`,
-  `Place` (Country/City/District), `Config`, `Qibla` (pure great-circle bearing to the Kaaba), `Localizable.xcstrings`.
+  `Place` (Country/City/District), `Config`, `Qibla` (pure great-circle bearing to the Kaaba),
+  `LocationTracker` (CoreLocation, one-shot fix) + `LocationResolver` (reverse-geocode → district;
+  pure `LocationMatcher` is unit-tested) + `LocationMode` (automatic/pinned), `Localizable.xcstrings`.
 - `Sources/Shared/` — cross-platform SwiftUI used by BOTH apps: `TodayView`, `MonthView`,
   `SettingsView`, `LocationPicker{Model,View}`, `CountdownFormatter`, `DateLocalizer`, `AppSection`,
   `PlatformColor` (`Color.cardBackground`). TodayView's hero (`ViewThatFits`) and MonthView

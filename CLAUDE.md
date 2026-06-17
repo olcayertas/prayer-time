@@ -29,7 +29,8 @@ Slash commands wrap the macOS flow: `/build`, `/test`, `/run`. Signing is local 
 ## Layout
 
 - `Sources/Core/` — UI-free logic (model, `PrayerSchedule`, providers, `PrayerStore`, cache,
-  `Qibla` great-circle bearing, `Localizable.xcstrings`), compiled into every target.
+  `Qibla` great-circle bearing, `LocationTracker`/`LocationResolver`/`LocationMode` for
+  automatic-vs-pinned location, `Localizable.xcstrings`), compiled into every target.
 - `Sources/Shared/` — cross-platform SwiftUI used by **both** apps: `TodayView`, `MonthView`,
   `SettingsView`, `LocationPickerView` (+model), `CountdownFormatter`, `DateLocalizer`,
   `AppSection`, and `PlatformColor` (`Color.cardBackground` — the one per-platform shim).
@@ -61,6 +62,16 @@ Slash commands wrap the macOS flow: `/build`, `/test`, `/run`. Signing is local 
   (An earlier "async is unreliable here" note was a misdiagnosis — the real cause was the
   rendered `MenuBarExtra` label; see the warning below.)
 - **No App Group** (avoids needing a paid account) — the app and the widget cache independently.
+  Consequence: the widget can't see the app's selected/auto-tracked location, so it stays on
+  `Config.defaultDistrictId` while the in-app surfaces follow the location.
+- **Location modes**: `PrayerStore.locationMode` is **Automatic** (default) or **Pinned**.
+  Automatic reverse-geocodes the device location to a Diyanet district via `LocationResolver` and
+  routes through `selectLocation` (reusing the per-district cache); `refreshIfStale()` skips the
+  network when the cached month still covers today. **Turkey-focused** — outside Türkiye / on denial
+  it falls back to the saved district. Gotcha: Diyanet collapses big-city central ilçe into one
+  province-named entry (Ankara lists only peripheral ilçe + a single "ANKARA"), so the matcher falls
+  back to the province-named district. Both platforms need a location usage string; macOS also needs
+  the `com.apple.security.personal-information.location` entitlement.
 - Data comes from the keyless **EzanVakti** wrapper behind `PrayerTimesProvider` (the official
   Diyanet `AwqatSalah` API is a future drop-in).
 
