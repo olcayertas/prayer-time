@@ -31,9 +31,11 @@ Slash commands wrap the macOS flow: `/build`, `/test`, `/run`. Signing is local 
 - `Sources/Core/` — UI-free logic (model, `PrayerSchedule`, providers, `PrayerStore`, cache,
   `Qibla` great-circle bearing, `LocationTracker`/`LocationResolver`/`LocationMode` for
   automatic-vs-pinned location, `Localizable.xcstrings`), compiled into every target.
-- `Sources/Shared/` — cross-platform SwiftUI used by **both** apps: `TodayView`, `MonthView`,
-  `SettingsView`, `LocationPickerView` (+model), `CountdownFormatter`, `DateLocalizer`,
-  `AppSection`, and `PlatformColor` (`Color.cardBackground` — the one per-platform shim).
+- `Sources/Shared/` — cross-platform SwiftUI used by **both** apps: `TodayView`, `SettingsView`,
+  `LocationPickerView` (+model), `CountdownFormatter`, `DateLocalizer`, `AppSection`, `PlatformColor`;
+  the **`Theme/`** system (`Theme`/`ThemeID`/`ThemeManager` + `\.theme` env + `themed`/`themedRootBackground`
+  modifiers); the redesigned Monthly in **`Monthly/`** (`MonthlyDay`, `DayRowLayout`, `MonthChart`) +
+  `MonthView` (Focus Card + chart); and the bundled Arc `.ttf` in **`Fonts/`**.
 - `Sources/App/` — **macOS** shell: `MenuBarExtra` + `AppDelegate` + `MainWindowView` (sidebar).
 - `Sources/iOS/` — **iOS** shell: `PrayerTimesApp` (`@main`) + `RootTabView` (tabbed Today / Monthly /
   Qibla / Settings) + the Qibla compass (`QiblaController` over CoreLocation + `QiblaView`). The Qibla
@@ -72,6 +74,12 @@ Slash commands wrap the macOS flow: `/build`, `/test`, `/run`. Signing is local 
   province-named entry (Ankara lists only peripheral ilçe + a single "ANKARA"), so the matcher falls
   back to the province-named district. Both platforms need a location usage string; macOS also needs
   the `com.apple.security.personal-information.location` entitlement.
+- **Theming**: views read `@Environment(\.theme)` and use its tokens (`accent`, `muted`, `surface`,
+  `prayerColor(_:)`, `font(_:_:weight:)`, …) instead of hardcoded colors/fonts. `Theme.default` maps
+  every token to the **current system semantics** (so Default stays pixel-identical — don't regress it);
+  `Theme.arc` is a fixed dark palette + the bundled fonts and forces `.dark`. The picker lives in
+  Settings → Appearance (`ThemeManager.shared`, persisted). The widget / Live Activity / menu-bar
+  **title** can't read the theme (separate processes / plain String) — leave them on the system look.
 - Data comes from the keyless **EzanVakti** wrapper behind `PrayerTimesProvider` (the official
   Diyanet `AwqatSalah` API is a future drop-in).
 

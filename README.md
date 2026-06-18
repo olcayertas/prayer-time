@@ -60,10 +60,11 @@ The next-prayer **Live Activity** and a **prayer-time notification**, live on th
 - **Menu bar countdown** — the next prayer with a live, jitter-free countdown (e.g. `Afternoon  1:23:45`).
 - **Dropdown panel** — today's six times with the next one highlighted, location, and the
   Gregorian + Hijri date.
-- **Main window** (macOS) — sidebar with **Today** (rich view), **Monthly** (table), and
+- **Main window** (macOS) — sidebar with **Today** (rich view), **Monthly**, and
   **Settings**. A Dock icon appears only while the window is open.
-- **iOS app** — the same Today / Monthly / Settings as a tab bar, with a responsive Today hero
-  and a compact, icon-headed month table tuned for phone widths.
+- **iOS app** — the same Today / Monthly / Settings as a tab bar, with a responsive Today hero.
+- **Monthly** — a spacious **Focus Card** for one day over a compact **month chart** (each day a
+  thin row, the six prayers as colored dots in equal columns); tap any day to promote it.
 - **Home Screen widget** — small / medium WidgetKit widget with the next prayer and a live countdown.
 - **Lock Screen widgets** (iOS) — rectangular, circular, and inline accessory families.
 - **Dynamic Island & Live Activity** (iOS) — a user-toggled next-prayer countdown in the
@@ -77,6 +78,9 @@ The next-prayer **Live Activity** and a **prayer-time notification**, live on th
   location's month is cached, so revisiting one makes no extra request.
 - **Localized** — English, Turkish, and Arabic (right-to-left), including the app name and
   locale-aware Gregorian + Hijri dates. [Adding a language →](docs/LOCALIZATION.md)
+- **Themes** — a **Default** theme (the system look, auto light/dark) and a dark/gold **Arc** theme
+  (with bundled Fraunces / Hanken Grotesk / Spline Sans Mono fonts), chosen in **Settings → Appearance**
+  and applied app-wide on both platforms.
 - **Accessibility** — full Dynamic Type scaling (including the hero countdown) and automatic dark mode.
 
 ## 📋 Requirements
@@ -133,9 +137,11 @@ picker. Everything goes through a `PrayerTimesProvider` protocol, so the officia
   `Qibla` (great-circle bearing to the Kaaba — pure, so it's unit-tested without a device),
   `LocationTracker` (CoreLocation) + `LocationResolver` (reverse-geocode → Diyanet district, with a
   pure, unit-tested Turkish-aware name matcher), and the shared `Localizable.xcstrings`.
-- **`Sources/Shared`** — cross-platform SwiftUI used by both apps: the Today / Monthly / Settings
-  views, the location picker, `DateLocalizer` (locale-aware Gregorian + Hijri dates), and a
-  `Color.cardBackground` shim. Today's hero and the month table adapt to compact (phone) widths.
+- **`Sources/Shared`** — cross-platform SwiftUI used by both apps: the Today / Settings views and
+  the location picker; the **`Theme`** system (`Theme`/`ThemeID`/`ThemeManager` + `\.theme`
+  environment + Default/Arc tokens) in `Theme/`; the redesigned Monthly (`Monthly/` —
+  `MonthlyDay`, `DayRowLayout`, `MonthChart`, the Focus Card) in `MonthView`; `DateLocalizer`; the
+  `Color.cardBackground` shim; and the bundled Arc fonts in `Fonts/`.
 - **`Sources/App`** (macOS) — `MenuBarExtra` menu bar item + the `MainWindowView` sidebar shell.
 - **`Sources/iOS`** (iOS) — `PrayerTimesApp` entry point + `RootTabView` tab bar, and the Qibla
   compass (`QiblaController` wrapping CoreLocation heading/location + `QiblaView`). The compass is
@@ -150,6 +156,10 @@ picker. Everything goes through a `PrayerTimesProvider` protocol, so the officia
 - **No App Group** (avoids needing a paid Apple Developer account) — the app and the widget
   each cache their own monthly JSON. One consequence: the widget can't read the app's selected /
   auto-tracked location, so it stays on the default district while the in-app surfaces follow it.
+- **Themes are a value-type token set** in `\.theme` (Default = system semantics so it's pixel-identical
+  to the un-themed look; Arc = fixed dark palette + bundled fonts, and forces `.dark`). The widget /
+  Live Activity / Dynamic Island / menu-bar title can't read the runtime theme (separate processes /
+  plain String), so they keep the system look.
 - **Automatic location is Turkey-focused** — it reverse-geocodes to a Diyanet (EzanVakti) district;
   outside Türkiye, or when permission is denied, it falls back to the pinned/default city.
 - **Swift 6 language mode** with complete strict concurrency. Networking is `async`/`await`
