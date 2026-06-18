@@ -285,6 +285,13 @@ final class PrayerStore: ObservableObject {
     /// re-resolving the same place makes no network request. Never flips `locationMode`.
     private func applyAutomaticSelection(districtId newId: String, name newName: String) {
         if newId == districtId {
+            // Same Diyanet entry — refresh the displayed ilçe name if it changed (e.g. moving
+            // between two central İstanbul ilçe that both map to "İSTANBUL"), then only fetch if stale.
+            if newName != locationName {
+                locationName = newName
+                UserDefaults.standard.set(newName, forKey: Self.selectedDistrictNameKey)
+                updateMenuTitle()
+            }
             refreshIfStale()
         } else {
             selectLocation(districtId: newId, name: newName)

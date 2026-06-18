@@ -118,7 +118,10 @@ final class LocationResolver: Sendable {
         guard let district = LocationMatcher.bestMatch(
             province: province, district: districtName, districts: districts
         ) else { return nil }
-        let match = Match(id: district.id, name: district.name)
+        // Display the geocoded ilçe name (specific + nicely cased, e.g. "Üsküdar" / "Küçükçekmece"),
+        // but keep the matched EzanVakti `id` for the times — central İstanbul ilçe fold into the
+        // "İSTANBUL" entry, yet the user should still see their own district.
+        let match = Match(id: district.id, name: districtName ?? district.name)
         await cache.set(match, for: key)
         return match
     }
