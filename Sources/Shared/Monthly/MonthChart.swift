@@ -7,7 +7,9 @@ struct ColumnHeaderView: View {
 
     var body: some View {
         DayRowLayout {
-            Color.clear.frame(width: 0)   // empty gutter
+            // Height-constrained so the empty gutter (a Color, greedy by default) doesn't stretch
+            // the header row to fill the screen.
+            Color.clear.frame(height: 1)
         } cell: { i in
             let prayer = Prayer.allCases[i]
             VStack(spacing: 3) {
