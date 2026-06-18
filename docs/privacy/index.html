@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — Namaz Vakti (Prayer Times)</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 720px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem;
+    color: #1a1a1a; background: #fff;
+  }
+  @media (prefers-color-scheme: dark) { body { color: #e8e8ea; background: #0d0f16; } a { color: #f2c84b; } }
+  h1 { font-size: 1.7rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.15rem; margin-top: 2rem; }
+  .updated { color: #888; font-size: .9rem; margin-top: 0; }
+  a { color: #b8860b; }
+  ul { padding-left: 1.25rem; }
+  li { margin: .35rem 0; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em; }
+  footer { margin-top: 3rem; color: #888; font-size: .85rem; }
+</style>
+</head>
+<body>
+  <h1>Privacy Policy</h1>
+  <p class="updated">Namaz Vakti — Prayer Times · Last updated 18 June 2026</p>
+
+  <p>
+    Namaz Vakti (“the app”) shows Muslim prayer times and the direction of the Qibla. It is built to
+    respect your privacy: <strong>the app has no user accounts, no analytics, no advertising, and no
+    servers operated by the developer</strong>. This policy explains what the app does with information
+    on your device.
+  </p>
+
+  <h2>Information the app does not collect</h2>
+  <p>
+    The developer does not collect, store, sell, or share any personal information. There is no sign-up,
+    no tracking across apps or websites, and no third-party analytics or advertising SDKs in the app.
+  </p>
+
+  <h2>Location</h2>
+  <p>
+    If you turn on <em>Automatic</em> location (or use the Qibla compass), the app uses your device’s
+    location <strong>only while you are using the app</strong> (“When In Use”) to:
+  </p>
+  <ul>
+    <li>determine your city/district so it can show the correct prayer times, and</li>
+    <li>calculate the bearing from where you are to the Kaaba in Mecca for the Qibla compass.</li>
+  </ul>
+  <p>
+    Your coordinates are processed on your device and through Apple’s built-in geocoding service
+    (<code>CLGeocoder</code>) to turn them into a place name; this is handled by Apple under
+    <a href="https://www.apple.com/legal/privacy/">Apple’s privacy policy</a>. Your precise location is
+    <strong>never sent to the developer</strong> and is not stored off your device. You can use the app
+    without location by choosing a city manually (<em>Pinned</em> mode), and you can revoke location
+    access at any time in iOS Settings.
+  </p>
+
+  <h2>Prayer-time data</h2>
+  <p>
+    Prayer times come from the public <strong>EzanVakti</strong> service, which republishes the official
+    tables of the Turkish Directorate of Religious Affairs (Diyanet). To fetch a month of times, the app
+    sends only a <strong>district identifier</strong> (the city you selected or that was matched from your
+    location) to <code>ezanvakti.emushaf.net</code>. No personal information is included in that request.
+    Downloaded times are cached locally on your device so the app works offline and makes fewer requests.
+  </p>
+
+  <h2>Notifications</h2>
+  <p>
+    If you enable prayer-time notifications, they are scheduled <strong>locally on your device</strong> by
+    iOS. No push servers and no notification data are involved.
+  </p>
+
+  <h2>Children</h2>
+  <p>
+    The app does not collect personal information from anyone, including children, and contains no
+    objectionable content.
+  </p>
+
+  <h2>Changes</h2>
+  <p>
+    If this policy changes, the updated version will be posted at this page with a new “last updated”
+    date.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    Questions about this policy? Email <a href="mailto:olcayertas@gmail.com">olcayertas@gmail.com</a> or
+    open an issue at
+    <a href="https://github.com/olcayertas/prayer-time">github.com/olcayertas/prayer-time</a>.
+  </p>
+
+  <footer>
+    © 2026 Olcay Ertaş. Prayer-time data © T.C. Diyanet İşleri Başkanlığı, accessed via the community
+    EzanVakti service. This app is not affiliated with or endorsed by Diyanet or Apple.
+  </footer>
+</body>
+</html>
