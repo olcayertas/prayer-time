@@ -1,0 +1,31 @@
+Namaz Vakti shows accurate Muslim prayer times for your city, powered by the published tables of the Turkish Directorate of Religious Affairs (Diyanet).
+
+Clean, fast, and private — no account, no ads, no tracking.
+
+PRAYER TIMES
+• The six daily times — İmsak, Güneş, Öğle, İkindi, Akşam, Yatsı — for today and the whole month.
+• A live countdown to the next prayer, always visible at a glance.
+• Hijri and Gregorian dates.
+
+YOUR LOCATION, YOUR WAY
+• Automatic: the app finds your city and shows the right times wherever you are.
+• Pinned: choose a city by hand (country → city → district) and keep it.
+• Each location is cached, so it works offline and makes no unnecessary requests.
+
+QIBLA COMPASS
+• A live compass that points to the Kaaba in Mecca, using a true-north bearing from your location, with a "facing the Qibla" cue.
+
+WIDGETS & LIVE ACTIVITY
+• Home Screen widgets with the next prayer and a live countdown.
+• Lock Screen widgets (rectangular, circular, inline).
+• A Live Activity and Dynamic Island countdown for the next prayer.
+
+NOTIFICATIONS
+• Optional local reminders at each prayer time.
+
+BEAUTIFUL & ACCESSIBLE
+• Two themes: the clean system look (auto light/dark) and a warm dark "Arc" theme.
+• Full Dynamic Type support and VoiceOver labels.
+• English, Turkish, and Arabic (right-to-left).
+
+Prayer-time data © T.C. Diyanet İşleri Başkanlığı, via the community EzanVakti service. Not affiliated with or endorsed by Diyanet.

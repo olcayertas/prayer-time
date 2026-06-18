@@ -1,0 +1,56 @@
+fastlane documentation
+----
+
+# Installation
+
+Make sure you have the latest version of the Xcode command line tools installed:
+
+```sh
+xcode-select --install
+```
+
+For _fastlane_ installation instructions, see [Installing _fastlane_](https://docs.fastlane.tools/#installing-fastlane)
+
+# Available Actions
+
+## iOS
+
+### ios metadata
+
+```sh
+[bundle exec] fastlane ios metadata
+```
+
+Push App Store listing metadata + screenshots (no binary; the build comes from Xcode Cloud). Does NOT submit.
+
+### ios clear_screenshots
+
+```sh
+[bundle exec] fastlane ios clear_screenshots
+```
+
+Delete ALL screenshots on the editable version (both locales) — used to clear duplicate uploads.
+
+### ios dedupe_screenshots
+
+```sh
+[bundle exec] fastlane ios dedupe_screenshots
+```
+
+Delete duplicate screenshots (deliver double-uploads 1320x2868 into APP_IPHONE_67); keep one per file name.
+
+### ios inspect
+
+```sh
+[bundle exec] fastlane ios inspect
+```
+
+Diagnostic: print the app's primary locale + each version's localizations (what's actually on App Store Connect).
+
+----
+
+This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
+
+More information about _fastlane_ can be found on [fastlane.tools](https://fastlane.tools).
+
+The documentation of _fastlane_ can be found on [docs.fastlane.tools](https://docs.fastlane.tools).

@@ -1,0 +1,5 @@
+app_identifier("com.olcayertas.NamazVakti.iOS")
+
+# Authentication is via the App Store Connect API key, configured in the Fastfile from
+# environment variables (ASC_KEY_ID / ASC_ISSUER_ID / ASC_KEY_PATH) — no Apple ID or
+# app-specific password is stored here, and the .p8 is never committed.

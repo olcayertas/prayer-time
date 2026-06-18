@@ -1,0 +1,104 @@
+default_platform(:ios)
+
+APP_ID = "com.olcayertas.NamazVakti.iOS"
+
+# App Store Connect API key from the environment (never committed):
+#   ASC_KEY_ID     – the 10-char Key ID (the XXXX in AuthKey_XXXX.p8)
+#   ASC_ISSUER_ID  – the Issuer ID (UUID) from Users and Access → Integrations → Keys
+#   ASC_KEY_PATH   – absolute path to the AuthKey_XXXX.p8 file
+# The key's role must be App Manager or Admin — a Developer-role key (e.g. one made only for
+# notarization) cannot edit App Store metadata and will fail with 403s.
+def asc_api_key
+  app_store_connect_api_key(
+    key_id: ENV.fetch("ASC_KEY_ID"),
+    issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+    key_filepath: ENV.fetch("ASC_KEY_PATH"),
+    in_house: false
+  )
+end
+
+platform :ios do
+  desc "Push App Store listing metadata + screenshots (no binary; the build comes from Xcode Cloud). Does NOT submit."
+  lane :metadata do
+    deliver(
+      api_key: asc_api_key,
+      app_identifier: APP_ID,
+      skip_binary_upload: true,        # the .ipa is delivered by Xcode Cloud, not here
+      skip_screenshots: false,
+      overwrite_screenshots: true,
+      submit_for_review: false,        # review + submit stays a manual, deliberate step
+      automatic_release: false,
+      force: true,                     # non-interactive: skip the HTML metadata preview prompt
+      run_precheck_before_submit: false,
+      precheck_include_in_app_purchases: false
+    )
+  end
+
+  desc "Delete ALL screenshots on the editable version (both locales) — used to clear duplicate uploads."
+  lane :clear_screenshots do
+    require "spaceship"
+    Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.create(
+      key_id: ENV.fetch("ASC_KEY_ID"), issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+      filepath: File.absolute_path(ENV.fetch("ASC_KEY_PATH")))
+    app = Spaceship::ConnectAPI::App.find(APP_ID)
+    app.get_app_store_versions.select { |v| v.app_store_state == "PREPARE_FOR_SUBMISSION" }.each do |v|
+      v.get_app_store_version_localizations.each do |l|
+        (l.get_app_screenshot_sets rescue []).each do |s|
+          (s.app_screenshots || []).each do |sc|
+            sc.delete!
+            UI.message("deleted #{l.locale} screenshot #{sc.id}")
+          end
+        end
+      end
+    end
+    UI.success("cleared all screenshots")
+  end
+
+  desc "Delete duplicate screenshots (deliver double-uploads 1320x2868 into APP_IPHONE_67); keep one per file name."
+  lane :dedupe_screenshots do
+    require "spaceship"
+    Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.create(
+      key_id: ENV.fetch("ASC_KEY_ID"), issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+      filepath: File.absolute_path(ENV.fetch("ASC_KEY_PATH")))
+    app = Spaceship::ConnectAPI::App.find(APP_ID)
+    app.get_app_store_versions.select { |v| v.app_store_state == "PREPARE_FOR_SUBMISSION" }.each do |v|
+      v.get_app_store_version_localizations.each do |l|
+        (l.get_app_screenshot_sets rescue []).each do |s|
+          seen = {}
+          (s.app_screenshots || []).each do |sc|
+            key = sc.file_name || sc.id   # nil name → treat as unique (never collapse)
+            if seen[key]
+              sc.delete!
+              UI.message("#{l.locale}: deleted duplicate #{key}")
+            else
+              seen[key] = true
+              UI.message("#{l.locale}: kept #{key}")
+            end
+          end
+        end
+      end
+    end
+    UI.success("dedupe complete")
+  end
+
+  desc "Diagnostic: print the app's primary locale + each version's localizations (what's actually on App Store Connect)."
+  lane :inspect do
+    require "spaceship"
+    Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.create(
+      key_id: ENV.fetch("ASC_KEY_ID"),
+      issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+      filepath: File.absolute_path(ENV.fetch("ASC_KEY_PATH"))
+    )
+    app = Spaceship::ConnectAPI::App.find(APP_ID)
+    UI.important("APP: #{app.name.inspect} id=#{app.id} primaryLocale=#{app.primary_locale}")
+    app.get_app_store_versions.each do |v|
+      UI.important("VERSION #{v.version_string} state=#{v.app_store_state}")
+      v.get_app_store_version_localizations.each do |l|
+        UI.message("  locale=#{l.locale}  desc?=#{!l.description.to_s.empty?}  keywords?=#{!l.keywords.to_s.empty?}")
+        (l.get_app_screenshot_sets rescue []).each do |s|
+          UI.message("      set #{s.screenshot_display_type}: #{(s.app_screenshots || []).size} shots")
+        end
+      end
+    end
+  end
+end

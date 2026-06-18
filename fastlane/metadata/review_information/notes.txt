@@ -1,0 +1,5 @@
+No login or account is required.
+
+Prayer times are public data published by the Turkish Directorate of Religious Affairs (Diyanet), fetched via the community EzanVakti service.
+
+Location (When In Use) is used only to (1) show prayer times for the user's current city and (2) compute the Qibla compass bearing toward Mecca. The app also works fully without location — the user can pick a city manually. No data is collected or sent to the developer.

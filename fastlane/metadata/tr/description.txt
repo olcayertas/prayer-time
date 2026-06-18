@@ -1,0 +1,31 @@
+Namaz Vakti, bulunduğunuz şehir için Diyanet İşleri Başkanlığı'nın yayımladığı namaz vakitlerini gösterir.
+
+Sade, hızlı ve gizliliğe saygılı — hesap yok, reklam yok, takip yok.
+
+NAMAZ VAKİTLERİ
+• Altı vakit — İmsak, Güneş, Öğle, İkindi, Akşam, Yatsı — bugün ve tüm ay için.
+• Bir sonraki vakte canlı geri sayım, her an göz önünde.
+• Hicri ve Miladi tarih.
+
+KONUM, SİZİN TERCİHİNİZ
+• Otomatik: uygulama şehrinizi bulur ve nerede olursanız olun doğru vakitleri gösterir.
+• Sabit: şehri elle seçin (ülke → şehir → ilçe) ve sabitleyin.
+• Her konum önbelleğe alınır; çevrimdışı çalışır ve gereksiz istek yapmaz.
+
+KIBLE PUSULASI
+• Bulunduğunuz yerden Mekke'deki Kâbe'ye, gerçek kuzeye göre işaret eden canlı pusula ve "Kıble'ye dönüksünüz" göstergesi.
+
+WIDGET'LAR VE CANLI ETKİNLİK
+• Ana ekran widget'ları: sonraki vakit ve canlı geri sayım.
+• Kilit ekranı widget'ları (dikdörtgen, dairesel, satır içi).
+• Sonraki vakit için Canlı Etkinlik ve Dynamic Island geri sayımı.
+
+BİLDİRİMLER
+• Her namaz vaktinde isteğe bağlı yerel hatırlatma.
+
+GÜZEL VE ERİŞİLEBİLİR
+• İki tema: sade sistem görünümü (otomatik açık/koyu) ve sıcak koyu "Arc" teması.
+• Tam Dynamic Type desteği ve VoiceOver etiketleri.
+• Türkçe, İngilizce ve Arapça (sağdan sola).
+
+Namaz vakti verileri © T.C. Diyanet İşleri Başkanlığı, topluluk EzanVakti servisi aracılığıyla. Diyanet ile bağlantılı veya onun tarafından onaylanmış değildir.

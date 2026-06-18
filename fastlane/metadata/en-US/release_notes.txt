@@ -1,0 +1,8 @@
+First release of Namaz Vakti for iPhone:
+• Daily and monthly Diyanet prayer times with a live countdown.
+• Automatic or pinned location.
+• Qibla compass.
+• Home Screen, Lock Screen, Live Activity, and Dynamic Island.
+• Prayer-time notifications.
+• Light/dark system theme and a new dark "Arc" theme.
+• English, Turkish, and Arabic.

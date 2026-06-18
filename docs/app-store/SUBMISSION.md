@@ -187,3 +187,34 @@ notarytool keychain profile used for the macOS DMG is a different credential and
 > Note: archiving with `-allowProvisioningUpdates` (or Organizer) will **create an Apple Distribution
 > certificate and App Store provisioning profiles on your developer account** the first time — expected,
 > but it does modify your account, so it’s done only on your go.
+
+---
+
+## 8. Metadata via Fastlane (`fastlane/`)
+
+The store text + screenshots are managed as code under `fastlane/` and pushed with **`deliver`** —
+reusable for every future update. Localizations: **`tr`** (primary) and **`en-US`**.
+
+Auth via an App Store Connect **API key with App Manager (or Admin) role** — a Developer-role key
+(e.g. one made for notarization) gets `403 Forbidden` on metadata. Pass it via env vars (never committed;
+`*.p8` is gitignored):
+
+```sh
+export ASC_KEY_ID=...           # 10-char Key ID
+export ASC_ISSUER_ID=...        # team Issuer ID (UUID)
+export ASC_KEY_PATH=fastlane/AuthKey_<KEY_ID>.p8
+export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8   # deliver needs a UTF-8 locale (Turkish chars)
+
+fastlane metadata            # push text + screenshots (skips the binary; does NOT submit)
+fastlane dedupe_screenshots  # REQUIRED after `metadata` — see quirk below
+fastlane inspect             # print locales / screenshot counts actually on App Store Connect
+fastlane clear_screenshots   # delete all screenshots (e.g. before a fresh upload)
+```
+
+> **deliver screenshot quirk:** a 1320×2868 (6.9″) image is ambiguous between Apple’s 6.7″/6.9″ buckets,
+> so `deliver` uploads each one **twice** into `APP_IPHONE_67` on every run (even with
+> `overwrite_screenshots`). Always run **`fastlane dedupe_screenshots`** afterward — it keeps one per
+> file name. (`inspect` should then show 4 per locale.)
+
+**Still set manually in the UI** (deliver doesn’t do these): App Privacy → *Data Not Collected*,
+Age Rating → *4+*, Pricing → *Free*, Category → *Lifestyle*, and the App Review contact phone.
