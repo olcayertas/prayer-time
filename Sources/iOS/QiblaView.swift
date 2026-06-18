@@ -9,6 +9,7 @@ struct QiblaView: View {
     @ObservedObject var store: PrayerStore
     @StateObject private var qibla = QiblaController()
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.theme) private var theme
 
     var body: some View {
         GeometryReader { proxy in
@@ -21,6 +22,7 @@ struct QiblaView: View {
                 // outgrows the screen (e.g. large Dynamic Type).
                 .frame(maxWidth: .infinity, minHeight: proxy.size.height)
             }
+            .themedRootBackground(theme)
         }
         .navigationTitle("Qibla")
         .toolbar(.hidden, for: .navigationBar)
@@ -49,6 +51,7 @@ struct QiblaView: View {
                     }
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(theme.accent)
             }
         default:
             if !CLLocationManager.headingAvailable() {
@@ -57,7 +60,7 @@ struct QiblaView: View {
             } else if qibla.coordinate == nil {
                 VStack(spacing: 16) {
                     ProgressView()
-                    Text("Finding your location…").foregroundStyle(.secondary)
+                    Text("Finding your location…").foregroundStyle(theme.muted)
                 }
                 .frame(maxWidth: .infinity)
             } else {
@@ -73,27 +76,29 @@ struct QiblaView: View {
             CompassDial(
                 heading: qibla.headingDegrees ?? 0,
                 qiblaBearing: qibla.qiblaBearing ?? 0,
-                isAligned: qibla.isAligned
+                isAligned: qibla.isAligned,
+                theme: theme
             )
             .frame(width: 300, height: 300)
             .padding(.top, 8)
 
             if qibla.isAligned {
                 Label("Facing the Qibla", systemImage: "checkmark.circle.fill")
-                    .font(.headline)
-                    .foregroundStyle(.green)
+                    .font(theme.font(.body, .headline, weight: .semibold))
+                    .foregroundStyle(theme.success)
             } else if let bearing = qibla.qiblaBearing {
                 // Interpolate a pre-formatted String (not the Int) so the catalog key is the stable
                 // "%@° from North" — matches Xcode's extraction and avoids %lld/%@ duplicate keys.
                 let degrees = String(Int(bearing.rounded()))
                 Text("\(degrees)° from North")
-                    .font(.system(.title2, design: .rounded).weight(.semibold))
+                    .font(theme.font(.rounded, .title2, weight: .semibold))
                     .monospacedDigit()
+                    .foregroundStyle(theme.text)
             }
 
             Text(store.locationName)
-                .font(.callout)
-                .foregroundStyle(.secondary)
+                .font(theme.font(.body, .callout))
+                .foregroundStyle(theme.muted)
 
             if qibla.isCalibrating {
                 hint("figure.walk.motion", "Move your phone in a figure 8 to calibrate the compass.")
@@ -114,6 +119,7 @@ struct QiblaView: View {
                "Prayer Times uses your location to point the compass toward the Kaaba in Mecca.") {
             Button("Allow Location") { qibla.requestAuthorization() }
                 .buttonStyle(.borderedProminent)
+                .tint(theme.accent)
         }
     }
 
@@ -121,8 +127,8 @@ struct QiblaView: View {
 
     private func hint(_ symbol: String, _ text: LocalizedStringKey) -> some View {
         Label(text, systemImage: symbol)
-            .font(.footnote)
-            .foregroundStyle(.secondary)
+            .font(theme.font(.body, .footnote))
+            .foregroundStyle(theme.muted)
             .multilineTextAlignment(.center)
             .padding(.top, 4)
     }
@@ -138,11 +144,11 @@ struct QiblaView: View {
         VStack(spacing: 14) {
             Image(systemName: symbol)
                 .font(.system(size: 52))
-                .foregroundStyle(Color.accentColor)
-            Text(title).font(.title2.weight(.semibold))
+                .foregroundStyle(theme.accent)
+            Text(title).font(theme.font(.display, .title2, weight: .semibold)).foregroundStyle(theme.text)
             Text(message)
-                .font(.callout)
-                .foregroundStyle(.secondary)
+                .font(theme.font(.body, .callout))
+                .foregroundStyle(theme.muted)
                 .multilineTextAlignment(.center)
             action()
                 .padding(.top, 4)
@@ -159,6 +165,7 @@ private struct CompassDial: View {
     let heading: Double
     let qiblaBearing: Double
     let isAligned: Bool
+    let theme: Theme
 
     /// Continuous (un-normalized) heading the view animates toward — see `update(to:)`.
     @State private var displayHeading: Double = 0
@@ -186,24 +193,24 @@ private struct CompassDial: View {
     /// faces). When this is 0 the phone points at the qibla.
     private var qiblaScreenAngle: Double { qiblaBearing - displayHeading }
 
-    private var tint: Color { isAligned ? .green : Color.accentColor }
+    private var arrowColor: Color { isAligned ? theme.success : theme.accent }
 
     private var rose: some View {
         ZStack {
-            Circle().fill(Color.cardBackground)
-            Circle().strokeBorder(Color.secondary.opacity(0.25), lineWidth: 2)
+            Circle().fill(theme.surface)
+            Circle().strokeBorder(theme.muted.opacity(0.25), lineWidth: 2)
             ForEach(0..<72, id: \.self) { i in
                 let major = i % 9 == 0
                 Rectangle()
-                    .fill(Color.secondary.opacity(major ? 0.55 : 0.22))
+                    .fill(theme.muted.opacity(major ? 0.55 : 0.22))
                     .frame(width: major ? 2 : 1, height: major ? 12 : 6)
                     .offset(y: -(radius - 10))
                     .rotationEffect(.degrees(Double(i) / 72 * 360))
             }
             ForEach(Cardinal.all) { c in
                 Text(c.label)
-                    .font(.headline.weight(c.label == "N" ? .bold : .regular))
-                    .foregroundStyle(c.label == "N" ? .red : .secondary)
+                    .font(theme.font(.body, .headline, weight: c.label == "N" ? .bold : .regular))
+                    .foregroundStyle(c.label == "N" ? theme.error : theme.muted)
                     .offset(y: -(radius - 32))
                     .rotationEffect(.degrees(c.angle))
             }
@@ -215,9 +222,9 @@ private struct CompassDial: View {
     private var kaabaMarker: some View {
         Image(systemName: "cube.fill")
             .font(.system(size: 20))
-            .foregroundStyle(tint)
+            .foregroundStyle(arrowColor)
             .padding(6)
-            .background(Color.cardBackground, in: Circle())
+            .background(theme.surface, in: Circle())
             .offset(y: -(radius - 4))
             .rotationEffect(.degrees(qiblaScreenAngle))
     }
@@ -226,23 +233,23 @@ private struct CompassDial: View {
     private var qiblaArrow: some View {
         Image(systemName: "location.north.fill")
             .font(.system(size: 64))
-            .foregroundStyle(tint)
+            .foregroundStyle(arrowColor)
             .rotationEffect(.degrees(qiblaScreenAngle))
-            .shadow(color: tint.opacity(0.25), radius: 6)
+            .shadow(color: arrowColor.opacity(0.25), radius: 6)
     }
 
     /// Fixed marker at 12 o'clock = the direction you're facing.
     private var topReference: some View {
         Triangle()
-            .fill(Color.secondary)
+            .fill(theme.muted)
             .frame(width: 14, height: 10)
             .offset(y: -(radius + 2))
     }
 
     private var centerLabel: some View {
         Text(isAligned ? "Qibla" : "")
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(.green)
+            .font(theme.font(.body, .caption, weight: .semibold))
+            .foregroundStyle(theme.success)
             .offset(y: 40)
     }
 

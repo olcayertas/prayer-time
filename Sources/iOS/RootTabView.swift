@@ -6,6 +6,7 @@ struct RootTabView: View {
     @ObservedObject var store: PrayerStore
     @State private var selection: AppSection = .today
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.theme) private var theme
 
     var body: some View {
         TabView(selection: $selection) {
@@ -22,6 +23,7 @@ struct RootTabView: View {
                 .tag(AppSection.settings)
                 .tabItem { Label(AppSection.settings.title, systemImage: AppSection.settings.systemImage) }
         }
+        .tint(theme.accent)
         .task(id: store.days.count) {
             LiveActivityController.shared.sync(schedule: store.schedule, locationName: store.locationName)
         }

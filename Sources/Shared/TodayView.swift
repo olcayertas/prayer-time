@@ -3,6 +3,7 @@ import SwiftUI
 /// Rich view of today's prayer times: hero countdown, the six times, and extras.
 struct TodayView: View {
     @ObservedObject var store: PrayerStore
+    @Environment(\.theme) private var theme
 
     private let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
 
@@ -32,6 +33,7 @@ struct TodayView: View {
                 }
                 .padding(24)
             }
+            .themedRootBackground(theme)
         }
         .navigationTitle("Today")
         #if os(iOS)
@@ -41,17 +43,19 @@ struct TodayView: View {
 
     private func header(today: PrayerDay?) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(store.locationName).font(.largeTitle.bold())
+            Text(store.locationName)
+                .font(theme.font(.display, .largeTitle, weight: .bold))
+                .foregroundStyle(theme.text)
             if let today {
                 HStack(spacing: 8) {
                     if let gregorian = DateLocalizer.gregorianLong(today.miladiTarihKisa) { Text(gregorian) }
                     if let hicri = DateLocalizer.hijriLong(today.hicriTarihKisa) {
-                        Text("·").foregroundStyle(.tertiary)
+                        Text("·").foregroundStyle(theme.faint)
                         Text(hicri)
                     }
                 }
-                .font(.callout)
-                .foregroundStyle(.secondary)
+                .font(theme.font(.body, .callout))
+                .foregroundStyle(theme.muted)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -68,26 +72,29 @@ struct TodayView: View {
                     heroStacked(upcoming)
                 }
             } else {
-                Text("Couldn't load today's times").foregroundStyle(.secondary)
+                Text("Couldn't load today's times").foregroundStyle(theme.muted)
             }
         }
         .padding(22)
         .frame(maxWidth: .infinity)
-        .background(Color.accentColor.opacity(0.12), in: RoundedRectangle(cornerRadius: 16))
+        .background(theme.accentSoft, in: RoundedRectangle(cornerRadius: 16))
     }
 
     private func heroLabel(_ upcoming: UpcomingPrayer) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text("Next prayer").font(.subheadline).foregroundStyle(.secondary)
-            Text(upcoming.prayer.displayName).font(.title.weight(.semibold)).lineLimit(1)
+            Text("Next prayer").font(theme.font(.body, .subheadline)).foregroundStyle(theme.muted)
+            Text(upcoming.prayer.displayName)
+                .font(theme.font(.display, .title, weight: .semibold))
+                .foregroundStyle(theme.text)
+                .lineLimit(1)
         }
     }
 
     private func heroCountdown(_ upcoming: UpcomingPrayer) -> some View {
         Text(CountdownFormatter.string(upcoming.remaining))
-            .font(.system(size: countdownSize, weight: .bold, design: .rounded))
+            .font(theme.font(.rounded, size: countdownSize, weight: .bold, relativeTo: .largeTitle))
             .monospacedDigit()
-            .foregroundStyle(Color.accentColor)
+            .foregroundStyle(theme.accent)
             .lineLimit(1)
     }
 
@@ -96,12 +103,12 @@ struct TodayView: View {
     private func heroRow(_ upcoming: UpcomingPrayer) -> some View {
         HStack(spacing: 20) {
             Image(systemName: upcoming.prayer.symbolName)
-                .font(.system(size: heroIconSize)).foregroundStyle(Color.accentColor).frame(width: 64)
+                .font(.system(size: heroIconSize)).foregroundStyle(theme.accent).frame(width: 64)
             heroLabel(upcoming).fixedSize()
             Spacer(minLength: 16)
             VStack(alignment: .trailing, spacing: 2) {
                 heroCountdown(upcoming).fixedSize()
-                Text("remaining").font(.caption).foregroundStyle(.secondary)
+                Text("remaining").font(theme.font(.body, .caption)).foregroundStyle(theme.muted)
             }
         }
     }
@@ -110,13 +117,13 @@ struct TodayView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 14) {
                 Image(systemName: upcoming.prayer.symbolName)
-                    .font(.system(size: heroIconCompactSize)).foregroundStyle(Color.accentColor)
+                    .font(.system(size: heroIconCompactSize)).foregroundStyle(theme.accent)
                 heroLabel(upcoming)
                 Spacer(minLength: 0)
             }
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 heroCountdown(upcoming).minimumScaleFactor(0.7)
-                Text("remaining").font(.caption).foregroundStyle(.secondary)
+                Text("remaining").font(theme.font(.body, .caption)).foregroundStyle(theme.muted)
                 Spacer(minLength: 0)
             }
         }
@@ -130,24 +137,24 @@ struct TodayView: View {
                 VStack(spacing: 6) {
                     Image(systemName: prayer.symbolName)
                         .font(.title2)
-                        .foregroundStyle(isNext ? Color.accentColor : Color.secondary)
+                        .foregroundStyle(isNext ? theme.accent : theme.muted)
                     Text(prayer.displayName)
-                        .font(.subheadline)
-                        .fontWeight(isNext ? .semibold : .regular)
+                        .font(theme.font(.body, .subheadline, weight: isNext ? .semibold : .regular))
+                        .foregroundStyle(theme.text)
                     Text(today.time(for: prayer))
-                        .font(.title3)
+                        .font(theme.font(.mono, .title3, weight: .medium))
                         .monospacedDigit()
-                        .fontWeight(.medium)
+                        .foregroundStyle(theme.text)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 14)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(isNext ? Color.accentColor.opacity(0.15) : Color.cardBackground)
+                        .fill(isNext ? theme.accentSoft : theme.surface)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
-                        .strokeBorder(isCurrent ? Color.accentColor : Color.clear, lineWidth: 1.5)
+                        .strokeBorder(isCurrent ? theme.accent : Color.clear, lineWidth: 1.5)
                 )
             }
         }
@@ -171,10 +178,10 @@ struct TodayView: View {
 
     private func infoItem(_ symbol: String, _ label: String, _ value: String) -> some View {
         HStack(spacing: 8) {
-            Image(systemName: symbol).foregroundStyle(.secondary)
+            Image(systemName: symbol).foregroundStyle(theme.muted)
             VStack(alignment: .leading, spacing: 1) {
-                Text(label).font(.caption2).foregroundStyle(.secondary)
-                Text(value).font(.callout).monospacedDigit()
+                Text(label).font(theme.font(.body, .caption2)).foregroundStyle(theme.muted)
+                Text(value).font(theme.font(.mono, .callout)).monospacedDigit().foregroundStyle(theme.text)
             }
         }
     }

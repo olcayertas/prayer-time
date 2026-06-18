@@ -6,6 +6,7 @@ import AppKit
 struct MainWindowView: View {
     @ObservedObject var store: PrayerStore
     @State private var section: AppSection? = .today
+    @Environment(\.theme) private var theme
 
     var body: some View {
         NavigationSplitView {
@@ -22,6 +23,7 @@ struct MainWindowView: View {
             case .qibla: EmptyView() // iOS-only; filtered from `displayed`, so never selected here
             }
         }
+        .tint(theme.accent)
         .frame(minWidth: 660, minHeight: 480)
         .onAppear {
             NSApp.setActivationPolicy(.regular)

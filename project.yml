@@ -41,6 +41,9 @@ targets:
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         LSUIElement: true
+        # Arc-theme fonts: bundled .ttf live in Sources/Shared/Fonts/ (already in this target via the
+        # Sources/Shared dir); macOS registers every font in the Resources dir.
+        ATSApplicationFontsPath: "."
         # Dynamic location (Automatic mode): show prayer times for the user's current city.
         # When-in-use only; a sandboxed agent needs the matching entitlement below.
         NSLocationWhenInUseUsageDescription: "Prayer Times uses your location to show prayer times for where you are."
@@ -74,6 +77,11 @@ targets:
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         UILaunchScreen: {}
+        # Arc-theme bundled fonts (.ttf in Sources/Shared/Fonts/, already in this target via Sources/Shared).
+        UIAppFonts:
+          - Fraunces.ttf
+          - HankenGrotesk.ttf
+          - SplineSansMono.ttf
         NSSupportsLiveActivities: true
         # Location serves two features: prayer times for the current city (Automatic mode) and the
         # Qibla compass. When-in-use only (no "always", no precise/temporary upgrade, and no motion

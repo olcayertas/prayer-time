@@ -9,6 +9,7 @@ import AppKit
 struct SettingsView: View {
     @ObservedObject var store: PrayerStore
     @EnvironmentObject private var themeManager: ThemeManager
+    @Environment(\.theme) private var theme
 
     var body: some View {
         Form {
@@ -76,6 +77,7 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
+        .tint(theme.accent)
         .navigationTitle("Settings")
         #if os(iOS)
         .toolbar(.hidden, for: .navigationBar)

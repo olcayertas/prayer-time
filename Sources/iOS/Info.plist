@@ -24,6 +24,12 @@
 	<string>Prayer Times uses your location to show prayer times for where you are and to point the Qibla compass toward the Kaaba in Mecca.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Fraunces.ttf</string>
+		<string>HankenGrotesk.ttf</string>
+		<string>SplineSansMono.ttf</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UISupportedInterfaceOrientations</key>

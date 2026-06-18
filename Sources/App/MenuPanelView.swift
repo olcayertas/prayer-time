@@ -6,6 +6,7 @@ struct MenuPanelView: View {
     @ObservedObject var store: PrayerStore
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.theme) private var theme
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -32,6 +33,8 @@ struct MenuPanelView: View {
             footer
         }
         .frame(width: 288)
+        .tint(theme.accent)
+        .themedRootBackground(theme)
     }
 
     // MARK: - Sections
@@ -52,13 +55,14 @@ struct MenuPanelView: View {
     private func header(today: PrayerDay?) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(store.locationName)
-                .font(.headline)
+                .font(theme.font(.display, .headline, weight: .semibold))
+                .foregroundStyle(theme.text)
             if let today {
                 if let gregorian = DateLocalizer.gregorianLong(today.miladiTarihKisa) {
-                    Text(gregorian).font(.caption).foregroundStyle(.secondary)
+                    Text(gregorian).font(theme.font(.body, .caption)).foregroundStyle(theme.muted)
                 }
                 if let hicri = DateLocalizer.hijriLong(today.hicriTarihKisa) {
-                    Text(hicri).font(.caption).foregroundStyle(.secondary)
+                    Text(hicri).font(theme.font(.body, .caption)).foregroundStyle(theme.muted)
                 }
             }
         }
@@ -74,22 +78,23 @@ struct MenuPanelView: View {
             if let upcoming {
                 Image(systemName: upcoming.prayer.symbolName)
                     .font(.system(size: heroIconSize))
-                    .foregroundStyle(.tint)
+                    .foregroundStyle(theme.accent)
                     .frame(width: 34)
                 VStack(alignment: .leading, spacing: 1) {
                     Text("Next prayer")
-                        .font(.caption).foregroundStyle(.secondary)
+                        .font(theme.font(.body, .caption)).foregroundStyle(theme.muted)
                     Text(upcoming.prayer.displayName)
-                        .font(.title3).fontWeight(.semibold)
+                        .font(theme.font(.display, .title3, weight: .semibold))
+                        .foregroundStyle(theme.text)
                 }
                 Spacer()
                 Text(CountdownFormatter.string(upcoming.remaining))
-                    .font(.system(size: heroCountdownSize, weight: .semibold, design: .rounded))
+                    .font(theme.font(.rounded, size: heroCountdownSize, weight: .semibold, relativeTo: .title2))
                     .monospacedDigit()
-                    .foregroundStyle(.tint)
+                    .foregroundStyle(theme.accent)
             } else {
                 Text("Couldn't load today's times")
-                    .font(.callout).foregroundStyle(.secondary)
+                    .font(theme.font(.body, .callout)).foregroundStyle(theme.muted)
             }
         }
         .padding(.horizontal, 12)
@@ -103,20 +108,22 @@ struct MenuPanelView: View {
                 HStack {
                     Image(systemName: prayer.symbolName)
                         .frame(width: 22)
-                        .foregroundStyle(isNext ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
+                        .foregroundStyle(isNext ? theme.accent : theme.muted)
                     Text(prayer.displayName)
-                        .fontWeight(isNext ? .semibold : .regular)
+                        .font(theme.font(.body, .body, weight: isNext ? .semibold : .regular))
+                        .foregroundStyle(theme.text)
                     Spacer()
                     Text(today.time(for: prayer))
+                        .font(theme.font(.mono, .body, weight: isNext ? .semibold : .regular))
                         .monospacedDigit()
-                        .fontWeight(isNext ? .semibold : .regular)
+                        .foregroundStyle(theme.text)
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
                 .background {
                     if isNext {
                         RoundedRectangle(cornerRadius: 6)
-                            .fill(.tint.opacity(0.14))
+                            .fill(theme.accentSoft)
                             .padding(.horizontal, 6)
                     }
                 }
@@ -129,13 +136,13 @@ struct MenuPanelView: View {
         HStack(spacing: 8) {
             if store.isLoading {
                 ProgressView().controlSize(.small)
-                Text("Loading…").foregroundStyle(.secondary)
+                Text("Loading…").foregroundStyle(theme.muted)
             } else {
-                Image(systemName: "wifi.exclamationmark").foregroundStyle(.secondary)
-                Text(store.lastError ?? String(localized: "No data")).foregroundStyle(.secondary)
+                Image(systemName: "wifi.exclamationmark").foregroundStyle(theme.muted)
+                Text(store.lastError ?? String(localized: "No data")).foregroundStyle(theme.muted)
             }
         }
-        .font(.callout)
+        .font(theme.font(.body, .callout))
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
     }

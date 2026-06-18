@@ -110,12 +110,10 @@ extension Theme {
         prayerPalette: sharedPrayerPalette,
         colorScheme: nil,
         fontResolver: { role, size, weight, _ in
-            // Default keeps the system designs the app uses today (NOT serif).
-            let design: Font.Design = switch role {
-            case .display, .body: .default
-            case .mono:           .monospaced
-            case .rounded:        .rounded
-            }
+            // Default keeps the exact system designs the app uses today: SF default everywhere
+            // (NOT serif, NOT SF-Mono) — tabular numerals come from `.monospacedDigit()` at the
+            // call sites, as today. Only the countdown uses the rounded design.
+            let design: Font.Design = role == .rounded ? .rounded : .default
             return .system(size: size, weight: weight, design: design)
         }
     )

@@ -4,6 +4,7 @@ import SwiftUI
 struct LocationPickerView: View {
     @ObservedObject var store: PrayerStore
     @StateObject private var model = LocationPickerModel()
+    @Environment(\.theme) private var theme
 
     var body: some View {
         Group {
@@ -32,7 +33,7 @@ struct LocationPickerView: View {
             .disabled(model.districts.isEmpty)
 
             if let error = model.error {
-                Text(error).font(.caption).foregroundStyle(.red)
+                Text(error).font(.caption).foregroundStyle(theme.error)
             }
 
             Button("Save this location") {
