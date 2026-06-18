@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- App Store distribution export. Used by `xcodebuild -exportArchive` after archiving the
+       NamazVaktiiOS scheme (Release). Automatic signing creates/uses the Apple Distribution cert
+       and App Store provisioning profiles for the app + embedded widget. See docs/app-store/SUBMISSION.md. -->
+  <key>method</key>
+  <string>app-store-connect</string>
+  <key>destination</key>
+  <string>export</string>
+  <key>teamID</key>
+  <string>SNZ29V4PJZ</string>
+  <key>signingStyle</key>
+  <string>automatic</string>
+  <!-- Keep the version/build from the build settings (MARKETING_VERSION / CURRENT_PROJECT_VERSION). -->
+  <key>manageAppVersionAndBuildNumber</key>
+  <false/>
+  <!-- Upload dSYMs so App Store Connect can symbolicate crash reports. -->
+  <key>uploadSymbols</key>
+  <true/>
+</dict>
+</plist>

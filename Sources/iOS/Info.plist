@@ -20,6 +20,8 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Prayer Times uses your location to show prayer times for where you are and to point the Qibla compass toward the Kaaba in Mecca.</string>
 	<key>NSSupportsLiveActivities</key>
