@@ -8,9 +8,24 @@ import AppKit
 /// App settings, shown in the main window's "Ayarlar" section.
 struct SettingsView: View {
     @ObservedObject var store: PrayerStore
+    @EnvironmentObject private var themeManager: ThemeManager
 
     var body: some View {
         Form {
+            Section("Appearance") {
+                Picker("Theme", selection: Binding(
+                    get: { themeManager.themeID },
+                    set: { themeManager.setTheme($0) }
+                )) {
+                    ForEach(ThemeID.allCases) { Text($0.displayName).tag($0) }
+                }
+                .pickerStyle(.segmented)
+                Text(themeManager.themeID == .arc
+                     ? "A dark palette with gold accents."
+                     : "Follows your system light and dark appearance.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+
             Section("Location") {
                 Picker("Mode", selection: Binding(
                     get: { store.locationMode },

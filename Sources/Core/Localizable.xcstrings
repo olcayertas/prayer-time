@@ -1,6 +1,48 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "A dark palette with gold accents." : {
+      "comment" : "Appearance: Arc theme caption",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "لوحة داكنة بلمسات ذهبية." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Altın vurgulu koyu bir palet." } }
+      }
+    },
+    "Appearance" : {
+      "comment" : "Settings section: theme selection",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "المظهر" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Görünüm" } }
+      }
+    },
+    "Arc" : {
+      "comment" : "Theme name (brand) — keep as 'Arc'",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "Arc" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Arc" } }
+      }
+    },
+    "Default" : {
+      "comment" : "Theme name: the current/system look",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "افتراضي" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Varsayılan" } }
+      }
+    },
+    "Follows your system light and dark appearance." : {
+      "comment" : "Appearance: Default theme caption",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "يتبع مظهر النظام الفاتح والداكن." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Sistemin açık ve koyu görünümünü izler." } }
+      }
+    },
+    "Theme" : {
+      "comment" : "Appearance: theme picker label",
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "السمة" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Tema" } }
+      }
+    },
     "Automatic" : {
       "comment" : "Location mode: track the current location",
       "localizations" : {

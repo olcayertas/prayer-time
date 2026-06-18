@@ -6,10 +6,12 @@ import SwiftUI
 @main
 struct PrayerTimesApp: App {
     @StateObject private var store = PrayerStore.shared
+    @StateObject private var themeManager = ThemeManager.shared
 
     var body: some Scene {
         WindowGroup {
             RootTabView(store: store)
+                .themed(themeManager)
         }
     }
 }
