@@ -41,6 +41,8 @@ targets:
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         LSUIElement: true
+        # Mac App Store / Finder app category.
+        LSApplicationCategoryType: public.app-category.lifestyle
         # Arc-theme fonts: bundled .ttf live in Sources/Shared/Fonts/ (already in this target via the
         # Sources/Shared dir); macOS registers every font in the Resources dir.
         ATSApplicationFontsPath: "."
@@ -61,6 +63,8 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.olcayertas.NamazVakti
         PRODUCT_NAME: NamazVakti
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        # Required for Developer ID (the DMG) + recommended for the Mac App Store.
+        ENABLE_HARDENED_RUNTIME: YES
         # App Groups need provisioning, so sign with the team (overrides the ad-hoc base). CI
         # passes CODE_SIGNING_ALLOWED=NO; the Release DMG overrides to Developer ID on the CLI.
         CODE_SIGN_STYLE: Automatic
@@ -152,6 +156,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.olcayertas.NamazVakti.Widget
+        ENABLE_HARDENED_RUNTIME: YES
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: SNZ29V4PJZ
         CODE_SIGN_IDENTITY: "Apple Development"
