@@ -16,7 +16,10 @@ struct SettingsView: View {
             Section("Appearance") {
                 Picker("Theme", selection: Binding(
                     get: { themeManager.themeID },
-                    set: { themeManager.setTheme($0) }
+                    // A segmented Picker can call its setter *during* a view update; publishing then
+                    // ("Publishing changes from within view updates") is undefined behaviour — so
+                    // hop the write to the next main-actor turn, after the update completes.
+                    set: { id in Task { @MainActor in themeManager.setTheme(id) } }
                 )) {
                     ForEach(ThemeID.allCases) { Text($0.displayName).tag($0) }
                 }
@@ -30,7 +33,9 @@ struct SettingsView: View {
             Section("Location") {
                 Picker("Mode", selection: Binding(
                     get: { store.locationMode },
-                    set: { store.setLocationMode($0) }
+                    // Deferred for the same reason as the Theme picker above (avoid publishing
+                    // `locationMode` from within a view update).
+                    set: { mode in Task { @MainActor in store.setLocationMode(mode) } }
                 )) {
                     Text("Automatic").tag(LocationMode.automatic)
                     Text("Pinned").tag(LocationMode.pinned)
