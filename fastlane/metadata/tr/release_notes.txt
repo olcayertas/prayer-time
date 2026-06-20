@@ -1,8 +1,3 @@
-Namaz Vakti'nin iPhone için ilk sürümü:
-• Canlı geri sayımla günlük ve aylık Diyanet namaz vakitleri.
-• Otomatik veya sabit konum.
-• Kıble pusulası.
-• Ana ekran, kilit ekranı, Canlı Etkinlik ve Dynamic Island.
-• Namaz vakti bildirimleri.
-• Açık/koyu sistem teması ve yeni koyu "Arc" teması.
-• Türkçe, İngilizce ve Arapça.
+1.0.1 sürümündeki yenilikler:
+• Ana ekran widget'ı artık sabit bir varsayılan yerine seçtiğiniz konumu gösterir.
+• Aylık görünümde Türkçe ve Arapça düzeltmeleri.
