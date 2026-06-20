@@ -49,6 +49,35 @@ Diagnostic: print the app's primary locale + each version's localizations (what'
 
 ----
 
+
+## Mac
+
+### mac metadata
+
+```sh
+[bundle exec] fastlane mac metadata
+```
+
+Push App Store metadata + screenshots for Namaz Vakti for Mac (no binary; the build comes from Xcode Cloud). Does NOT submit.
+
+### mac inspect
+
+```sh
+[bundle exec] fastlane mac inspect
+```
+
+Diagnostic: the macOS app's locales + screenshot counts per set.
+
+### mac dedupe_screenshots
+
+```sh
+[bundle exec] fastlane mac dedupe_screenshots
+```
+
+Delete duplicate macOS screenshots (deliver double-uploads); keep one per file name.
+
+----
+
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
 
 More information about _fastlane_ can be found on [fastlane.tools](https://fastlane.tools).

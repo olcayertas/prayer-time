@@ -1,4 +1,4 @@
-Namaz Vakti lives in your Mac's menu bar with a live countdown to the next prayer, powered by the published tables of the Turkish Directorate of Religious Affairs (Diyanet).
+Prayer Times lives in your Mac's menu bar with a live countdown to the next prayer, powered by the published tables of the Turkish Directorate of Religious Affairs (Diyanet).
 
 Clean, fast, and private — no account, no ads, no tracking.
 

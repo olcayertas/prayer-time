@@ -124,4 +124,49 @@ platform :mac do
       precheck_include_in_app_purchases: false
     )
   end
+
+  desc "Diagnostic: the macOS app's locales + screenshot counts per set."
+  lane :inspect do
+    require "spaceship"
+    Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.create(
+      key_id: ENV.fetch("ASC_KEY_ID"), issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+      filepath: File.absolute_path(ENV.fetch("ASC_KEY_PATH")))
+    app = Spaceship::ConnectAPI::App.find(MAC_APP_ID)
+    UI.important("APP: #{app.name.inspect} id=#{app.id}")
+    app.get_app_store_versions.each do |v|
+      UI.important("VERSION #{v.version_string} state=#{v.app_store_state}")
+      v.get_app_store_version_localizations.each do |l|
+        UI.message("  locale=#{l.locale}  desc?=#{!l.description.to_s.empty?}")
+        (l.get_app_screenshot_sets rescue []).each do |s|
+          UI.message("      set #{s.screenshot_display_type}: #{(s.app_screenshots || []).size} shots")
+        end
+      end
+    end
+  end
+
+  desc "Delete duplicate macOS screenshots (deliver double-uploads); keep one per file name."
+  lane :dedupe_screenshots do
+    require "spaceship"
+    Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.create(
+      key_id: ENV.fetch("ASC_KEY_ID"), issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+      filepath: File.absolute_path(ENV.fetch("ASC_KEY_PATH")))
+    app = Spaceship::ConnectAPI::App.find(MAC_APP_ID)
+    app.get_app_store_versions.select { |v| v.app_store_state == "PREPARE_FOR_SUBMISSION" }.each do |v|
+      v.get_app_store_version_localizations.each do |l|
+        (l.get_app_screenshot_sets rescue []).each do |s|
+          seen = {}
+          (s.app_screenshots || []).each do |sc|
+            key = sc.file_name || sc.id
+            if seen[key]
+              sc.delete!
+              UI.message("#{l.locale}: deleted duplicate #{key}")
+            else
+              seen[key] = true
+            end
+          end
+        end
+      end
+    end
+    UI.success("dedupe complete")
+  end
 end
