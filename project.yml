@@ -40,6 +40,9 @@ targets:
         CFBundleDisplayName: Prayer Times
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        # Export compliance: the app uses only standard HTTPS (URLSession) — exempt encryption.
+        # Declaring this skips the per-upload encryption question in App Store Connect.
+        ITSAppUsesNonExemptEncryption: false
         LSUIElement: true
         # Mac App Store / Finder app category.
         LSApplicationCategoryType: public.app-category.lifestyle
