@@ -1,0 +1,27 @@
+Namaz Vakti lives in your Mac's menu bar with a live countdown to the next prayer, powered by the published tables of the Turkish Directorate of Religious Affairs (Diyanet).
+
+Clean, fast, and private — no account, no ads, no tracking.
+
+IN YOUR MENU BAR
+• A live, glanceable countdown to the next prayer.
+• A dropdown with today's six times — İmsak, Güneş, Öğle, İkindi, Akşam, Yatsı — the next one highlighted, plus the Hijri and Gregorian date.
+
+A FULL WINDOW
+• Today, with a large countdown and the day's six prayer times.
+• A spacious Monthly view: a Focus Card for the selected day over a compact month chart — click any day to promote it.
+
+YOUR LOCATION, YOUR WAY
+• Automatic: the app finds your city and shows the right times wherever you are.
+• Pinned: choose a city by hand (country → city → district) and keep it.
+• Each location is cached, so it works offline and makes no unnecessary requests.
+
+WIDGET & NOTIFICATIONS
+• A Notification Center widget with the next prayer and a live countdown.
+• Optional notifications at each prayer time.
+
+BEAUTIFUL & ACCESSIBLE
+• Two themes: the clean system look (auto light/dark) and a warm dark "Arc" theme.
+• Full Dynamic Type and VoiceOver support.
+• English, Turkish, and Arabic.
+
+Prayer-time data © T.C. Diyanet İşleri Başkanlığı, via the community EzanVakti service. Not affiliated with or endorsed by Diyanet.

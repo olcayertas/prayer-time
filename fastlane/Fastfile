@@ -102,3 +102,26 @@ platform :ios do
     end
   end
 end
+
+MAC_APP_ID = "com.olcayertas.NamazVakti"
+
+platform :mac do
+  desc "Push App Store metadata + screenshots for Namaz Vakti for Mac (no binary; the build comes from Xcode Cloud). Does NOT submit."
+  lane :metadata do
+    deliver(
+      api_key: asc_api_key,
+      app_identifier: MAC_APP_ID,
+      platform: "osx",
+      metadata_path: "./fastlane/metadata-mac",
+      screenshots_path: "./fastlane/screenshots-mac",
+      skip_binary_upload: true,
+      skip_screenshots: false,
+      overwrite_screenshots: true,
+      submit_for_review: false,
+      automatic_release: false,
+      force: true,
+      run_precheck_before_submit: false,
+      precheck_include_in_app_purchases: false
+    )
+  end
+end

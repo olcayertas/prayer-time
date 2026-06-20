@@ -1,0 +1,7 @@
+Namaz Vakti for Mac'in ilk sürümü:
+• Menü çubuğunda sonraki vakte geri sayım ve bugünün altı Diyanet vakti.
+• Bugün ve yeniden tasarlanan Aylık görünümü içeren tam pencere.
+• Otomatik veya sabit konum.
+• Bildirim Merkezi widget'ı ve namaz vakti bildirimleri.
+• Açık/koyu sistem teması ve yeni koyu "Arc" teması.
+• Türkçe, İngilizce ve Arapça.

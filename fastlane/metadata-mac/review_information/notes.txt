@@ -1,0 +1,5 @@
+No login or account is required.
+
+Prayer times are public data published by the Turkish Directorate of Religious Affairs (Diyanet), fetched via the community EzanVakti service.
+
+Location (When In Use) is used only to show prayer times for the user's current city; the app also works fully without it — the user can pick a city manually in Settings. No data is collected or sent to the developer.

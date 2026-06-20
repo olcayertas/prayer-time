@@ -1,0 +1,27 @@
+Namaz Vakti, Mac'inizin menü çubuğunda yaşar ve bir sonraki vakte canlı geri sayım gösterir; Diyanet İşleri Başkanlığı'nın yayımladığı namaz vakitleriyle çalışır.
+
+Sade, hızlı ve gizliliğe saygılı — hesap yok, reklam yok, takip yok.
+
+MENÜ ÇUBUĞUNDA
+• Bir sonraki vakte canlı, tek bakışta görülen geri sayım.
+• Bugünün altı vaktini — İmsak, Güneş, Öğle, İkindi, Akşam, Yatsı — gösteren, sonraki vakti vurgulayan açılır panel; Hicri ve Miladi tarih.
+
+TAM PENCERE
+• Büyük geri sayımlı Bugün ve günün altı vakti.
+• Ferah bir Aylık görünüm: seçili gün için Odak Kartı ve kompakt ay tablosu — herhangi bir güne tıklayın.
+
+KONUM, SİZİN TERCİHİNİZ
+• Otomatik: uygulama şehrinizi bulur ve nerede olursanız olun doğru vakitleri gösterir.
+• Sabit: şehri elle seçin (ülke → şehir → ilçe) ve sabitleyin.
+• Her konum önbelleğe alınır; çevrimdışı çalışır ve gereksiz istek yapmaz.
+
+WIDGET VE BİLDİRİMLER
+• Sonraki vakit ve canlı geri sayımlı Bildirim Merkezi widget'ı.
+• Her namaz vaktinde isteğe bağlı bildirim.
+
+GÜZEL VE ERİŞİLEBİLİR
+• İki tema: sade sistem görünümü (otomatik açık/koyu) ve sıcak koyu "Arc" teması.
+• Tam Dynamic Type ve VoiceOver desteği.
+• Türkçe, İngilizce ve Arapça.
+
+Namaz vakti verileri © T.C. Diyanet İşleri Başkanlığı, topluluk EzanVakti servisi aracılığıyla. Diyanet ile bağlantılı veya onun tarafından onaylanmış değildir.
