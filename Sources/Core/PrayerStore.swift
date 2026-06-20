@@ -26,8 +26,9 @@ final class PrayerStore: ObservableObject {
     @Published private(set) var trackingStatus: LocationTrackingStatus = .idle
 
     static let notificationsKey = "notificationsEnabled"
-    static let selectedDistrictIdKey = "selectedDistrictId"
-    static let selectedDistrictNameKey = "selectedDistrictName"
+    // Shared with the widget — single source of truth on AppGroup.
+    static let selectedDistrictIdKey = AppGroup.selectedDistrictIdKey
+    static let selectedDistrictNameKey = AppGroup.selectedDistrictNameKey
     static let locationModeKey = "locationMode"
 
     private let provider: PrayerTimesProvider
@@ -48,9 +49,13 @@ final class PrayerStore: ObservableObject {
         tracker: LocationTracker = LocationTracker(),
         resolver: LocationResolver = LocationResolver()
     ) {
+        Self.migrateSelectedDistrictToAppGroup()
         let defaults = UserDefaults.standard
-        let savedId = defaults.string(forKey: Self.selectedDistrictIdKey) ?? Config.defaultDistrictId
-        let savedName = defaults.string(forKey: Self.selectedDistrictNameKey) ?? Config.defaultLocationName
+        // The selected district lives in the App Group so the widget can read it; mode +
+        // notifications are app-only and stay in `.standard`.
+        let shared = AppGroup.defaults
+        let savedId = shared.string(forKey: Self.selectedDistrictIdKey) ?? Config.defaultDistrictId
+        let savedName = shared.string(forKey: Self.selectedDistrictNameKey) ?? Config.defaultLocationName
         // Automatic by default for new installs. Existing users with a saved district also default
         // automatic but fall back to that district if permission is denied (no data change).
         let savedMode = defaults.string(forKey: Self.locationModeKey)
@@ -75,6 +80,20 @@ final class PrayerStore: ObservableObject {
         // countdown via TimelineView — so the clock would be pure wasted work there.
         startClock()
         #endif
+    }
+
+    /// One-time migration for installs that predate the App Group: the selected district used to
+    /// live in `.standard`, which the widget can't read. Copy it into the shared suite the first
+    /// time the new build runs (no-op on fresh installs, or when the suite falls back to `.standard`).
+    private static func migrateSelectedDistrictToAppGroup() {
+        let shared = AppGroup.defaults
+        let standard = UserDefaults.standard
+        guard shared.string(forKey: selectedDistrictIdKey) == nil,
+              let id = standard.string(forKey: selectedDistrictIdKey) else { return }
+        shared.set(id, forKey: selectedDistrictIdKey)
+        if let name = standard.string(forKey: selectedDistrictNameKey) {
+            shared.set(name, forKey: selectedDistrictNameKey)
+        }
     }
 
     var schedule: PrayerSchedule { PrayerSchedule(days: days) }
@@ -165,9 +184,9 @@ final class PrayerStore: ObservableObject {
         guard newId != districtId else { return }
         districtId = newId
         locationName = newName
-        let defaults = UserDefaults.standard
-        defaults.set(newId, forKey: Self.selectedDistrictIdKey)
-        defaults.set(newName, forKey: Self.selectedDistrictNameKey)
+        let shared = AppGroup.defaults   // shared with the widget
+        shared.set(newId, forKey: Self.selectedDistrictIdKey)
+        shared.set(newName, forKey: Self.selectedDistrictNameKey)
         days = cache.load(districtId: newId) ?? []
         updateMenuTitle()
         refresh()
@@ -289,7 +308,7 @@ final class PrayerStore: ObservableObject {
             // between two central İstanbul ilçe that both map to "İSTANBUL"), then only fetch if stale.
             if newName != locationName {
                 locationName = newName
-                UserDefaults.standard.set(newName, forKey: Self.selectedDistrictNameKey)
+                AppGroup.defaults.set(newName, forKey: Self.selectedDistrictNameKey)
                 updateMenuTitle()
             }
             refreshIfStale()

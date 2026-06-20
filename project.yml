@@ -53,11 +53,19 @@ targets:
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true
         com.apple.security.personal-information.location: true
+        # Shared with the widget so it can read the app's selected district + cached month.
+        com.apple.security.application-groups:
+          - group.com.olcayertas.NamazVakti
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.olcayertas.NamazVakti
         PRODUCT_NAME: NamazVakti
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        # App Groups need provisioning, so sign with the team (overrides the ad-hoc base). CI
+        # passes CODE_SIGNING_ALLOWED=NO; the Release DMG overrides to Developer ID on the CLI.
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: SNZ29V4PJZ
+        CODE_SIGN_IDENTITY: "Apple Development"
     dependencies:
       - target: NamazVaktiWidget
         embed: true
@@ -94,6 +102,12 @@ targets:
           - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
+    entitlements:
+      path: Sources/iOS/NamazVaktiiOS.entitlements
+      properties:
+        # Shared with the iOS widget so it follows the app's selected district.
+        com.apple.security.application-groups:
+          - group.com.olcayertas.NamazVakti
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.olcayertas.NamazVakti.iOS
@@ -133,9 +147,14 @@ targets:
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true
+        com.apple.security.application-groups:
+          - group.com.olcayertas.NamazVakti
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.olcayertas.NamazVakti.Widget
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: SNZ29V4PJZ
+        CODE_SIGN_IDENTITY: "Apple Development"
 
   NamazVaktiWidgetiOS:
     type: app-extension
@@ -156,6 +175,11 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Sources/WidgetiOS/NamazVaktiWidgetiOS.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.olcayertas.NamazVakti
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.olcayertas.NamazVakti.iOS.Widget

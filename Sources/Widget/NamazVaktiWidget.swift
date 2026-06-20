@@ -9,16 +9,19 @@ struct PrayerEntry: TimelineEntry, Sendable {
     let locationName: String
 }
 
-/// Builds the widget timeline. There is no App Group (avoided for account-free signing),
-/// so the widget reads its own cached month and fetches once if the cache is empty.
+/// Builds the widget timeline. It shares the app's App Group, so it reads the user's selected
+/// (Automatic or Pinned) district + the same cached month, and fetches once if the cache is empty.
 /// One entry per upcoming prayer boundary; the live countdown uses `Text(timerInterval:)`,
 /// so no per-second entries are needed.
 struct PrayerTimelineProvider: TimelineProvider {
-    // The widget is a separate process with no App Group, so it can't read the app's selected /
-    // auto-tracked location — it stays on the default district. (The in-app surfaces follow the
-    // user's Automatic/Pinned choice via PrayerStore.) Fixing this would require an App Group.
-    private let districtId = Config.defaultDistrictId
-    private let locationName = Config.defaultLocationName
+    // Read from the shared App Group so the widget follows the app's Automatic/Pinned location
+    // (the app writes these on every location change and reloads the widget timelines).
+    private var districtId: String {
+        AppGroup.defaults.string(forKey: AppGroup.selectedDistrictIdKey) ?? Config.defaultDistrictId
+    }
+    private var locationName: String {
+        AppGroup.defaults.string(forKey: AppGroup.selectedDistrictNameKey) ?? Config.defaultLocationName
+    }
 
     func placeholder(in context: Context) -> PrayerEntry {
         PrayerEntry(date: Date(), nextPrayer: .ogle, nextDate: Date().addingTimeInterval(3600),

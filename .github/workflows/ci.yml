@@ -29,7 +29,7 @@ jobs:
             -scheme NamazVakti \
             -destination 'platform=macOS' \
             -derivedDataPath build/DerivedData \
-            CODE_SIGNING_ALLOWED=YES
+            CODE_SIGNING_ALLOWED=NO   # App Group needs team signing; CI has no cert, so build unsigned
 
   build-ios:
     name: Build (iOS Simulator)

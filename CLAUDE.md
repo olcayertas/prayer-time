@@ -23,8 +23,9 @@ xcrun simctl install booted build/DerivedData/Build/Products/Debug-iphonesimulat
 xcrun simctl launch booted com.olcayertas.NamazVakti.iOS
 ```
 
-Slash commands wrap the macOS flow: `/build`, `/test`, `/run`. Signing is local **ad-hoc**
-(macOS) / unsigned Simulator build (iOS) — no Apple Developer account or team is required.
+Slash commands wrap the macOS flow: `/build`, `/test`, `/run`. Both apps sign with the team
+(`DEVELOPMENT_TEAM=SNZ29V4PJZ`, automatic) — required for the **App Group** (see below). CI builds
+unsigned (`CODE_SIGNING_ALLOWED=NO`); the iOS Simulator build needs no signing.
 
 ## Layout
 
@@ -63,9 +64,14 @@ Slash commands wrap the macOS flow: `/build`, `/test`, `/run`. Signing is local 
   `PrayerStore` awaits it from a cancellable `Task`, and a `Task` loop drives the countdown.
   (An earlier "async is unreliable here" note was a misdiagnosis — the real cause was the
   rendered `MenuBarExtra` label; see the warning below.)
-- **No App Group** (avoids needing a paid account) — the app and the widget cache independently.
-  Consequence: the widget can't see the app's selected/auto-tracked location, so it stays on
-  `Config.defaultDistrictId` while the in-app surfaces follow the location.
+- **App Group** `group.com.olcayertas.NamazVakti` (`Sources/Core/AppGroup.swift`) — the app and
+  widget share it, so the widget follows the app's Automatic/Pinned location. The app writes the
+  selected district (`selectedDistrictId`/`Name`) to `AppGroup.defaults` and the cached month to the
+  group container (`PrayerCache`), and the widget reads both; `PrayerStore.selectLocation` reloads the
+  widget timelines. `AppGroup` degrades to `.standard`/Application Support when the entitlement is
+  absent (unit tests). A one-time `migrateSelectedDistrictToAppGroup()` copies pre-App-Group installs'
+  district from `.standard`. All four targets carry the entitlement → the macOS targets need team
+  signing (the original "no team" property is gone; CI builds unsigned).
 - **Location modes**: `PrayerStore.locationMode` is **Automatic** (default) or **Pinned**.
   Automatic reverse-geocodes the device location to a Diyanet district via `LocationResolver` and
   routes through `selectLocation` (reusing the per-district cache); `refreshIfStale()` skips the

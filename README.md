@@ -153,9 +153,10 @@ picker. Everything goes through a `PrayerTimesProvider` protocol, so the officia
 
 ### Notable decisions
 
-- **No App Group** (avoids needing a paid Apple Developer account) — the app and the widget
-  each cache their own monthly JSON. One consequence: the widget can't read the app's selected /
-  auto-tracked location, so it stays on the default district while the in-app surfaces follow it.
+- **App Group** (`group.com.olcayertas.NamazVakti`) — the app and widget share the selected
+  district + cached month, so the **widget follows your Automatic/Pinned location** (not a fixed
+  default). It degrades gracefully to per-process storage when the entitlement is absent, and a
+  one-time migration carries over a district saved before the App Group existed.
 - **Themes are a value-type token set** in `\.theme` (Default = system semantics so it's pixel-identical
   to the un-themed look; Arc = fixed dark palette + bundled fonts, and forces `.dark`). The widget /
   Live Activity / Dynamic Island / menu-bar title can't read the runtime theme (separate processes /
