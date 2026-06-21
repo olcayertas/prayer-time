@@ -395,6 +395,23 @@
         }
       }
     },
+    "Enable this in System Settings → Login Items to finish turning it on." : {
+      "comment" : "Hint shown when launch-at-login needs the user's approval in System Settings (macOS).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فعِّل هذا في إعدادات النظام ثم عناصر تسجيل الدخول لإكمال تشغيله."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Açmayı tamamlamak için Sistem Ayarları → Giriş Öğeleri bölümünden etkinleştirin."
+          }
+        }
+      }
+    },
     "extras.qibla" : {
       "comment" : "Today extras row: qibla time",
       "extractionState" : "stale",
@@ -908,6 +925,42 @@
         }
       }
     },
+    "Open at Login" : {
+      "comment" : "Toggle that makes the macOS app start automatically at login.",
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الفتح عند تسجيل الدخول"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Girişte Aç"
+          }
+        }
+      }
+    },
+    "Open Login Items Settings" : {
+      "comment" : "Button that opens System Settings → Login Items (macOS).",
+      "extractionState" : "stale",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فتح إعدادات عناصر تسجيل الدخول"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş Öğeleri Ayarlarını Aç"
+          }
+        }
+      }
+    },
     "Open Settings" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1161,6 +1214,40 @@
         }
       }
     },
+    "Start automatically when you log in." : {
+      "comment" : "Caption under the Open at Login toggle (macOS).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "البدء تلقائيًا عند تسجيل الدخول."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oturum açtığınızda otomatik olarak başlasın."
+          }
+        }
+      }
+    },
+    "Startup" : {
+      "comment" : "Settings section title for app startup options (macOS).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بدء التشغيل"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başlangıç"
+          }
+        }
+      }
+    },
     "Sunrise" : {
       "comment" : "Prayer time: Diyanet Güneş (sunrise / Shuruq)",
       "extractionState" : "stale",
@@ -1229,22 +1316,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bu Ay"
-          }
-        }
-      }
-    },
-    "Next · %@" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "التالي · %@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sıradaki · %@"
           }
         }
       }

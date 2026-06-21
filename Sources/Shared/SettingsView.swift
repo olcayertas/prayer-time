@@ -58,6 +58,12 @@ struct SettingsView: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
 
+            #if os(macOS)
+            Section("Startup") {
+                LoginItemToggle()
+            }
+            #endif
+
             #if os(iOS)
             Section("Live Activity") {
                 LiveActivityToggle(store: store)
