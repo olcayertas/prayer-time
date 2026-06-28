@@ -75,34 +75,57 @@ private struct CountryPickerSheet: View {
 
     var body: some View {
         NavigationStack {
-            List(model.countries(matching: search)) { country in
-                Button {
-                    onSelect(country)
-                    dismiss()
-                } label: {
-                    HStack {
-                        Text(country.name)
-                            .foregroundStyle(theme.text)
-                        Spacer()
-                        if country.id == selectedId {
-                            Image(systemName: "checkmark")
-                                .foregroundStyle(theme.accent)
-                        }
+            countryList
+                .navigationTitle("Country")
+                #if os(iOS)
+                .navigationBarTitleDisplayMode(.inline)
+                .searchable(text: $search, prompt: "Search")
+                #endif
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") { dismiss() }
                     }
-                    .contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
-            }
-            .navigationTitle("Country")
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .searchable(text: $search, prompt: "Search")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-            }
         }
+        #if os(macOS)
+        // A macOS sheet has no intrinsic size; give the searchable list room.
+        .frame(minWidth: 360, idealWidth: 420, minHeight: 420, idealHeight: 520)
+        #endif
+    }
+
+    private var countryList: some View {
+        List(model.countries(matching: search)) { country in
+            Button {
+                onSelect(country)
+                dismiss()
+            } label: {
+                HStack {
+                    Text(country.name)
+                        .foregroundStyle(theme.text)
+                    Spacer()
+                    if country.id == selectedId {
+                        Image(systemName: "checkmark")
+                            .foregroundStyle(theme.accent)
+                    }
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+        }
+        #if os(macOS)
+        // macOS sheets don't render `.searchable`'s field reliably, so use an
+        // explicit search field pinned above the list.
+        .safeAreaInset(edge: .top) {
+            HStack(spacing: 6) {
+                Image(systemName: "magnifyingglass").foregroundStyle(theme.muted)
+                TextField("Search", text: $search)
+                    .textFieldStyle(.plain)
+            }
+            .padding(8)
+            .background(theme.surface, in: RoundedRectangle(cornerRadius: 8))
+            .padding(.horizontal)
+            .padding(.top, 8)
+        }
+        #endif
     }
 }
