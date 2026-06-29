@@ -43,3 +43,14 @@ struct District: Codable, Identifiable, Hashable, Sendable {
 extension Country: NamedPlace {}
 extension City: NamedPlace {}
 extension District: NamedPlace {}
+
+extension String {
+    /// Case- and diacritic-insensitive normalization for search matching. Folding
+    /// (rather than `localizedCaseInsensitive…`) makes matching robust across the
+    /// Turkish dotted/dotless-I casing and accents, so "istanbul" matches "İSTANBUL"
+    /// and "sanliurfa" matches "ŞANLIURFA". Locale `nil` keeps it deterministic.
+    func foldedForSearch() -> String {
+        folding(options: [.caseInsensitive, .diacriticInsensitive, .widthInsensitive],
+                locale: nil)
+    }
+}

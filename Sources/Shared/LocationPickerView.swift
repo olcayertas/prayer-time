@@ -82,9 +82,9 @@ private struct PlacePickerSheet<Item: NamedPlace>: View {
         let sorted = items.sorted {
             $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
         }
-        let term = search.trimmingCharacters(in: .whitespacesAndNewlines)
+        let term = search.trimmingCharacters(in: .whitespacesAndNewlines).foldedForSearch()
         guard !term.isEmpty else { return sorted }
-        return sorted.filter { $0.name.localizedCaseInsensitiveContains(term) }
+        return sorted.filter { $0.name.foldedForSearch().contains(term) }
     }
 
     var body: some View {
