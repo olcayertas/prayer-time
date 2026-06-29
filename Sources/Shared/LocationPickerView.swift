@@ -1,45 +1,27 @@
 import SwiftUI
 
 /// Cascading country → city → district picker, embeddable in a settings `Form` section.
+/// Each level opens a searchable, name-sorted sheet (`PlacePickerSheet`).
 struct LocationPickerView: View {
     @ObservedObject var store: PrayerStore
     @StateObject private var model = LocationPickerModel()
     @Environment(\.theme) private var theme
     @State private var showCountryPicker = false
+    @State private var showCityPicker = false
+    @State private var showDistrictPicker = false
 
     var body: some View {
         Group {
             LabeledContent("Current", value: store.locationName)
 
-            Button {
-                showCountryPicker = true
-            } label: {
-                LabeledContent("Country") {
-                    HStack(spacing: 6) {
-                        Text(model.selectedCountryName ?? "Select…")
-                        Image(systemName: "chevron.up.chevron.down")
-                            .font(.caption2)
-                            .foregroundStyle(theme.muted)
-                    }
-                }
-            }
-            .buttonStyle(.plain)
-            .disabled(model.countries.isEmpty)
+            pickerRow("Country", value: model.selectedCountryName,
+                      enabled: !model.countries.isEmpty) { showCountryPicker = true }
 
-            Picker("City", selection: Binding(
-                get: { model.selectedCityId },
-                set: { model.selectCity($0) }
-            )) {
-                Text("Select…").tag("")
-                ForEach(model.cities) { Text($0.name).tag($0.id) }
-            }
-            .disabled(model.cities.isEmpty)
+            pickerRow("City", value: model.selectedCityName,
+                      enabled: !model.cities.isEmpty) { showCityPicker = true }
 
-            Picker("District", selection: $model.selectedDistrictId) {
-                Text("Select…").tag("")
-                ForEach(model.districts) { Text($0.name).tag($0.id) }
-            }
-            .disabled(model.districts.isEmpty)
+            pickerRow("District", value: model.selectedDistrictName,
+                      enabled: !model.districts.isEmpty) { showDistrictPicker = true }
 
             if let error = model.error {
                 Text(error).font(.caption).foregroundStyle(theme.error)
@@ -54,29 +36,61 @@ struct LocationPickerView: View {
         }
         .task { model.loadCountriesIfNeeded() }
         .sheet(isPresented: $showCountryPicker) {
-            CountryPickerSheet(
-                model: model,
-                selectedId: model.selectedCountryId,
-                onSelect: { model.selectCountry($0.id) }
-            )
+            PlacePickerSheet(title: "Country", items: model.countries,
+                             selectedId: model.selectedCountryId) { model.selectCountry($0.id) }
         }
+        .sheet(isPresented: $showCityPicker) {
+            PlacePickerSheet(title: "City", items: model.cities,
+                             selectedId: model.selectedCityId) { model.selectCity($0.id) }
+        }
+        .sheet(isPresented: $showDistrictPicker) {
+            PlacePickerSheet(title: "District", items: model.districts,
+                             selectedId: model.selectedDistrictId) { model.selectedDistrictId = $0.id }
+        }
+    }
+
+    /// A tappable settings row that shows the current selection and opens a picker sheet.
+    private func pickerRow(_ title: LocalizedStringKey, value: String?,
+                           enabled: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            LabeledContent(title) {
+                HStack(spacing: 6) {
+                    Text(value ?? String(localized: "Select…"))
+                    Image(systemName: "chevron.up.chevron.down")
+                        .font(.caption2)
+                        .foregroundStyle(theme.muted)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .disabled(!enabled)
     }
 }
 
-/// Searchable, name-sorted country list shown as a sheet.
-private struct CountryPickerSheet: View {
-    @ObservedObject var model: LocationPickerModel
+/// Searchable, name-sorted list of places shown as a sheet (country / city / district).
+private struct PlacePickerSheet<Item: NamedPlace>: View {
+    let title: LocalizedStringKey
+    let items: [Item]
     let selectedId: String
-    let onSelect: (Country) -> Void
+    let onSelect: (Item) -> Void
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.theme) private var theme
     @State private var search = ""
 
+    private var filtered: [Item] {
+        let sorted = items.sorted {
+            $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+        }
+        let term = search.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !term.isEmpty else { return sorted }
+        return sorted.filter { $0.name.localizedCaseInsensitiveContains(term) }
+    }
+
     var body: some View {
         NavigationStack {
-            countryList
-                .navigationTitle("Country")
+            placeList
+                .navigationTitle(title)
                 #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
                 .searchable(text: $search, prompt: "Search")
@@ -93,17 +107,17 @@ private struct CountryPickerSheet: View {
         #endif
     }
 
-    private var countryList: some View {
-        List(model.countries(matching: search)) { country in
+    private var placeList: some View {
+        List(filtered) { item in
             Button {
-                onSelect(country)
+                onSelect(item)
                 dismiss()
             } label: {
                 HStack {
-                    Text(country.name)
+                    Text(item.name)
                         .foregroundStyle(theme.text)
                     Spacer()
-                    if country.id == selectedId {
+                    if item.id == selectedId {
                         Image(systemName: "checkmark")
                             .foregroundStyle(theme.accent)
                     }

@@ -34,14 +34,14 @@ final class LocationPickerModel: ObservableObject {
         countries.first { $0.id == selectedCountryId }?.name
     }
 
-    /// Countries sorted by name (locale-aware), optionally filtered by a search term.
-    func countries(matching search: String) -> [Country] {
-        let sorted = countries.sorted {
-            $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
-        }
-        let term = search.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !term.isEmpty else { return sorted }
-        return sorted.filter { $0.name.localizedCaseInsensitiveContains(term) }
+    /// Display name of the currently selected city (for the picker row).
+    var selectedCityName: String? {
+        cities.first { $0.id == selectedCityId }?.name
+    }
+
+    /// Display name of the currently selected district (for the picker row).
+    var selectedDistrictName: String? {
+        districts.first { $0.id == selectedDistrictId }?.name
     }
 
     func loadCountriesIfNeeded() {
