@@ -8,27 +8,42 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 /**
- * Phase 0 baseline theme — the "Default" theme (Material 3 + Material You dynamic color).
- * The full theming system (the two named themes Default + Arc, the six-prayer palette, the bundled
- * Fraunces / Hanken Grotesk / Spline Sans Mono fonts, and the Arc night gradient) lands in Phase 3,
- * modeled as a `CompositionLocal` per the plan (§7).
+ * Provides the selected [NamazTheme] via [LocalNamazTheme] and a matching Material 3 color scheme.
+ * Default = M3 baseline + Material You dynamic color (native look, auto light/dark); Arc = the fixed
+ * dark/gold identity (forces dark). Mirrors the iOS theming: Default stays platform-idiomatic, Arc is
+ * the cross-platform brand look.
  */
 @Composable
 fun NamazVaktiTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    themeId: ThemeId = ThemeId.DEFAULT,
     content: @Composable () -> Unit,
 ) {
+    val arc = themeId == ThemeId.ARC
+    val systemDark = isSystemInDarkTheme()
+
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        arc -> darkColorScheme(
+            primary = Color(0xFFE7B873),
+            background = Color(0xFF05070F),
+            surface = Color(0xFF10152B),
+            error = Color(0xFFE0796B),
+        )
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val ctx = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(ctx) else dynamicLightColorScheme(ctx)
+            if (systemDark) dynamicDarkColorScheme(ctx) else dynamicLightColorScheme(ctx)
         }
-        darkTheme -> darkColorScheme()
+        systemDark -> darkColorScheme()
         else -> lightColorScheme()
     }
-    MaterialTheme(colorScheme = colorScheme, content = content)
+
+    val theme = if (arc) arcTheme() else defaultTheme(colorScheme, dark = systemDark)
+
+    CompositionLocalProvider(LocalNamazTheme provides theme) {
+        MaterialTheme(colorScheme = colorScheme, content = content)
+    }
 }
