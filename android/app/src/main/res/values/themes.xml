@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Compose draws all UI, so the platform theme just needs to be a no-action-bar shell. -->
+    <style name="Theme.NamazVakti" parent="android:Theme.Material.NoActionBar" />
+
+    <!-- SplashScreen API (androidx.core:core-splashscreen); hands off to the app theme post-splash. -->
+    <style name="Theme.NamazVakti.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@android:color/background_dark</item>
+        <item name="postSplashScreenTheme">@style/Theme.NamazVakti</item>
+    </style>
+</resources>
