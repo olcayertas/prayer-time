@@ -5,6 +5,7 @@
 # match the plan (compile/target 36, min 30).
 [versions]
 kotlin = "2.2.0"
+kotlinxSerialization = "1.8.0"
 agp = "8.11.1"
 junit4 = "4.13.2"
 coreKtx = "1.16.0"
@@ -20,6 +21,7 @@ compileSdk = "36"
 # :domain (pure JVM)
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit4 = { module = "junit:junit", version.ref = "junit4" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 # :app (Android + Compose)
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -34,6 +36,7 @@ compose-material3 = { module = "androidx.compose.material3:material3" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
