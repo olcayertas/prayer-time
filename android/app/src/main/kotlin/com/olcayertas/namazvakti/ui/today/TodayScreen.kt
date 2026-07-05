@@ -3,23 +3,18 @@ package com.olcayertas.namazvakti.ui.today
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,9 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.olcayertas.namazvakti.domain.CountdownFormatter
@@ -37,54 +30,33 @@ import com.olcayertas.namazvakti.domain.Prayer
 import com.olcayertas.namazvakti.domain.PrayerDay
 import com.olcayertas.namazvakti.domain.PrayerSchedule
 import com.olcayertas.namazvakti.domain.UpcomingPrayer
+import com.olcayertas.namazvakti.ui.Dot
+import com.olcayertas.namazvakti.ui.prayerName
 import com.olcayertas.namazvakti.ui.theme.LocalNamazTheme
 import com.olcayertas.namazvakti.ui.theme.NamazTheme
-import com.olcayertas.namazvakti.ui.theme.themedBackground
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import java.time.Instant
 
 @Composable
-fun TodayScreen(vm: TodayViewModel, modifier: Modifier = Modifier) {
+fun TodayScreen(schedule: PrayerSchedule, locationName: String, modifier: Modifier = Modifier) {
     val theme = LocalNamazTheme.current
-    val state by vm.state.collectAsState()
-
-    // 1 Hz tick — drives the live countdown (mirrors the iOS TimelineView(.periodic by: 1)).
-    var now by remember { mutableStateOf(Instant.now()) }
+    var now by remember { mutableStateOf(Instant.now()) } // 1 Hz tick for the live countdown
     LaunchedEffect(Unit) { while (isActive) { now = Instant.now(); delay(1000) } }
 
-    Box(modifier.fillMaxSize().themedBackground(theme)) {
-        when (val s = state) {
-            TodayState.Loading -> CircularProgressIndicator(
-                color = theme.accent,
-                modifier = Modifier.align(Alignment.Center),
-            )
-            is TodayState.Error -> Text(
-                "Couldn't load times: ${s.message}",
-                color = theme.error,
-                fontFamily = theme.fonts.body,
-                modifier = Modifier.align(Alignment.Center).padding(24.dp),
-            )
-            is TodayState.Loaded -> TodayContent(s.schedule, vm.locationName, now, theme)
-        }
-    }
-}
-
-@Composable
-private fun TodayContent(schedule: PrayerSchedule, location: String, now: Instant, theme: NamazTheme) {
     val today = schedule.day(now) ?: schedule.days.firstOrNull()
     val upcoming = schedule.upcoming(now)
     val current = schedule.current(now)
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .systemBarsPadding()
+            .statusBarsPadding()
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
-        Header(location, today, theme)
+        Header(locationName, today, theme)
         if (today != null) {
             Hero(upcoming, theme)
             Grid(today, current = current, next = upcoming?.prayer, theme = theme)
@@ -98,12 +70,8 @@ private fun Header(location: String, today: PrayerDay?, theme: NamazTheme) {
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(location, fontFamily = theme.fonts.display, fontWeight = FontWeight.Bold, fontSize = 34.sp, color = theme.text)
         if (today != null) {
-            val greg = today.miladiTarihUzun
-            val hijri = today.hicriTarihUzun
-            val line = listOfNotNull(greg, hijri).joinToString("  ·  ")
-            if (line.isNotEmpty()) {
-                Text(line, fontFamily = theme.fonts.body, fontSize = 15.sp, color = theme.muted)
-            }
+            val line = listOfNotNull(today.miladiTarihUzun, today.hicriTarihUzun).joinToString("  ·  ")
+            if (line.isNotEmpty()) Text(line, fontFamily = theme.fonts.body, fontSize = 15.sp, color = theme.muted)
         }
     }
 }
@@ -111,11 +79,7 @@ private fun Header(location: String, today: PrayerDay?, theme: NamazTheme) {
 @Composable
 private fun Hero(upcoming: UpcomingPrayer?, theme: NamazTheme) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(theme.accentSoft)
-            .padding(22.dp),
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(theme.accentSoft).padding(22.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         if (upcoming == null) {
@@ -142,14 +106,7 @@ private fun Grid(today: PrayerDay, current: Prayer?, next: Prayer?, theme: Namaz
         Prayer.entries.chunked(3).forEach { rowPrayers ->
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 rowPrayers.forEach { prayer ->
-                    GridCell(
-                        prayer = prayer,
-                        today = today,
-                        isNext = prayer == next,
-                        isCurrent = prayer == current,
-                        theme = theme,
-                        modifier = Modifier.weight(1f),
-                    )
+                    GridCell(prayer, today, prayer == next, prayer == current, theme, Modifier.weight(1f))
                 }
             }
         }
@@ -188,19 +145,4 @@ private fun InfoItem(label: String, value: String, theme: NamazTheme) {
         Text(label, fontFamily = theme.fonts.body, fontSize = 11.sp, color = theme.muted)
         Text(value, fontFamily = theme.fonts.mono, fontSize = 16.sp, color = theme.text)
     }
-}
-
-@Composable
-private fun Dot(color: Color, diameter: Dp) {
-    Box(Modifier.size(diameter).clip(CircleShape).background(color))
-}
-
-/** English display names (localized TR/AR via string resources arrives in the i18n phase). */
-private fun prayerName(prayer: Prayer): String = when (prayer) {
-    Prayer.IMSAK -> "Dawn"
-    Prayer.GUNES -> "Sunrise"
-    Prayer.OGLE -> "Noon"
-    Prayer.IKINDI -> "Afternoon"
-    Prayer.AKSAM -> "Sunset"
-    Prayer.YATSI -> "Night"
 }
