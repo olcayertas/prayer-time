@@ -12,6 +12,7 @@ kotlin {
 dependencies {
     implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.kotlin.test.junit)
+    testImplementation(libs.kotlinx.coroutines.core)
 }
 
 tasks.test {
