@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -37,7 +38,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
@@ -186,60 +189,85 @@ private fun CompassDial(heading: Double, qiblaBearing: Double, aligned: Boolean,
         display += d
     }
     val animated by animateFloatAsState(display.toFloat(), tween(120), label = "heading")
+    val qiblaAngle = qiblaBearing.toFloat() - animated
     val arrowColor = if (aligned) theme.success else theme.accent
 
     // Reused across frames to avoid per-frame allocation while the needle animates.
     val cardinalPaint = remember { android.graphics.Paint().apply { textAlign = android.graphics.Paint.Align.CENTER; isAntiAlias = true } }
-    val needlePath = remember { Path() }
+    val arrowPath = remember { Path() }
     val refPath = remember { Path() }
 
-    Canvas(modifier) {
-        val r = size.minDimension / 2f
-        val c = center
-        drawCircle(theme.surface, r, c)
-        drawCircle(theme.muted.copy(alpha = 0.25f), r, c, style = Stroke(2.dp.toPx()))
+    Box(modifier, contentAlignment = Alignment.Center) {
+        Canvas(Modifier.fillMaxSize()) {
+            val r = size.minDimension / 2f
+            val c = center
+            drawCircle(theme.surface, r, c)
+            drawCircle(theme.muted.copy(alpha = 0.25f), r, c, style = Stroke(2.dp.toPx()))
 
-        rotate(-animated, c) {
-            for (i in 0 until 72) {
-                val major = i % 9 == 0
-                rotate(i / 72f * 360f, c) {
-                    drawLine(
-                        theme.muted.copy(alpha = if (major) 0.55f else 0.22f),
-                        Offset(c.x, 10.dp.toPx()),
-                        Offset(c.x, (if (major) 22f else 16f).dp.toPx()),
-                        strokeWidth = (if (major) 2f else 1f).dp.toPx(),
-                    )
+            // Rotating rose: ticks + cardinals, so North tracks true north.
+            rotate(-animated, c) {
+                for (i in 0 until 72) {
+                    val major = i % 9 == 0
+                    rotate(i / 72f * 360f, c) {
+                        drawLine(
+                            theme.muted.copy(alpha = if (major) 0.55f else 0.22f),
+                            Offset(c.x, 10.dp.toPx()),
+                            Offset(c.x, (if (major) 22f else 16f).dp.toPx()),
+                            strokeWidth = (if (major) 2f else 1f).dp.toPx(),
+                        )
+                    }
+                }
+                cardinalPaint.textSize = 17.dp.toPx()
+                listOf("N" to 0f, "E" to 90f, "S" to 180f, "W" to 270f).forEach { (label, ang) ->
+                    rotate(ang, c) {
+                        cardinalPaint.color = (if (label == "N") theme.error else theme.muted).toArgb()
+                        cardinalPaint.isFakeBoldText = label == "N"
+                        drawContext.canvas.nativeCanvas.drawText(label, c.x, 42.dp.toPx(), cardinalPaint)
+                    }
                 }
             }
-            cardinalPaint.textSize = 17.dp.toPx()
-            listOf("N" to 0f, "E" to 90f, "S" to 180f, "W" to 270f).forEach { (label, ang) ->
-                rotate(ang, c) {
-                    cardinalPaint.color = (if (label == "N") theme.error else theme.muted).toArgb()
-                    cardinalPaint.isFakeBoldText = label == "N"
-                    drawContext.canvas.nativeCanvas.drawText(label, c.x, 42.dp.toPx(), cardinalPaint)
-                }
+
+            // Kaaba marker: an upright cube on the rim in the qibla direction (the arrow's target).
+            val theta = Math.toRadians(qiblaAngle.toDouble())
+            val markerR = r - 20.dp.toPx()
+            val mx = c.x + (markerR * Math.sin(theta)).toFloat()
+            val my = c.y - (markerR * Math.cos(theta)).toFloat()
+            drawCircle(theme.surface, 15.dp.toPx(), Offset(mx, my))
+            val ks = 8.dp.toPx()
+            drawRoundRect(
+                arrowColor,
+                topLeft = Offset(mx - ks, my - ks),
+                size = Size(ks * 2f, ks * 2f),
+                cornerRadius = CornerRadius(2.5.dp.toPx()),
+            )
+
+            // Hero qibla arrow: a notched navigation glyph (like iOS location.north.fill), pointing
+            // from the center toward the qibla.
+            rotate(qiblaAngle, c) {
+                arrowPath.rewind()
+                arrowPath.moveTo(c.x, c.y - 46.dp.toPx())               // tip
+                arrowPath.lineTo(c.x - 27.dp.toPx(), c.y + 30.dp.toPx()) // left wing
+                arrowPath.lineTo(c.x, c.y + 12.dp.toPx())               // bottom notch
+                arrowPath.lineTo(c.x + 27.dp.toPx(), c.y + 30.dp.toPx()) // right wing
+                arrowPath.close()
+                drawPath(arrowPath, arrowColor)
             }
+
+            // Fixed top reference at 12 o'clock — the direction you're facing.
+            refPath.rewind()
+            refPath.moveTo(c.x, 20.dp.toPx())
+            refPath.lineTo(c.x - 7.dp.toPx(), 6.dp.toPx())
+            refPath.lineTo(c.x + 7.dp.toPx(), 6.dp.toPx())
+            refPath.close()
+            drawPath(refPath, theme.muted)
         }
 
-        // The qibla needle: a triangle from near the rim to below center, rotated to the qibla.
-        rotate((qiblaBearing - animated).toFloat(), c) {
-            needlePath.rewind()
-            needlePath.moveTo(c.x, 34.dp.toPx())
-            needlePath.lineTo(c.x - 17.dp.toPx(), c.y + 26.dp.toPx())
-            needlePath.lineTo(c.x + 17.dp.toPx(), c.y + 26.dp.toPx())
-            needlePath.close()
-            drawPath(needlePath, arrowColor)
+        if (aligned) {
+            Text(
+                "Qibla", color = theme.success, fontFamily = theme.fonts.body,
+                fontWeight = FontWeight.SemiBold, fontSize = 12.sp, modifier = Modifier.offset(y = 46.dp),
+            )
         }
-        drawCircle(theme.surface, 11.dp.toPx(), c)
-        drawCircle(arrowColor, 6.dp.toPx(), c)
-
-        // Fixed top reference (the direction you're facing).
-        refPath.rewind()
-        refPath.moveTo(c.x, 20.dp.toPx())
-        refPath.lineTo(c.x - 7.dp.toPx(), 5.dp.toPx())
-        refPath.lineTo(c.x + 7.dp.toPx(), 5.dp.toPx())
-        refPath.close()
-        drawPath(refPath, theme.muted)
     }
 }
 
