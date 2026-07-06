@@ -1,5 +1,11 @@
 # Namaz Vakti — Native Android Port Plan
 
+> **STATUS (2026-07-06): IMPLEMENTED.** This plan is now fully realized — all phases shipped: the four
+> surfaces (Today / Monthly / Qibla / Settings), **EN · TR · AR** with RTL, prayer-time notifications,
+> automatic location, a Glance home-screen widget, Hilt DI, and an R8 release build. The Android app
+> lives under `android/`. See [RELEASE.md](RELEASE.md) for build/release details. **The text below is
+> the original point-in-time plan, kept as-is for history.**
+
 > Status: **proposal — all decisions resolved (§14); ready to scaffold.**
 > Scope: a brand-new **native Android** app (Kotlin + Jetpack Compose, latest APIs, no backward
 > compatibility) that reaches feature parity with the existing SwiftUI iOS/macOS app in this repo.

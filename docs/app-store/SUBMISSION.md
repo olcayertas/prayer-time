@@ -5,8 +5,11 @@ signed/notarized DMG (see the GitHub releases) and is **not** part of this.
 
 - **Bundle ID:** `com.olcayertas.NamazVakti.iOS` (+ embedded widget `com.olcayertas.NamazVakti.iOS.Widget`)
 - **Team:** `SNZ29V4PJZ` · **Version:** `1.0.0` (build `2`) · **Min iOS:** 17.0 · **Devices:** iPhone only (v1.0)
-- **Signing:** automatic; Release/archive uses *Apple Distribution* (set in `project.yml`).
+- **Signing:** automatic; Release/archive uses *Apple Distribution* (set in `apple/project.yml`).
 - **Export compliance:** `ITSAppUsesNonExemptEncryption = false` is in the Info.plist (HTTPS only) → no per-upload question.
+
+> The Apple project lives under `apple/` — run all `xcodegen`, `xcodebuild`, and `fastlane` commands
+> below from `apple/` (`cd apple`). Paths like `fastlane/…`, `Distribution/…` are relative to `apple/`.
 
 ---
 
@@ -175,7 +178,7 @@ xcodebuild -project NamazVakti.xcodeproj -scheme NamazVaktiiOS -configuration Re
   -destination 'generic/platform=iOS' -archivePath build/NamazVaktiiOS.xcarchive \
   -allowProvisioningUpdates archive
 xcodebuild -exportArchive -archivePath build/NamazVaktiiOS.xcarchive \
-  -exportOptionsPlist Distribution/ExportOptions-AppStore.plist \
+  -exportOptionsPlist apple/Distribution/ExportOptions-AppStore.plist \
   -exportPath build/export -allowProvisioningUpdates
 # then upload build/export/*.ipa with Transporter, or:
 xcrun altool --upload-app -f build/export/NamazVaktiiOS.ipa -t ios \
@@ -190,9 +193,9 @@ notarytool keychain profile used for the macOS DMG is a different credential and
 
 ---
 
-## 8. Metadata via Fastlane (`fastlane/`)
+## 8. Metadata via Fastlane (`apple/fastlane/`)
 
-The store text + screenshots are managed as code under `fastlane/` and pushed with **`deliver`** —
+The store text + screenshots are managed as code under `apple/fastlane/` and pushed with **`deliver`** —
 reusable for every future update. Localizations: **`tr`** (primary) and **`en-US`**.
 
 Auth via an App Store Connect **API key with App Manager (or Admin) role** — a Developer-role key
@@ -202,7 +205,7 @@ Auth via an App Store Connect **API key with App Manager (or Admin) role** — a
 ```sh
 export ASC_KEY_ID=...           # 10-char Key ID
 export ASC_ISSUER_ID=...        # team Issuer ID (UUID)
-export ASC_KEY_PATH=fastlane/AuthKey_<KEY_ID>.p8
+export ASC_KEY_PATH=apple/fastlane/AuthKey_<KEY_ID>.p8
 export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8   # deliver needs a UTF-8 locale (Turkish chars)
 
 fastlane metadata            # push text + screenshots (skips the binary; does NOT submit)

@@ -2,22 +2,24 @@
 
 Prayer Times ships in **English (source), Turkish, and Arabic**, and is built to add more
 languages with minimal effort. This document covers how localization is wired and the
-roadmap for new languages.
+roadmap for new languages, for the **Apple** (iOS + macOS) app under `apple/`. The native
+Android port localizes separately via Android resources
+(`android/app/src/main/res/values{,-tr,-ar}/`).
 
 ## How it's structured
 
-- **`Sources/Core/Localizable.xcstrings`** — one String Catalog with every UI/domain string
-  (prayer names, errors, notification formats, buttons, labels). It's in `Sources/Core`, so it
+- **`apple/Sources/Core/Localizable.xcstrings`** — one String Catalog with every UI/domain string
+  (prayer names, errors, notification formats, buttons, labels). It's in `apple/Sources/Core`, so it
   compiles into **every** target — both apps and both widgets.
-- **`Sources/{App,iOS}/InfoPlist.xcstrings`** / **`Sources/Widget/InfoPlist.xcstrings`** — the
+- **`apple/Sources/{App,iOS}/InfoPlist.xcstrings`** / **`apple/Sources/Widget/InfoPlist.xcstrings`** — the
   localized app and widget **names** (`CFBundleDisplayName`). ⚠️ Each key MUST also carry an `en`
   value; without it the compiled `en.lproj/InfoPlist.strings` falls back to the literal key, so the
   app shows "CFBundleDisplayName" instead of "Prayer Times".
-- **`Sources/Shared/DateLocalizer.swift`** — the Diyanet API returns the long Gregorian and Hijri
+- **`apple/Sources/Shared/DateLocalizer.swift`** — the Diyanet API returns the long Gregorian and Hijri
   dates as Turkish-only text, so we reformat the numeric short dates (`dd.MM.yyyy`) locally with
   a locale-aware `DateFormatter` (Hijri via the `islamicUmmAlQura` calendar). The Diyanet Hijri
   numbers are preserved; only the month names / digits get localized.
-- **English is the development language** (`options.developmentLanguage: en` in `project.yml`).
+- **English is the development language** (`options.developmentLanguage: en` in `apple/project.yml`).
   Source strings in code *are* the keys, so English needs no translation table.
 - **Prayer names** use plain-English descriptions (Dawn, Sunrise, Noon, Afternoon, Sunset,
   Night) mapped to the canonical terms in each language (e.g. Arabic الفجر/الظهر/العصر/المغرب/العشاء).
@@ -27,12 +29,12 @@ roadmap for new languages.
 
 ## Adding a language — step by step
 
-1. Open `Sources/Core/Localizable.xcstrings` in Xcode → **+** → pick the language, and translate
+1. Open `apple/Sources/Core/Localizable.xcstrings` in Xcode → **+** → pick the language, and translate
    every key. (Or edit the JSON directly — each key gets a `"<lang>": { "stringUnit": … }`.)
    - Mind the **positional specifiers** where word order differs, e.g. the notification body
      `It's %@ time in %@.` → Turkish `%2$@ için %1$@ vakti girdi.`
-2. Add the same language to **`Sources/App/InfoPlist.xcstrings`**, **`Sources/iOS/InfoPlist.xcstrings`**,
-   and **`Sources/Widget/InfoPlist.xcstrings`** with the translated app/widget name (keep the `en` value).
+2. Add the same language to **`apple/Sources/App/InfoPlist.xcstrings`**, **`apple/Sources/iOS/InfoPlist.xcstrings`**,
+   and **`apple/Sources/Widget/InfoPlist.xcstrings`** with the translated app/widget name (keep the `en` value).
 3. `xcodegen generate && xcodebuild … build`, then confirm a `<lang>.lproj` appears in both
    `NamazVakti.app/Contents/Resources` and the widget `.appex`.
 4. Smoke-test: `…/NamazVakti.app/Contents/MacOS/NamazVakti -AppleLanguages "(<lang>)"`.

@@ -53,6 +53,8 @@ unsigned (`CODE_SIGNING_ALLOWED=NO`); the iOS Simulator build needs no signing.
 - `Sources/Widget/` — WidgetKit timeline + views, shared by the macOS widget and the iOS widget
   (`NamazVaktiWidgetiOS` lists the `.swift` explicitly so the macOS Info.plist/entitlements don't leak in).
 - `Tests/CoreTests/` — schedule + JSON-decoding tests.
+- **Android** (`android/`, own Gradle build): `:domain` (pure Kotlin/JVM, no Android deps) + `:app`
+  (Compose UI). Separate codebase from the Apple sources above; see [docs/android/](docs/android/).
 
 ## Conventions
 

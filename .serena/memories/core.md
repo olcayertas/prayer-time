@@ -4,6 +4,11 @@ macOS menu bar app **+ iOS app** showing Diyanet (Turkish religious affairs) pra
 SwiftUI + WidgetKit. Remote: github.com/olcayertas/prayer-time (folder name differs: NamazVakti).
 
 ## Source map
+**Platform split (2026-07-06):** the Apple project is under **`apple/`** (so `Sources/…` below =
+`apple/Sources/…`, `project.yml` = `apple/project.yml`); the native **Android** app is a separate
+Gradle build under **`android/`** (`:domain` pure Kotlin/JVM + `:app` Jetpack Compose — feature-complete:
+Today/Monthly/Qibla/Settings, EN·TR·AR, notifications, auto-location, Glance widget, Hilt; see
+`docs/android/`). `docs/` stays at the repo root. The Apple map:
 - `Sources/Core/` — UI-free logic, compiled into every target (no framework, same-module):
   `PrayerDay`, `PrayerSchedule` (next-prayer/countdown math), `PrayerCache`, `PrayerTimesProvider` +
   `PlacesProvider` (EzanVakti), `PrayerStore` (@MainActor observable), `NotificationScheduler`,
@@ -22,9 +27,9 @@ SwiftUI + WidgetKit. Remote: github.com/olcayertas/prayer-time (folder name diff
 - `Sources/Widget/` — WidgetKit timeline + views; built into both `NamazVaktiWidget` (macOS, folder
   include) and `NamazVaktiWidgetiOS` (iOS, explicit `.swift` include so macOS Info.plist doesn't leak).
 - `Tests/CoreTests/` — pure logic (schedule edge cases, JSON decoding).
-- `project.yml` — XcodeGen spec; the `.xcodeproj` is generated and gitignored.
+- `apple/project.yml` — XcodeGen spec; the `.xcodeproj` is generated and gitignored.
 
 ## Invariants
-- The generated `NamazVakti.xcodeproj` is NOT committed — regenerate from `project.yml`.
+- The generated `apple/NamazVakti.xcodeproj` is NOT committed — regenerate (`xcodegen generate` from `apple/`).
 - Stack & versions: `mem:tech_stack`. Build/run/test commands: `mem:suggested_commands`.
 - Code style, data-layer rules, and macOS gotchas: `mem:conventions`. Done criteria: `mem:task_completion`.

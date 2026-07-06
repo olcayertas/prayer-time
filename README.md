@@ -4,15 +4,14 @@
 
 # 🕌 Namaz Vakti
 
-**Native macOS (menu bar) and iOS apps for Muslim prayer times — powered by the Turkish
-Directorate of Religious Affairs (Diyanet).**
+**Native Apple (macOS menu bar + iOS) and Android apps for Muslim prayer times — powered by the
+Turkish Directorate of Religious Affairs (Diyanet).**
 
 [![CI](https://github.com/olcayertas/prayer-time/actions/workflows/ci.yml/badge.svg)](https://github.com/olcayertas/prayer-time/actions/workflows/ci.yml)
-![Platform](https://img.shields.io/badge/platform-macOS%2014%2B%20·%20iOS%2017%2B-000000?logo=apple&logoColor=white)
+![Platform](https://img.shields.io/badge/platform-macOS%2014%2B%20·%20iOS%2017%2B%20·%20Android%2011%2B-000000)
 ![Swift](https://img.shields.io/badge/Swift-6.0-F05138?logo=swift&logoColor=white)
-![Concurrency](https://img.shields.io/badge/strict%20concurrency-complete-F05138?logo=swift&logoColor=white)
-![Xcode](https://img.shields.io/badge/Xcode-26-147EFB?logo=xcode&logoColor=white)
-![SwiftUI](https://img.shields.io/badge/UI-SwiftUI%20%2B%20WidgetKit-0A84FF)
+![Kotlin](https://img.shields.io/badge/Kotlin-2.2-7F52FF?logo=kotlin&logoColor=white)
+![UI](https://img.shields.io/badge/UI-SwiftUI%20·%20Jetpack%20Compose-0A84FF)
 ![Localization](https://img.shields.io/badge/i18n-EN%20·%20TR%20·%20AR-0A84FF)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -20,9 +19,11 @@ Directorate of Religious Affairs (Diyanet).**
 
 ---
 
-On **macOS**, Namaz Vakti lives in your menu bar with a live countdown to the next prayer and
-opens into a full window for more detail. On **iOS**, it's a tabbed app (Today / Monthly /
-Settings). Both are built from the same Core logic and the same SwiftUI views.
+This is a two-platform monorepo. The **Apple** app (`apple/`) is SwiftUI + WidgetKit: on **macOS** it
+lives in your menu bar with a live countdown to the next prayer and opens into a full window; on
+**iOS** it's a tabbed app (Today / Monthly / Qibla / Settings). The **Android** app (`android/`) is a
+native Kotlin / Jetpack Compose rebuild of the same four tabs. All three share the same Diyanet
+(EzanVakti) data and the same feature set — [jump to Android →](#-android).
 
 ## 📸 Screenshots
 
@@ -57,6 +58,8 @@ The next-prayer **Live Activity** and a **prayer-time notification**, live on th
 
 ## ✨ Features
 
+The Apple (macOS + iOS) app; the [Android app](#-android) mirrors the same feature set.
+
 - **Menu bar countdown** — the next prayer with a live, jitter-free countdown (e.g. `Afternoon  1:23:45`).
 - **Dropdown panel** — today's six times with the next one highlighted, location, and the
   Gregorian + Hijri date.
@@ -85,15 +88,25 @@ The next-prayer **Live Activity** and a **prayer-time notification**, live on th
 
 ## 📋 Requirements
 
+**Apple** (`apple/`):
+
 - macOS 14 (Sonoma) or later, and/or iOS 17 or later
 - Xcode 26+ to build
 - [XcodeGen](https://github.com/yonaskolb/XcodeGen) — `brew install xcodegen`
 
+**Android** (`android/`):
+
+- Android 11 (API 30) or later
+- JDK 21 and the Android SDK (compileSdk 36), or Android Studio
+
 ## 🚀 Build & run
 
 The repo is **platform-separated**: the Apple (iOS + macOS) project is under **`apple/`** and the
-native Android port under **`android/`** (see [`docs/android/`](docs/android/)). Run the Apple
-commands below from **`apple/`**:
+native Android app under **`android/`** (see [Android](#-android) below).
+
+### Apple (macOS + iOS)
+
+Run the commands below from **`apple/`**:
 
 ```sh
 cd apple
@@ -122,6 +135,20 @@ xcodebuild test -scheme NamazVakti -destination 'platform=macOS' -derivedDataPat
 Uses **local ad-hoc signing** — no Apple Developer account required. Re-run
 `xcodegen generate` whenever you add or remove source files.
 
+### Android
+
+A native Kotlin / Jetpack Compose app with two Gradle modules — **`:domain`** (pure Kotlin/JVM, no
+Android deps, with the ported unit tests) and **`:app`** (the Compose UI). Run from **`android/`**:
+
+```sh
+cd android
+./gradlew :domain:test          # the ported logic tests (no Android SDK needed)
+./gradlew :app:assembleDebug    # the debug APK
+```
+
+Or open `android/` in Android Studio. See [`android/README.md`](android/README.md) and
+[`docs/android/`](docs/android/) (`PLAN.md`, `RELEASE.md`) for the full story.
+
 ## 🧭 Data source
 
 Prayer times come from the no-auth **EzanVakti** wrapper of Diyanet's published tables:
@@ -134,7 +161,9 @@ The hierarchy endpoints (`/ulkeler`, `/sehirler/{id}`, `/ilceler/{id}`) drive th
 picker. Everything goes through a `PrayerTimesProvider` protocol, so the official Diyanet
 `AwqatSalah` API can be dropped in later without touching the UI.
 
-## 🏗️ Architecture
+## 🏗️ Architecture (Apple)
+
+The Apple app lives under `apple/`; paths below are relative to it.
 
 - **`Sources/Core`** — UI-free, shared by every target:
   `PrayerDay`, `PrayerSchedule` (next-prayer math in `Europe/Istanbul`), `PrayerCache`,
@@ -177,6 +206,22 @@ picker. Everything goes through a `PrayerTimesProvider` protocol, so the officia
   was the real cause of an earlier hang, so the data layer is free to use modern concurrency.)
 - **Localized via String Catalogs** (English source · Turkish · Arabic with RTL) — including the
   app/widget names and locale-aware Gregorian + Hijri dates. See [docs/LOCALIZATION.md](docs/LOCALIZATION.md).
+
+## 🤖 Android
+
+A native **Kotlin / Jetpack Compose** app under `android/` — a separate codebase from the Apple
+sources, but the same Diyanet (EzanVakti) data and the same four tabs. Two Gradle modules:
+**`:domain`** (pure Kotlin/JVM, no Android deps, unit-tested — the ported schedule / Qibla /
+location-matcher logic) and **`:app`** (the Compose UI). Kotlin 2.2, Compose BOM 2025.06, Material 3,
+minSdk 30 / target+compile 36, **Hilt** DI, an **R8** release build.
+
+Feature parity with Apple: the **Today / Monthly / Qibla / Settings** tabs, a live **Qibla** compass,
+prayer-time **notifications** (exact alarms + boot reschedule), **automatic location** (reverse-geocode
+to a Diyanet district) plus pinned, a **Glance** home-screen widget, two themes (Material You dynamic +
+the dark/gold Arc), and **EN · TR · AR** localization including Arabic RTL.
+
+See [`android/README.md`](android/README.md) and [`docs/android/`](docs/android/) —
+[`PLAN.md`](docs/android/PLAN.md) (design) and [`RELEASE.md`](docs/android/RELEASE.md) (Play release).
 
 ## 🗺️ Roadmap
 
