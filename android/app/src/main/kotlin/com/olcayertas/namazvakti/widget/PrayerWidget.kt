@@ -27,11 +27,12 @@ import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.olcayertas.namazvakti.MainActivity
-import com.olcayertas.namazvakti.NamazVaktiApp
+import com.olcayertas.namazvakti.di.AppEntryPoint
 import com.olcayertas.namazvakti.domain.Config
 import com.olcayertas.namazvakti.domain.Prayer
 import com.olcayertas.namazvakti.domain.PrayerSchedule
 import com.olcayertas.namazvakti.ui.prayerNameRes
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.flow.first
 import java.time.Instant
 import java.time.format.DateTimeFormatter
@@ -44,9 +45,9 @@ import java.time.format.DateTimeFormatter
  */
 class PrayerWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val container = (context.applicationContext as NamazVaktiApp).container
-        val settings = container.settingsStore.settings.first()
-        val schedule = container.monthCache.load(settings.districtId)?.let { PrayerSchedule(it) }
+        val ep = EntryPointAccessors.fromApplication(context.applicationContext, AppEntryPoint::class.java)
+        val settings = ep.settingsStore().settings.first()
+        val schedule = ep.monthCache().load(settings.districtId)?.let { PrayerSchedule(it) }
         provideContent { WidgetContent(context, settings.districtName, schedule) }
     }
 }

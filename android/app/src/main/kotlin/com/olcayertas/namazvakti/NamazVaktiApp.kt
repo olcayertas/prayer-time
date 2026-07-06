@@ -1,14 +1,8 @@
 package com.olcayertas.namazvakti
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
-/** Holds the app-wide dependency graph ([AppContainer]). */
-class NamazVaktiApp : Application() {
-    lateinit var container: AppContainer
-        private set
-
-    override fun onCreate() {
-        super.onCreate()
-        container = AppContainer(this)
-    }
-}
+/** Hilt's application entry point — bootstraps the DI graph (see `di/AppModule`). */
+@HiltAndroidApp
+class NamazVaktiApp : Application()

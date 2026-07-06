@@ -6,13 +6,16 @@ import com.olcayertas.namazvakti.data.LocationMode
 import com.olcayertas.namazvakti.data.Settings
 import com.olcayertas.namazvakti.data.SettingsStore
 import com.olcayertas.namazvakti.ui.theme.ThemeId
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /** Exposes persisted [Settings] as state and forwards edits to the [SettingsStore]. */
-class SettingsViewModel(private val store: SettingsStore) : ViewModel() {
+@HiltViewModel
+class SettingsViewModel @Inject constructor(private val store: SettingsStore) : ViewModel() {
 
     val settings: StateFlow<Settings?> = store.settings.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 

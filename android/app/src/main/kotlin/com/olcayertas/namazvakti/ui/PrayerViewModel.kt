@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.olcayertas.namazvakti.domain.PrayerSchedule
 import com.olcayertas.namazvakti.domain.PrayerTimesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +22,8 @@ sealed interface PrayerUiState {
  * Shared by the Today and Monthly screens (one load, one cache). Reloads when the district changes;
  * the 1 Hz countdown ticks live in the composables.
  */
-class PrayerViewModel(private val repo: PrayerTimesRepository) : ViewModel() {
+@HiltViewModel
+class PrayerViewModel @Inject constructor(private val repo: PrayerTimesRepository) : ViewModel() {
 
     private val _state = MutableStateFlow<PrayerUiState>(PrayerUiState.Loading)
     val state: StateFlow<PrayerUiState> = _state.asStateFlow()

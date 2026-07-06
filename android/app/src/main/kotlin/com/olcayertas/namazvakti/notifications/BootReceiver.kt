@@ -3,8 +3,9 @@ package com.olcayertas.namazvakti.notifications
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.olcayertas.namazvakti.NamazVaktiApp
+import com.olcayertas.namazvakti.di.AppEntryPoint
 import com.olcayertas.namazvakti.domain.PrayerSchedule
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -21,12 +22,12 @@ class BootReceiver : BroadcastReceiver() {
             else -> return
         }
         val pending = goAsync()
-        val container = (context.applicationContext as NamazVaktiApp).container
+        val ep = EntryPointAccessors.fromApplication(context.applicationContext, AppEntryPoint::class.java)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val settings = container.settingsStore.settings.first()
+                val settings = ep.settingsStore().settings.first()
                 if (settings.notificationsEnabled) {
-                    container.monthCache.load(settings.districtId)?.let { days ->
+                    ep.monthCache().load(settings.districtId)?.let { days ->
                         NotificationScheduler(context).schedule(PrayerSchedule(days), settings.districtName)
                     }
                 }

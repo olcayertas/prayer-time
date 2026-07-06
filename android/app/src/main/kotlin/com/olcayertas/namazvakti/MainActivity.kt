@@ -50,10 +50,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.olcayertas.namazvakti.data.LocationMode
+import com.olcayertas.namazvakti.domain.PlacesRepository
+import com.olcayertas.namazvakti.location.AutoLocation
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import com.olcayertas.namazvakti.ui.PrayerUiState
 import com.olcayertas.namazvakti.ui.PrayerViewModel
 import com.olcayertas.namazvakti.ui.SettingsViewModel
@@ -76,16 +78,17 @@ private enum class Tab(@StringRes val labelRes: Int, val icon: ImageVector) {
     SETTINGS(R.string.tab_settings, Icons.Filled.Settings),
 }
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject lateinit var placesRepository: PlacesRepository
+    @Inject lateinit var autoLocation: AutoLocation
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val container = (application as NamazVaktiApp).container
         setContent {
-            val settingsVm: SettingsViewModel = viewModel(factory = viewModelFactory {
-                initializer { SettingsViewModel(container.settingsStore) }
-            })
+            val settingsVm: SettingsViewModel = hiltViewModel()
             val settings by settingsVm.settings.collectAsState()
             val s = settings
 
@@ -96,9 +99,7 @@ class MainActivity : ComponentActivity() {
                         CircularProgressIndicator(color = theme.accent, modifier = Modifier.align(Alignment.Center))
                     } else {
                         var tab by rememberSaveable { mutableStateOf(Tab.TODAY) }
-                        val prayerVm: PrayerViewModel = viewModel(factory = viewModelFactory {
-                            initializer { PrayerViewModel(container.prayerTimesRepository) }
-                        })
+                        val prayerVm: PrayerViewModel = hiltViewModel()
                         LaunchedEffect(s.districtId, s.districtName) { prayerVm.ensureLoaded(s.districtId, s.districtName) }
 
                         // Automatic location: reverse-geocode the device location to a Diyanet
@@ -106,7 +107,7 @@ class MainActivity : ComponentActivity() {
                         // fix / permission / match — keeps the current district.
                         LaunchedEffect(s.locationMode) {
                             if (s.locationMode == LocationMode.AUTOMATIC) {
-                                container.autoLocation.resolve()?.let { match ->
+                                autoLocation.resolve()?.let { match ->
                                     if (match.districtId != s.districtId) settingsVm.setDistrict(match.districtId, match.districtName)
                                 }
                             }
@@ -137,7 +138,7 @@ class MainActivity : ComponentActivity() {
                                 when (tab) {
                                     Tab.SETTINGS -> SettingsScreen(
                                         settings = s,
-                                        placesRepository = container.placesRepository,
+                                        placesRepository = placesRepository,
                                         onSetTheme = settingsVm::setTheme,
                                         onSetDistrict = settingsVm::setDistrict,
                                         onSetNotifications = settingsVm::setNotifications,
