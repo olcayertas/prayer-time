@@ -11,31 +11,32 @@ import kotlinx.coroutines.launch
 
 sealed interface PrayerUiState {
     data object Loading : PrayerUiState
-    data class Loaded(val schedule: PrayerSchedule) : PrayerUiState
+    data class Loaded(val schedule: PrayerSchedule, val locationName: String) : PrayerUiState
     data class Error(val message: String) : PrayerUiState
 }
 
 /**
- * App-wide prayer data: loads the month for [districtId] through the cache-first repository. Shared
- * by the Today and Monthly screens (one load, one cache), so switching tabs never re-fetches. The
- * 1 Hz countdown ticks live in the composables (the schedule is stable within the day).
+ * App-wide prayer data: loads the month for the selected district through the cache-first repository.
+ * Shared by the Today and Monthly screens (one load, one cache). Reloads when the district changes;
+ * the 1 Hz countdown ticks live in the composables.
  */
-class PrayerViewModel(
-    private val repo: PrayerTimesRepository,
-    private val districtId: String,
-    val locationName: String,
-) : ViewModel() {
+class PrayerViewModel(private val repo: PrayerTimesRepository) : ViewModel() {
 
     private val _state = MutableStateFlow<PrayerUiState>(PrayerUiState.Loading)
     val state: StateFlow<PrayerUiState> = _state.asStateFlow()
 
-    init { load() }
+    private var loadedDistrict: String? = null
 
-    fun load() {
+    /** Fetch the month for [districtId] unless it's already loaded (idempotent per district). */
+    fun ensureLoaded(districtId: String, locationName: String) {
+        if (districtId == loadedDistrict && _state.value is PrayerUiState.Loaded) return
+        loadedDistrict = districtId
         viewModelScope.launch {
+            _state.value = PrayerUiState.Loading
             _state.value = try {
-                PrayerUiState.Loaded(PrayerSchedule(repo.monthlyTimes(districtId)))
+                PrayerUiState.Loaded(PrayerSchedule(repo.monthlyTimes(districtId)), locationName)
             } catch (e: Exception) {
+                loadedDistrict = null // let a later attempt retry
                 PrayerUiState.Error(e.message ?: "Unknown error")
             }
         }
