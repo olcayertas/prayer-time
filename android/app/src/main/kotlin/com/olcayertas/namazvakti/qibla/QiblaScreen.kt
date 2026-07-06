@@ -61,6 +61,7 @@ import com.olcayertas.namazvakti.ui.theme.LocalNamazTheme
 import com.olcayertas.namazvakti.ui.theme.NamazTheme
 import kotlin.math.abs
 import kotlin.math.roundToInt
+import kotlinx.coroutines.delay
 
 @Composable
 fun QiblaScreen(locationName: String, modifier: Modifier = Modifier) {
@@ -69,14 +70,16 @@ fun QiblaScreen(locationName: String, modifier: Modifier = Modifier) {
     val activity = remember(context) { context.findActivity() }
     val controller = remember { QiblaController(context) }
 
-    fun granted() = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    val locationPerms = remember { arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION) }
+    fun granted() = locationPerms.any { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }
 
     var hasPermission by remember { mutableStateOf(granted()) }
     var permanentlyDenied by remember { mutableStateOf(false) }
-    val permLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        hasPermission = isGranted
+    val permLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+        val anyGranted = result.values.any { it } // FINE or COARSE (approximate) is enough
+        hasPermission = anyGranted
         // A denial with no rationale prompt means the system won't ask again — route to Settings.
-        if (!isGranted && activity != null) {
+        if (!anyGranted && activity != null) {
             permanentlyDenied = !ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_COARSE_LOCATION)
         }
     }
@@ -117,7 +120,7 @@ fun QiblaScreen(locationName: String, modifier: Modifier = Modifier) {
                 "Find the Qibla",
                 "Prayer Times uses your location to point the compass toward the Kaaba in Mecca.",
                 theme,
-            ) { PillButton("Allow location", theme) { permLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION) } }
+            ) { PillButton("Allow location", theme) { permLauncher.launch(locationPerms) } }
 
             !controller.hasCompass -> StatusMessage(
                 "No compass",
@@ -125,10 +128,7 @@ fun QiblaScreen(locationName: String, modifier: Modifier = Modifier) {
                 theme,
             )
 
-            state.latitude == null -> Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                CircularProgressIndicator(color = theme.accent)
-                Text("Finding your location…", color = theme.muted, fontFamily = theme.fonts.body)
-            }
+            state.latitude == null -> LocatingState(theme) { controller.stop(); controller.start() }
 
             else -> LiveCompass(state, controller.bearing(state) ?: 0.0, locationName, theme)
         }
@@ -149,6 +149,29 @@ private fun Context.openAppSettings() {
         Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null))
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
     )
+}
+
+@Composable
+private fun LocatingState(theme: NamazTheme, onRetry: () -> Unit) {
+    // Never hang: if no fix arrives within a grace period (e.g. approximate-only permission with no
+    // network provider on API 30), fall back to a retry + guidance instead of an endless spinner. It
+    // auto-resolves to the compass the moment a fix lands — the location requests keep running under it.
+    var attempt by remember { mutableStateOf(0) }
+    var timedOut by remember { mutableStateOf(false) }
+    LaunchedEffect(attempt) { timedOut = false; delay(18_000); timedOut = true }
+
+    if (timedOut) {
+        StatusMessage(
+            "Still searching…",
+            "Couldn't get a location fix yet. Make sure location is on — choosing Precise location helps most.",
+            theme,
+        ) { PillButton("Try again", theme) { onRetry(); attempt++ } }
+    } else {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            CircularProgressIndicator(color = theme.accent)
+            Text("Finding your location…", color = theme.muted, fontFamily = theme.fonts.body)
+        }
+    }
 }
 
 @Composable

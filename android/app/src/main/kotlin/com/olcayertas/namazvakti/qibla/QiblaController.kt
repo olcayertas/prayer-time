@@ -1,7 +1,9 @@
 package com.olcayertas.namazvakti.qibla
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.hardware.GeomagneticField
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -13,6 +15,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.CancellationSignal
 import android.view.Surface
+import androidx.core.content.ContextCompat
 import com.olcayertas.namazvakti.domain.Qibla
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -82,14 +85,20 @@ class QiblaController(private val context: Context) {
         }
     }
 
-    private val locationListener = LocationListener { onLocation(it) }
+    private val locationListener = LocationListener { onLocation(it, settle = true) }
 
-    private fun onLocation(loc: Location) {
+    /**
+     * Apply a fix. [settle] means it came from an active source (a real fix, not a possibly-stale
+     * last-known), so we can stop draining the location radios — the qibla bearing doesn't change
+     * as you stand still, so one good fix is all the compass needs (keeps the GPS radio off after).
+     */
+    private fun onLocation(loc: Location, settle: Boolean = false) {
         declination = GeomagneticField(
             loc.latitude.toFloat(), loc.longitude.toFloat(), loc.altitude.toFloat(),
             System.currentTimeMillis(),
         ).declination
         _state.update { it.copy(latitude = loc.latitude, longitude = loc.longitude) }
+        if (settle) stopLocationUpdates()
     }
 
     private fun remap(axisX: Int, axisY: Int): FloatArray {
@@ -100,29 +109,35 @@ class QiblaController(private val context: Context) {
     private fun displayRotation(): Int =
         runCatching { context.display?.rotation ?: Surface.ROTATION_0 }.getOrDefault(Surface.ROTATION_0)
 
-    @SuppressLint("MissingPermission") // caller ensures ACCESS_COARSE_LOCATION is granted
+    @SuppressLint("MissingPermission") // caller ensures COARSE or FINE is granted
     fun start() {
         if (!hasCompass || started) return
         started = true
         rotationSensor?.let { sensorManager?.registerListener(sensorListener, it, SensorManager.SENSOR_DELAY_UI) }
         val lm = locationManager ?: return
+        val hasFine = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        // Every provider the granted precision allows, best-first. GPS needs FINE and is the ONLY
+        // fix source on emulators (and on devices with no cached network location), so without it
+        // the fix never arrives — the "stuck on Finding your location…" bug. Listen on all of them
+        // so whichever delivers first wins.
+        val providers = buildList {
+            if (hasFine && lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) add(LocationManager.GPS_PROVIDER)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && LocationManager.FUSED_PROVIDER in lm.allProviders) add(LocationManager.FUSED_PROVIDER)
+            if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) add(LocationManager.NETWORK_PROVIDER)
+        }.ifEmpty { listOf(LocationManager.PASSIVE_PROVIDER) }
         try {
-            // Coarse permission only grants FUSED (API 31+) / NETWORK / PASSIVE — never GPS (needs FINE).
-            val provider = when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && LocationManager.FUSED_PROVIDER in lm.allProviders -> LocationManager.FUSED_PROVIDER
-                lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER) -> LocationManager.NETWORK_PROVIDER
-                else -> LocationManager.PASSIVE_PROVIDER
-            }
-            (runCatching { lm.getLastKnownLocation(provider) }.getOrNull()
-                ?: runCatching { lm.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER) }.getOrNull())
-                ?.let(::onLocation)
-            // One active fix, cancellable so a stop()/teardown can't leave the callback pending on a
-            // destroyed controller (it captures this instance + the Activity's mainExecutor).
+            // Freshest cached fix across providers for an instant first paint (not settled — it may
+            // be stale, so we keep listening for a live one)…
+            providers.mapNotNull { runCatching { lm.getLastKnownLocation(it) }.getOrNull() }
+                .maxByOrNull { it.time }?.let { onLocation(it) }
+            // …an active one-shot on the primary (cancellable so teardown can't leave it pending on a
+            // destroyed controller — it captures this instance + the Activity's mainExecutor)…
             locationSignal = CancellationSignal()
-            lm.getCurrentLocation(provider, locationSignal, context.mainExecutor) { loc ->
-                if (started) loc?.let(::onLocation)
+            lm.getCurrentLocation(providers.first(), locationSignal, context.mainExecutor) { loc ->
+                if (started) loc?.let { onLocation(it, settle = true) }
             }
-            lm.requestLocationUpdates(provider, 60_000L, 500f, locationListener)
+            // …and continuous updates on each provider.
+            providers.forEach { lm.requestLocationUpdates(it, 30_000L, 100f, locationListener) }
         } catch (e: SecurityException) {
             // permission not granted — the UI stays in "locating"
         }
@@ -131,9 +146,14 @@ class QiblaController(private val context: Context) {
     fun stop() {
         if (!started) return
         started = false
+        stopLocationUpdates()
+        sensorManager?.unregisterListener(sensorListener)
+    }
+
+    /** Cancel the one-shot + continuous location requests, leaving the compass sensor running. */
+    private fun stopLocationUpdates() {
         locationSignal?.cancel()
         locationSignal = null
-        sensorManager?.unregisterListener(sensorListener)
         try {
             locationManager?.removeUpdates(locationListener)
         } catch (e: SecurityException) {
