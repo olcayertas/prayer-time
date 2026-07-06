@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.CircularProgressIndicator
@@ -53,6 +54,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.olcayertas.namazvakti.ui.PrayerUiState
 import com.olcayertas.namazvakti.ui.PrayerViewModel
 import com.olcayertas.namazvakti.ui.SettingsViewModel
+import com.olcayertas.namazvakti.qibla.QiblaScreen
 import com.olcayertas.namazvakti.ui.monthly.MonthScreen
 import com.olcayertas.namazvakti.ui.settings.SettingsScreen
 import com.olcayertas.namazvakti.ui.theme.NamazTheme
@@ -65,6 +67,7 @@ import com.olcayertas.namazvakti.ui.today.TodayScreen
 private enum class Tab(val label: String, val icon: ImageVector) {
     TODAY("Today", Icons.Filled.WbSunny),
     MONTHLY("Monthly", Icons.Filled.CalendarMonth),
+    QIBLA("Qibla", Icons.Filled.Explore),
     SETTINGS("Settings", Icons.Filled.Settings),
 }
 
@@ -122,6 +125,7 @@ class MainActivity : ComponentActivity() {
                                         onSetDistrict = settingsVm::setDistrict,
                                         onSetNotifications = settingsVm::setNotifications,
                                     )
+                                    Tab.QIBLA -> QiblaScreen(locationName = s.districtName)
                                     Tab.TODAY, Tab.MONTHLY -> when (val ps = prayerState) {
                                         PrayerUiState.Loading -> CircularProgressIndicator(color = theme.accent, modifier = Modifier.align(Alignment.Center))
                                         is PrayerUiState.Error -> Text(
