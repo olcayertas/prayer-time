@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="108" height="108">
+  <!-- Adaptive-icon foreground: white crescent + star on transparent (composited over a green
+       background layer), matching the iOS/macOS app icon. Content sits within the ~66dp safe zone. -->
+  <defs>
+    <mask id="crescent" maskUnits="userSpaceOnUse" x="0" y="0" width="108" height="108">
+      <rect x="0" y="0" width="108" height="108" fill="black"/>
+      <circle cx="50" cy="58" r="28" fill="white"/>
+      <circle cx="61" cy="47" r="25" fill="black"/>
+    </mask>
+  </defs>
+  <rect x="0" y="0" width="108" height="108" fill="#FFFFFF" mask="url(#crescent)"/>
+  <path fill="#FFFFFF" d="M70,30 L72.59,37.44 L80.46,37.60 L74.18,42.36 L76.47,49.90 L70,45.40 L63.53,49.90 L65.82,42.36 L59.54,37.60 L67.41,37.44 Z"/>
+</svg>
