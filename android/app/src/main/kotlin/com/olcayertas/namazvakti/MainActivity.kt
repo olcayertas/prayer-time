@@ -53,6 +53,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.olcayertas.namazvakti.data.LocationMode
 import com.olcayertas.namazvakti.ui.PrayerUiState
 import com.olcayertas.namazvakti.ui.PrayerViewModel
 import com.olcayertas.namazvakti.ui.SettingsViewModel
@@ -99,6 +100,17 @@ class MainActivity : ComponentActivity() {
                             initializer { PrayerViewModel(container.prayerTimesRepository) }
                         })
                         LaunchedEffect(s.districtId, s.districtName) { prayerVm.ensureLoaded(s.districtId, s.districtName) }
+
+                        // Automatic location: reverse-geocode the device location to a Diyanet
+                        // district and pin it (which triggers the reload above). No-op without a
+                        // fix / permission / match — keeps the current district.
+                        LaunchedEffect(s.locationMode) {
+                            if (s.locationMode == LocationMode.AUTOMATIC) {
+                                container.autoLocation.resolve()?.let { match ->
+                                    if (match.districtId != s.districtId) settingsVm.setDistrict(match.districtId, match.districtName)
+                                }
+                            }
+                        }
                         val prayerState by prayerVm.state.collectAsState()
 
                         // Notifications: request POST_NOTIFICATIONS when enabled, and (re)schedule /
@@ -129,6 +141,7 @@ class MainActivity : ComponentActivity() {
                                         onSetTheme = settingsVm::setTheme,
                                         onSetDistrict = settingsVm::setDistrict,
                                         onSetNotifications = settingsVm::setNotifications,
+                                        onSetLocationMode = settingsVm::setLocationMode,
                                     )
                                     Tab.QIBLA -> QiblaScreen(locationName = s.districtName)
                                     Tab.TODAY, Tab.MONTHLY -> when (val ps = prayerState) {

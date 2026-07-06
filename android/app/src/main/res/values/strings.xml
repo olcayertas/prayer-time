@@ -40,6 +40,10 @@
     <string name="settings_location">Location</string>
     <string name="settings_current">Current</string>
     <string name="action_change">Change</string>
+    <string name="location_automatic">Automatic</string>
+    <string name="location_pinned">Pinned</string>
+    <string name="location_auto_hint">Prayer times follow your current location.</string>
+    <string name="location_auto_permission">Allow location to detect your city automatically.</string>
     <string name="settings_notifications">Notifications</string>
     <string name="prayer_notifications">Prayer notifications</string>
     <string name="allow_exact_alarms">Allow exact alarms</string>

@@ -2,6 +2,11 @@
 
 package com.olcayertas.namazvakti.ui.settings
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +49,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.olcayertas.namazvakti.R
+import com.olcayertas.namazvakti.data.LocationMode
 import com.olcayertas.namazvakti.data.Settings
 import com.olcayertas.namazvakti.domain.City
 import com.olcayertas.namazvakti.domain.Config
@@ -63,10 +69,25 @@ fun SettingsScreen(
     onSetTheme: (ThemeId) -> Unit,
     onSetDistrict: (String, String) -> Unit,
     onSetNotifications: (Boolean) -> Unit,
+    onSetLocationMode: (LocationMode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val theme = LocalNamazTheme.current
+    val context = LocalContext.current
     var showPicker by remember { mutableStateOf(false) }
+
+    fun hasLocationPermission() =
+        ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    var locationGranted by remember { mutableStateOf(hasLocationPermission()) }
+    val locationPermLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+        locationGranted = result.values.any { it }
+        if (locationGranted) onSetLocationMode(LocationMode.AUTOMATIC)
+    }
+    fun selectAutomatic() {
+        if (hasLocationPermission()) onSetLocationMode(LocationMode.AUTOMATIC)
+        else locationPermLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
+    }
 
     Column(
         modifier.fillMaxSize().verticalScroll(rememberScrollState()).statusBarsPadding().padding(24.dp),
@@ -86,12 +107,24 @@ fun SettingsScreen(
         }
 
         Section(stringResource(R.string.settings_location), theme) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                SegButton(stringResource(R.string.location_automatic), settings.locationMode == LocationMode.AUTOMATIC, Modifier.weight(1f), theme) { selectAutomatic() }
+                SegButton(stringResource(R.string.location_pinned), settings.locationMode == LocationMode.PINNED, Modifier.weight(1f), theme) { onSetLocationMode(LocationMode.PINNED) }
+            }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Column {
                     Text(stringResource(R.string.settings_current), fontFamily = theme.fonts.body, fontSize = 12.sp, color = theme.muted)
                     Text(settings.districtName, fontFamily = theme.fonts.body, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = theme.text)
                 }
-                Pill(stringResource(R.string.action_change), theme) { showPicker = true }
+                if (settings.locationMode == LocationMode.PINNED) {
+                    Pill(stringResource(R.string.action_change), theme) { showPicker = true }
+                }
+            }
+            if (settings.locationMode == LocationMode.AUTOMATIC) {
+                Text(
+                    stringResource(if (locationGranted) R.string.location_auto_hint else R.string.location_auto_permission),
+                    fontFamily = theme.fonts.body, fontSize = 12.sp, color = theme.muted,
+                )
             }
         }
 

@@ -2,6 +2,7 @@ package com.olcayertas.namazvakti.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.olcayertas.namazvakti.data.LocationMode
 import com.olcayertas.namazvakti.data.Settings
 import com.olcayertas.namazvakti.data.SettingsStore
 import com.olcayertas.namazvakti.ui.theme.ThemeId
@@ -18,4 +19,5 @@ class SettingsViewModel(private val store: SettingsStore) : ViewModel() {
     fun setTheme(id: ThemeId) { viewModelScope.launch { store.setTheme(id) } }
     fun setDistrict(id: String, name: String) { viewModelScope.launch { store.setDistrict(id, name) } }
     fun setNotifications(enabled: Boolean) { viewModelScope.launch { store.setNotifications(enabled) } }
+    fun setLocationMode(mode: LocationMode) { viewModelScope.launch { store.setLocationMode(mode) } }
 }

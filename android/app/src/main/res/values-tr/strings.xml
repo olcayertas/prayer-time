@@ -38,6 +38,10 @@
     <string name="settings_location">Konum</string>
     <string name="settings_current">Geçerli</string>
     <string name="action_change">Değiştir</string>
+    <string name="location_automatic">Otomatik</string>
+    <string name="location_pinned">Sabit</string>
+    <string name="location_auto_hint">Vakitler bulunduğunuz konumu izler.</string>
+    <string name="location_auto_permission">Şehri otomatik algılamak için konuma izin verin.</string>
     <string name="settings_notifications">Bildirimler</string>
     <string name="prayer_notifications">Vakit bildirimleri</string>
     <string name="allow_exact_alarms">Tam zamanlı alarmlara izin ver</string>

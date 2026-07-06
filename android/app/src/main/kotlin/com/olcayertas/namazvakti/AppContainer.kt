@@ -8,6 +8,7 @@ import com.olcayertas.namazvakti.domain.DefaultPrayerTimesRepository
 import com.olcayertas.namazvakti.domain.MonthCache
 import com.olcayertas.namazvakti.domain.PlacesRepository
 import com.olcayertas.namazvakti.domain.PrayerTimesRepository
+import com.olcayertas.namazvakti.location.AutoLocation
 import okhttp3.OkHttpClient
 
 /**
@@ -23,4 +24,5 @@ class AppContainer(context: Context) {
     val prayerTimesRepository: PrayerTimesRepository = DefaultPrayerTimesRepository(remote, monthCache)
     val placesRepository: PlacesRepository = DefaultPlacesRepository(remote)
     val settingsStore = SettingsStore(context)
+    val autoLocation = AutoLocation(context.applicationContext, placesRepository)
 }
