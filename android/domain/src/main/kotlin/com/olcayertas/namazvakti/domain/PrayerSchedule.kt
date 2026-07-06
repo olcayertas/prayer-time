@@ -34,6 +34,13 @@ data class PrayerSchedule(
         sortedTimes().lastOrNull { it.second <= now }?.first
 
     /**
+     * The upcoming (prayer, instant) pairs strictly after [now], for scheduling notifications.
+     * Excludes informational prayers (Güneş/sunrise) by default and caps at [limit].
+     */
+    fun upcomingTimes(now: Instant, limit: Int = 15, includeInformational: Boolean = false): List<Pair<Prayer, Instant>> =
+        sortedTimes().filter { it.second > now && (includeInformational || !it.first.isInformational) }.take(limit)
+
+    /**
      * The [PrayerDay] whose Gregorian date matches [now] in Istanbul time. Also the cache-freshness
      * predicate: a cached month is fresh only while it still contains today's Istanbul date.
      */

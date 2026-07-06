@@ -1,7 +1,15 @@
 package com.olcayertas.namazvakti
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import com.olcayertas.namazvakti.notifications.NotificationScheduler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
@@ -85,6 +93,24 @@ class MainActivity : ComponentActivity() {
                         })
                         LaunchedEffect(s.districtId, s.districtName) { prayerVm.ensureLoaded(s.districtId, s.districtName) }
                         val prayerState by prayerVm.state.collectAsState()
+
+                        // Notifications: request POST_NOTIFICATIONS when enabled, and (re)schedule /
+                        // cancel the prayer alarms as the toggle + loaded schedule change.
+                        val context = LocalContext.current
+                        val notifPermLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
+                        LaunchedEffect(s.notificationsEnabled) {
+                            if (s.notificationsEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                                ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+                            ) {
+                                notifPermLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            }
+                        }
+                        LaunchedEffect(s.notificationsEnabled, prayerState) {
+                            val scheduler = NotificationScheduler(context)
+                            val ps = prayerState
+                            if (s.notificationsEnabled && ps is PrayerUiState.Loaded) scheduler.schedule(ps.schedule, ps.locationName)
+                            else if (!s.notificationsEnabled) scheduler.cancelAll()
+                        }
 
                         Column(Modifier.fillMaxSize()) {
                             Box(Modifier.fillMaxWidth().weight(1f)) {

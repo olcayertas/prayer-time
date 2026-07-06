@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Namaz Vakti</string>
+    <!-- Prayer notifications -->
+    <string name="notif_channel_name">Prayer times</string>
+    <string name="notif_channel_desc">A notification at each prayer time.</string>
+    <string name="notif_title">%1$s time</string>
+    <string name="notif_body">It\'s %1$s time in %2$s.</string>
 </resources>

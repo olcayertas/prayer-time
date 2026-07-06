@@ -65,6 +65,13 @@ class PrayerScheduleTest {
         assertNull(schedule.upcoming(istanbul(2026, 6, 9, 23, 0))) // after the last loaded time
     }
 
+    @Test fun upcomingTimesExcludesGunesAndCaps() {
+        val now = istanbul(2026, 6, 8, 0, 0) // start of day1
+        val ups = schedule.upcomingTimes(now, limit = 4)
+        // imsak 03:27, [gunes 05:26 excluded], ogle 13:09, ikindi 17:08, aksam 20:42 → first 4 non-Güneş
+        assertEquals(listOf(Prayer.IMSAK, Prayer.OGLE, Prayer.IKINDI, Prayer.AKSAM), ups.map { it.first })
+    }
+
     @Test fun parseHelpers() {
         assertEquals(6, PrayerSchedule.parseDate("08.06.2026")?.month)
         assertEquals(8, PrayerSchedule.parseDate("08.06.2026")?.day)

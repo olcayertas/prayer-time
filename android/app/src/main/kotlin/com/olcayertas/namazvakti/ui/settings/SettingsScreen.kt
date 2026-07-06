@@ -47,6 +47,7 @@ import com.olcayertas.namazvakti.domain.City
 import com.olcayertas.namazvakti.domain.Config
 import com.olcayertas.namazvakti.domain.PlacesRepository
 import com.olcayertas.namazvakti.domain.foldedForSearch
+import com.olcayertas.namazvakti.notifications.NotificationScheduler
 import com.olcayertas.namazvakti.ui.theme.LocalNamazTheme
 import com.olcayertas.namazvakti.ui.theme.NamazTheme
 import com.olcayertas.namazvakti.ui.theme.ThemeId
@@ -100,7 +101,20 @@ fun SettingsScreen(
                     colors = SwitchDefaults.colors(checkedThumbColor = theme.accent, checkedTrackColor = theme.accentSoft),
                 )
             }
-            Text("Alarm scheduling arrives in the next update.", fontFamily = theme.fonts.body, fontSize = 12.sp, color = theme.muted)
+            val ctx = LocalContext.current
+            if (settings.notificationsEnabled && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S &&
+                !NotificationScheduler(ctx).canScheduleExact()
+            ) {
+                Text("For on-time alerts, allow exact alarms — otherwise they can be a few minutes late.", fontFamily = theme.fonts.body, fontSize = 12.sp, color = theme.muted)
+                Pill("Allow exact alarms", theme) {
+                    ctx.startActivity(
+                        android.content.Intent(
+                            android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                            android.net.Uri.parse("package:" + ctx.packageName),
+                        ),
+                    )
+                }
+            }
         }
 
         val ctx = LocalContext.current
