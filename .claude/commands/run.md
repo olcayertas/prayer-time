@@ -4,10 +4,10 @@ description: Regenerate, build, and launch the app
 Regenerate the project, build, relaunch the app, and confirm it's healthy.
 
 ```sh
-xcodegen generate
-xcodebuild -project NamazVakti.xcodeproj -scheme NamazVakti -destination 'platform=macOS' \
-  -derivedDataPath build/DerivedData build
-pkill -9 -f NamazVakti.app 2>/dev/null; open build/DerivedData/Build/Products/Debug/NamazVakti.app
+xcodegen generate --spec apple/project.yml --project apple
+xcodebuild -project apple/NamazVakti.xcodeproj -scheme NamazVakti -destination 'platform=macOS' \
+  -derivedDataPath apple/build/DerivedData build
+pkill -9 -f NamazVakti.app 2>/dev/null; open apple/build/DerivedData/Build/Products/Debug/NamazVakti.app
 ```
 
 Then verify health: the menu bar shows a counting-down next prayer, and `sample <pid> 1` shows the

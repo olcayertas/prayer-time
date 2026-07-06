@@ -11,6 +11,9 @@ jobs:
     name: Build & Test (macOS)
     # macos-15 defaults to Xcode 16.x; Swift 6 language mode (SWIFT_VERSION 6.0) needs Xcode 16+.
     runs-on: macos-15
+    defaults:
+      run:
+        working-directory: apple # the Xcode project lives here after the platform split
 
     steps:
       - name: Checkout
@@ -34,6 +37,9 @@ jobs:
   build-ios:
     name: Build (iOS Simulator)
     runs-on: macos-15
+    defaults:
+      run:
+        working-directory: apple
 
     steps:
       - name: Checkout

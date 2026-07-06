@@ -1,5 +1,8 @@
 # Suggested Commands
 
+The Apple (iOS+macOS) project lives under **`apple/`** after the platform split (Android is under
+`android/`). Run these from `apple/` (`cd apple`).
+
 Regenerate the Xcode project (REQUIRED after adding/removing source files):
   xcodegen generate
 

@@ -3,13 +3,20 @@
 macOS **menu bar** app **+ iOS** app for Diyanet prayer times (SwiftUI + WidgetKit), sharing
 one `Core` and one set of SwiftUI views. Localized **EN · TR · AR**.
 
+**Monorepo (platform-separated):** the **Apple** (iOS + macOS) project lives under **`apple/`**
+(Sources, Tests, `project.yml`, fastlane, ci_scripts, Distribution); the native **Android** port under
+**`android/`** (see `docs/android/`). Shared at the repo root: `docs/`, `README.md`, this file,
+`.github/`. **Paths in this file are relative to `apple/` unless noted.**
+
 ## Build / test / run
 
-This is an **XcodeGen** project — `NamazVakti.xcodeproj` is generated and **gitignored**.
+This is an **XcodeGen** project — `apple/NamazVakti.xcodeproj` is generated and **gitignored**.
 Two app targets share `Sources/Core` + `Sources/Shared`: **`NamazVakti`** (macOS) and
-**`NamazVaktiiOS`** (iOS), each embedding its own widget extension.
+**`NamazVaktiiOS`** (iOS), each embedding its own widget extension. Run the commands below from
+**`apple/`** (`cd apple`).
 
 ```sh
+cd apple                   # the Apple project lives here
 xcodegen generate          # REQUIRED after adding/removing any source file
 
 # macOS (menu bar app + widget) — build / test (Core logic, no network) / run

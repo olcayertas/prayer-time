@@ -91,7 +91,12 @@ The next-prayer **Live Activity** and a **prayer-time notification**, live on th
 
 ## 🚀 Build & run
 
+The repo is **platform-separated**: the Apple (iOS + macOS) project is under **`apple/`** and the
+native Android port under **`android/`** (see [`docs/android/`](docs/android/)). Run the Apple
+commands below from **`apple/`**:
+
 ```sh
+cd apple
 brew install xcodegen
 xcodegen generate                       # regenerate NamazVakti.xcodeproj from project.yml
 xcodebuild -scheme NamazVakti -destination 'platform=macOS' \

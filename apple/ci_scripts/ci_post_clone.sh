@@ -17,7 +17,7 @@ fi
 xcodegen --version
 
 echo "==> Generating NamazVakti.xcodeproj from project.yml"
-cd "$CI_PRIMARY_REPOSITORY_PATH"
+cd "$CI_PRIMARY_REPOSITORY_PATH/apple" # the Apple project lives here after the platform split
 xcodegen generate
 
 echo "==> Done: $(ls -d *.xcodeproj 2>/dev/null)"

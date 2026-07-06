@@ -20,8 +20,8 @@ xcuserdata/
 # Serena — its own .serena/.gitignore excludes cache/ and project.local.yml;
 # project.yml + memories/ are committed so onboarding is shared.
 
-# fastlane
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/test_output/
+# fastlane (under apple/ after the platform split)
+apple/fastlane/report.xml
+apple/fastlane/Preview.html
+apple/fastlane/test_output/
 *.p8
