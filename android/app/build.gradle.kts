@@ -17,9 +17,29 @@ android {
         versionName = "1.0.0"
     }
 
+    // Release signing comes from the environment (CI / local keystore). Absent it, `assembleRelease`
+    // produces an unsigned APK — enough to verify R8. See docs/android/RELEASE.md.
+    val releaseKeystore = System.getenv("NAMAZVAKTI_KEYSTORE")?.let(::file)
+    signingConfigs {
+        if (releaseKeystore != null) {
+            create("release") {
+                storeFile = releaseKeystore
+                storePassword = System.getenv("NAMAZVAKTI_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("NAMAZVAKTI_KEY_ALIAS")
+                keyPassword = System.getenv("NAMAZVAKTI_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false // R8/shrinker config lands in a later phase
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+            signingConfig = signingConfigs.findByName("release")
         }
     }
 
