@@ -9,7 +9,6 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationManagerCompat
 import com.olcayertas.namazvakti.R
 import com.olcayertas.namazvakti.domain.PrayerSchedule
-import com.olcayertas.namazvakti.ui.prayerName
 import java.time.Instant
 
 /**
@@ -40,7 +39,7 @@ class NotificationScheduler(private val context: Context) {
         val am = context.getSystemService(AlarmManager::class.java) ?: return
         val exact = canScheduleExact()
         schedule.upcomingTimes(Instant.now(), MAX).forEachIndexed { i, (prayer, instant) ->
-            val pi = pendingIntent(i, prayerName(prayer), locationName)
+            val pi = pendingIntent(i, prayer.name, locationName) // enum name; localized at fire time
             val at = instant.toEpochMilli()
             try {
                 if (exact) am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pi)

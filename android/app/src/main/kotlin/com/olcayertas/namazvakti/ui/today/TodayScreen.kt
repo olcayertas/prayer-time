@@ -22,9 +22,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.olcayertas.namazvakti.R
 import com.olcayertas.namazvakti.domain.CountdownFormatter
 import com.olcayertas.namazvakti.domain.Prayer
 import com.olcayertas.namazvakti.domain.PrayerDay
@@ -83,19 +85,19 @@ private fun Hero(upcoming: UpcomingPrayer?, theme: NamazTheme) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         if (upcoming == null) {
-            Text("Couldn't load today's times", color = theme.muted, fontFamily = theme.fonts.body)
+            Text(stringResource(R.string.error_load_today), color = theme.muted, fontFamily = theme.fonts.body)
             return@Column
         }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
             Dot(theme.accent, 40.dp)
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text("Next prayer", fontFamily = theme.fonts.body, fontSize = 15.sp, color = theme.muted)
+                Text(stringResource(R.string.next_prayer), fontFamily = theme.fonts.body, fontSize = 15.sp, color = theme.muted)
                 Text(prayerName(upcoming.prayer), fontFamily = theme.fonts.display, fontWeight = FontWeight.SemiBold, fontSize = 28.sp, color = theme.text)
             }
         }
         Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(CountdownFormatter.string(upcoming.remaining), fontFamily = theme.fonts.mono, fontWeight = FontWeight.Bold, fontSize = 42.sp, color = theme.accent)
-            Text("remaining", fontFamily = theme.fonts.body, fontSize = 12.sp, color = theme.muted, modifier = Modifier.padding(bottom = 7.dp))
+            Text(stringResource(R.string.countdown_remaining), fontFamily = theme.fonts.body, fontSize = 12.sp, color = theme.muted, modifier = Modifier.padding(bottom = 7.dp))
         }
     }
 }
@@ -133,9 +135,9 @@ private fun GridCell(prayer: Prayer, today: PrayerDay, isNext: Boolean, isCurren
 @Composable
 private fun Extras(today: PrayerDay, theme: NamazTheme) {
     Row(horizontalArrangement = Arrangement.spacedBy(28.dp)) {
-        today.gunesDogus?.let { InfoItem("Sunrise", it, theme) }
-        today.gunesBatis?.let { InfoItem("Sunset", it, theme) }
-        today.kibleSaati?.let { InfoItem("Qibla time", it, theme) }
+        today.gunesDogus?.let { InfoItem(stringResource(R.string.prayer_sunrise), it, theme) }
+        today.gunesBatis?.let { InfoItem(stringResource(R.string.prayer_sunset), it, theme) }
+        today.kibleSaati?.let { InfoItem(stringResource(R.string.qibla_time), it, theme) }
     }
 }
 

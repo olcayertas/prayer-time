@@ -50,6 +50,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,6 +58,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import com.olcayertas.namazvakti.R
 import com.olcayertas.namazvakti.ui.theme.LocalNamazTheme
 import com.olcayertas.namazvakti.ui.theme.NamazTheme
 import kotlin.math.abs
@@ -111,20 +113,20 @@ fun QiblaScreen(locationName: String, modifier: Modifier = Modifier) {
     Box(modifier.fillMaxSize().statusBarsPadding().padding(24.dp), contentAlignment = Alignment.Center) {
         when {
             !hasPermission && permanentlyDenied -> StatusMessage(
-                "Location needed",
-                "Enable location access for Prayer Times in Settings to point the compass toward Mecca.",
+                stringResource(R.string.qibla_location_needed_title),
+                stringResource(R.string.qibla_location_needed_body),
                 theme,
-            ) { PillButton("Open settings", theme) { context.openAppSettings() } }
+            ) { PillButton(stringResource(R.string.qibla_open_settings), theme) { context.openAppSettings() } }
 
             !hasPermission -> StatusMessage(
-                "Find the Qibla",
-                "Prayer Times uses your location to point the compass toward the Kaaba in Mecca.",
+                stringResource(R.string.qibla_find_title),
+                stringResource(R.string.qibla_find_body),
                 theme,
-            ) { PillButton("Allow location", theme) { permLauncher.launch(locationPerms) } }
+            ) { PillButton(stringResource(R.string.qibla_allow_location), theme) { permLauncher.launch(locationPerms) } }
 
             !controller.hasCompass -> StatusMessage(
-                "No compass",
-                "This device doesn't have a compass, so the Qibla direction can't be shown here.",
+                stringResource(R.string.qibla_no_compass_title),
+                stringResource(R.string.qibla_no_compass_body),
                 theme,
             )
 
@@ -162,14 +164,14 @@ private fun LocatingState(theme: NamazTheme, onRetry: () -> Unit) {
 
     if (timedOut) {
         StatusMessage(
-            "Still searching…",
-            "Couldn't get a location fix yet. Make sure location is on — choosing Precise location helps most.",
+            stringResource(R.string.qibla_still_searching_title),
+            stringResource(R.string.qibla_still_searching_body),
             theme,
-        ) { PillButton("Try again", theme) { onRetry(); attempt++ } }
+        ) { PillButton(stringResource(R.string.qibla_try_again), theme) { onRetry(); attempt++ } }
     } else {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
             CircularProgressIndicator(color = theme.accent)
-            Text("Finding your location…", color = theme.muted, fontFamily = theme.fonts.body)
+            Text(stringResource(R.string.qibla_locating), color = theme.muted, fontFamily = theme.fonts.body)
         }
     }
 }
@@ -190,13 +192,13 @@ private fun LiveCompass(state: QiblaController.State, bearing: Double, locationN
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(20.dp)) {
         CompassDial(heading, bearing, aligned, theme, Modifier.size(300.dp))
         if (aligned) {
-            Text("Facing the Qibla", color = theme.success, fontFamily = theme.fonts.body, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+            Text(stringResource(R.string.qibla_facing), color = theme.success, fontFamily = theme.fonts.body, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
         } else {
-            Text("${bearing.roundToInt()}° from North", color = theme.text, fontFamily = theme.fonts.mono, fontWeight = FontWeight.SemiBold, fontSize = 22.sp)
+            Text(stringResource(R.string.qibla_degrees_from_north, bearing.roundToInt()), color = theme.text, fontFamily = theme.fonts.mono, fontWeight = FontWeight.SemiBold, fontSize = 22.sp)
         }
         Text(locationName, color = theme.muted, fontFamily = theme.fonts.body, fontSize = 15.sp)
         if (state.accuracy <= SensorManager.SENSOR_STATUS_ACCURACY_LOW) {
-            Text("Move your phone in a figure 8 to calibrate the compass.", color = theme.muted, fontFamily = theme.fonts.body, fontSize = 13.sp)
+            Text(stringResource(R.string.qibla_calibrate), color = theme.muted, fontFamily = theme.fonts.body, fontSize = 13.sp)
         }
     }
 }
@@ -287,7 +289,7 @@ private fun CompassDial(heading: Double, qiblaBearing: Double, aligned: Boolean,
 
         if (aligned) {
             Text(
-                "Qibla", color = theme.success, fontFamily = theme.fonts.body,
+                stringResource(R.string.tab_qibla), color = theme.success, fontFamily = theme.fonts.body,
                 fontWeight = FontWeight.SemiBold, fontSize = 12.sp, modifier = Modifier.offset(y = 46.dp),
             )
         }

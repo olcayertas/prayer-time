@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Prayer names -->
+    <string name="prayer_dawn">الفجر</string>
+    <string name="prayer_sunrise">الشروق</string>
+    <string name="prayer_noon">الظهر</string>
+    <string name="prayer_afternoon">العصر</string>
+    <string name="prayer_sunset">المغرب</string>
+    <string name="prayer_night">العشاء</string>
+
+    <!-- Bottom navigation -->
+    <string name="tab_today">اليوم</string>
+    <string name="tab_monthly">شهري</string>
+    <string name="tab_qibla">القبلة</string>
+    <string name="tab_settings">الإعدادات</string>
+
+    <!-- Today -->
+    <string name="next_prayer">الصلاة التالية</string>
+    <string name="countdown_remaining">متبقٍ</string>
+    <string name="qibla_time">وقت القبلة</string>
+    <string name="error_load_today">تعذّر تحميل أوقات اليوم</string>
+    <string name="error_load_times">تعذّر تحميل الأوقات: %1$s</string>
+
+    <!-- Monthly -->
+    <string name="month_focus_eyebrow">أوقات الصلاة</string>
+    <string name="month_next_chip">التالي · %1$s</string>
+    <string name="month_focus_today">%1$s · اليوم</string>
+    <string name="month_eyebrow">هذا الشهر</string>
+    <string name="month_tap_hint">اضغط على يوم</string>
+
+    <!-- Settings -->
+    <string name="settings_title">الإعدادات</string>
+    <string name="settings_appearance">المظهر</string>
+    <string name="theme_default">افتراضي</string>
+    <string name="theme_arc">Arc</string>
+    <string name="theme_arc_desc">لوحة داكنة بلمسات ذهبية.</string>
+    <string name="theme_default_desc">يتبع مظهر النظام الفاتح والداكن.</string>
+    <string name="settings_location">الموقع</string>
+    <string name="settings_current">الحالي</string>
+    <string name="action_change">تغيير</string>
+    <string name="settings_notifications">التنبيهات</string>
+    <string name="prayer_notifications">تنبيهات الصلاة</string>
+    <string name="allow_exact_alarms">السماح بالتنبيهات الدقيقة</string>
+    <string name="exact_alarms_hint">لتصلك التنبيهات في وقتها، اسمح بالتنبيهات الدقيقة — وإلا فقد تتأخر بضع دقائق.</string>
+    <string name="settings_about">حول</string>
+    <string name="settings_version">الإصدار</string>
+    <string name="about_source">تُؤخذ أوقات الصلاة من خدمة EzanVakti المستندة إلى رئاسة الشؤون الدينية التركية (ديانت).</string>
+    <string name="picker_choose_city">اختر مدينة</string>
+    <string name="picker_choose_district">اختر منطقة في %1$s</string>
+    <string name="picker_back_cities">‹ المدن</string>
+    <string name="action_search">بحث</string>
+    <string name="error_load_generic">تعذّر التحميل: %1$s</string>
+
+    <!-- Qibla -->
+    <string name="qibla_find_title">ابحث عن القبلة</string>
+    <string name="qibla_find_body">يستخدم تطبيق أوقات الصلاة موقعك لتوجيه البوصلة نحو الكعبة في مكة.</string>
+    <string name="qibla_allow_location">السماح بالوصول إلى الموقع</string>
+    <string name="qibla_location_needed_title">الموقع مطلوب</string>
+    <string name="qibla_location_needed_body">فعّل الوصول إلى الموقع لتطبيق أوقات الصلاة من الإعدادات لتوجيه البوصلة نحو مكة.</string>
+    <string name="qibla_open_settings">فتح الإعدادات</string>
+    <string name="qibla_no_compass_title">لا توجد بوصلة</string>
+    <string name="qibla_no_compass_body">لا يحتوي هذا الجهاز على بوصلة، لذا لا يمكن عرض اتجاه القبلة هنا.</string>
+    <string name="qibla_locating">جارٍ تحديد موقعك…</string>
+    <string name="qibla_still_searching_title">لا يزال البحث جاريًا…</string>
+    <string name="qibla_still_searching_body">تعذّر تحديد الموقع بعد. تأكّد من تشغيل الموقع — اختيار الموقع الدقيق يساعد كثيرًا.</string>
+    <string name="qibla_try_again">حاول مرة أخرى</string>
+    <string name="qibla_facing">في اتجاه القبلة</string>
+    <string name="qibla_degrees_from_north">%1$d° من الشمال</string>
+    <string name="qibla_calibrate">حرّك هاتفك على شكل الرقم ٨ لمعايرة البوصلة.</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_name">أوقات الصلاة</string>
+    <string name="notif_channel_desc">يُنبّهك عند كل وقت صلاة.</string>
+    <string name="notif_title">وقت %1$s</string>
+    <string name="notif_body">حان وقت %1$s في %2$s.</string>
+</resources>

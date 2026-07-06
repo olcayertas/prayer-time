@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Prayer names -->
+    <string name="prayer_dawn">İmsak</string>
+    <string name="prayer_sunrise">Güneş</string>
+    <string name="prayer_noon">Öğle</string>
+    <string name="prayer_afternoon">İkindi</string>
+    <string name="prayer_sunset">Akşam</string>
+    <string name="prayer_night">Yatsı</string>
+
+    <!-- Bottom navigation -->
+    <string name="tab_today">Bugün</string>
+    <string name="tab_monthly">Aylık</string>
+    <string name="tab_qibla">Kıble</string>
+    <string name="tab_settings">Ayarlar</string>
+
+    <!-- Today -->
+    <string name="next_prayer">Sıradaki vakit</string>
+    <string name="countdown_remaining">kaldı</string>
+    <string name="qibla_time">Kıble vakti</string>
+    <string name="error_load_today">Bugünün vakitleri yüklenemedi</string>
+    <string name="error_load_times">Vakitler yüklenemedi: %1$s</string>
+
+    <!-- Monthly -->
+    <string name="month_focus_eyebrow">NAMAZ VAKİTLERİ</string>
+    <string name="month_next_chip">Sıradaki · %1$s</string>
+    <string name="month_focus_today">%1$s · Bugün</string>
+    <string name="month_eyebrow">BU AY</string>
+    <string name="month_tap_hint">bir güne dokun</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ayarlar</string>
+    <string name="settings_appearance">Görünüm</string>
+    <string name="theme_default">Varsayılan</string>
+    <string name="theme_arc">Arc</string>
+    <string name="theme_arc_desc">Altın vurgulu koyu bir palet.</string>
+    <string name="theme_default_desc">Sistemin açık ve koyu görünümünü izler.</string>
+    <string name="settings_location">Konum</string>
+    <string name="settings_current">Geçerli</string>
+    <string name="action_change">Değiştir</string>
+    <string name="settings_notifications">Bildirimler</string>
+    <string name="prayer_notifications">Vakit bildirimleri</string>
+    <string name="allow_exact_alarms">Tam zamanlı alarmlara izin ver</string>
+    <string name="exact_alarms_hint">Bildirimlerin tam vaktinde gelmesi için tam zamanlı alarmlara izin verin — aksi halde birkaç dakika gecikebilir.</string>
+    <string name="settings_about">Hakkında</string>
+    <string name="settings_version">Sürüm</string>
+    <string name="about_source">Vakitler T.C. Diyanet İşleri Başkanlığı kaynaklı EzanVakti servisinden alınır.</string>
+    <string name="picker_choose_city">Bir şehir seçin</string>
+    <string name="picker_choose_district">%1$s içinde bir ilçe seçin</string>
+    <string name="picker_back_cities">‹ Şehirler</string>
+    <string name="action_search">Ara</string>
+    <string name="error_load_generic">Yüklenemedi: %1$s</string>
+
+    <!-- Qibla -->
+    <string name="qibla_find_title">Kıble\'yi bul</string>
+    <string name="qibla_find_body">Namaz Vakti, pusulayı Mekke\'deki Kâbe\'ye doğru yöneltmek için konumunuzu kullanır.</string>
+    <string name="qibla_allow_location">Konuma izin ver</string>
+    <string name="qibla_location_needed_title">Konum gerekli</string>
+    <string name="qibla_location_needed_body">Pusulanın Mekke yönünü göstermesi için Ayarlar\'dan Namaz Vakti için konum erişimini etkinleştirin.</string>
+    <string name="qibla_open_settings">Ayarları aç</string>
+    <string name="qibla_no_compass_title">Pusula yok</string>
+    <string name="qibla_no_compass_body">Bu cihazda pusula bulunmadığından Kıble yönü burada gösterilemez.</string>
+    <string name="qibla_locating">Konumunuz bulunuyor…</string>
+    <string name="qibla_still_searching_title">Hâlâ aranıyor…</string>
+    <string name="qibla_still_searching_body">Konum henüz belirlenemedi. Konumun açık olduğundan emin olun — Hassas konumu seçmek en çok yardımcı olur.</string>
+    <string name="qibla_try_again">Yeniden dene</string>
+    <string name="qibla_facing">Kıble\'ye dönük</string>
+    <string name="qibla_degrees_from_north">Kuzeyden %1$d°</string>
+    <string name="qibla_calibrate">Pusulayı kalibre etmek için telefonunuzu 8 şeklinde hareket ettirin.</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_name">Namaz vakitleri</string>
+    <string name="notif_channel_desc">Her namaz vaktinde sizi bilgilendirir.</string>
+    <string name="notif_title">%1$s vakti</string>
+    <string name="notif_body">%2$s için %1$s vakti girdi.</string>
+</resources>

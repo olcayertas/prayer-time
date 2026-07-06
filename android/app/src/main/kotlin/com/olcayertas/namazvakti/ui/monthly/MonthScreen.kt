@@ -34,9 +34,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.olcayertas.namazvakti.R
 import com.olcayertas.namazvakti.domain.CountdownFormatter
 import com.olcayertas.namazvakti.domain.MonthlyDay
 import com.olcayertas.namazvakti.domain.MonthlyDayBuilder
@@ -45,6 +47,7 @@ import com.olcayertas.namazvakti.domain.Prayer
 import com.olcayertas.namazvakti.domain.PrayerSchedule
 import com.olcayertas.namazvakti.domain.UpcomingPrayer
 import com.olcayertas.namazvakti.ui.Dot
+import com.olcayertas.namazvakti.ui.localeUppercase
 import com.olcayertas.namazvakti.ui.prayerName
 import com.olcayertas.namazvakti.ui.theme.LocalNamazTheme
 import com.olcayertas.namazvakti.ui.theme.NamazTheme
@@ -80,7 +83,7 @@ private fun MonthHeader(month: Int?, year: Int?, theme: NamazTheme) {
         Modifier.fillMaxWidth().padding(horizontal = 22.dp).padding(top = 4.dp, bottom = 8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        Text("PRAYER TIMES", fontFamily = theme.fonts.body, fontWeight = FontWeight.Bold, fontSize = 11.sp, letterSpacing = 2.sp, color = theme.accent.copy(alpha = 0.85f))
+        Text(stringResource(R.string.month_focus_eyebrow), fontFamily = theme.fonts.body, fontWeight = FontWeight.Bold, fontSize = 11.sp, letterSpacing = 2.sp, color = theme.accent.copy(alpha = 0.85f))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(month?.let { MonthlyFormat.monthName(it) } ?: "", fontFamily = theme.fonts.display, fontWeight = FontWeight.Medium, fontSize = 28.sp, color = theme.text)
             Spacer(Modifier.width(6.dp))
@@ -110,7 +113,7 @@ private fun FocusCard(day: MonthlyDay?, schedule: PrayerSchedule, location: Stri
         verticalArrangement = Arrangement.spacedBy(13.dp),
     ) {
         if (day == null) {
-            Text("Couldn't load today's times", color = theme.muted, fontFamily = theme.fonts.body)
+            Text(stringResource(R.string.error_load_today), color = theme.muted, fontFamily = theme.fonts.body)
             return@Column
         }
         val upcoming = if (day.isToday) schedule.upcoming(now) else null
@@ -125,7 +128,7 @@ private fun FocusHeader(day: MonthlyDay, location: String, upcoming: UpcomingPra
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(11.dp)) {
         Text("%02d".format(day.dayNumber), fontFamily = theme.fonts.display, fontWeight = FontWeight.Medium, fontSize = 34.sp, color = theme.accent)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
-            Text(if (day.isToday) "${day.weekdayName} · Today" else day.weekdayName, fontFamily = theme.fonts.body, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, color = theme.text)
+            Text(if (day.isToday) stringResource(R.string.month_focus_today, day.weekdayName) else day.weekdayName, fontFamily = theme.fonts.body, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, color = theme.text)
             Text("$location · ${MonthlyFormat.monthName(day.monthIndex)} ${day.year}", fontFamily = theme.fonts.body, fontSize = 12.sp, color = theme.muted)
         }
         FocusChip(day, upcoming, theme)
@@ -142,7 +145,7 @@ private fun FocusChip(day: MonthlyDay, upcoming: UpcomingPrayer?, theme: NamazTh
                 .border(1.dp, theme.accent.copy(alpha = 0.25f), RoundedCornerShape(14.dp))
                 .padding(horizontal = 10.dp, vertical = 5.dp),
         ) {
-            Text("Next · ${prayerName(upcoming.prayer)}", fontFamily = theme.fonts.body, fontWeight = FontWeight.SemiBold, fontSize = 11.sp, color = theme.accent)
+            Text(stringResource(R.string.month_next_chip, prayerName(upcoming.prayer)), fontFamily = theme.fonts.body, fontWeight = FontWeight.SemiBold, fontSize = 11.sp, color = theme.accent)
             Text(CountdownFormatter.string(upcoming.remaining), fontFamily = theme.fonts.mono, fontWeight = FontWeight.SemiBold, fontSize = 11.sp, color = theme.accent)
         }
     } else {
@@ -170,7 +173,7 @@ private fun FocusCells(day: MonthlyDay, nextIndex: Int?, theme: NamazTheme) {
                 verticalArrangement = Arrangement.spacedBy(5.dp),
             ) {
                 Dot(theme.prayerColor(prayer), 7.dp)
-                Text(prayerName(prayer).uppercase(), fontFamily = theme.fonts.body, fontWeight = FontWeight.Bold, fontSize = 9.sp, maxLines = 1, softWrap = false, color = labelColor)
+                Text(localeUppercase(prayerName(prayer)), fontFamily = theme.fonts.body, fontWeight = FontWeight.Bold, fontSize = 9.sp, maxLines = 1, softWrap = false, color = labelColor)
                 Text(day.displayTimes[i] ?: "—", fontFamily = theme.fonts.mono, fontWeight = FontWeight.Medium, fontSize = 13.sp, color = timeColor)
             }
         }
@@ -184,9 +187,9 @@ private fun GlanceDivider(theme: NamazTheme) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        Text("THE MONTH", fontFamily = theme.fonts.body, fontWeight = FontWeight.Bold, fontSize = 11.sp, letterSpacing = 1.5.sp, color = theme.faint)
+        Text(stringResource(R.string.month_eyebrow), fontFamily = theme.fonts.body, fontWeight = FontWeight.Bold, fontSize = 11.sp, letterSpacing = 1.5.sp, color = theme.faint)
         Box(Modifier.weight(1f).height(1.dp).background(theme.line))
-        Text("tap a day", fontFamily = theme.fonts.body, fontSize = 11.sp, color = theme.faint)
+        Text(stringResource(R.string.month_tap_hint), fontFamily = theme.fonts.body, fontSize = 11.sp, color = theme.faint)
     }
 }
 
@@ -199,7 +202,7 @@ private fun ColumnHeader(theme: NamazTheme, modifier: Modifier) {
                 val prayer = Prayer.entries[i]
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Dot(theme.prayerColor(prayer), 6.dp)
-                    Text(prayerName(prayer).uppercase(), fontFamily = theme.fonts.body, fontWeight = FontWeight.Bold, fontSize = 9.sp, maxLines = 1, softWrap = false, color = if (prayer == Prayer.GUNES) theme.faint else theme.muted)
+                    Text(localeUppercase(prayerName(prayer)), fontFamily = theme.fonts.body, fontWeight = FontWeight.Bold, fontSize = 9.sp, maxLines = 1, softWrap = false, color = if (prayer == Prayer.GUNES) theme.faint else theme.muted)
                 }
             },
         )
@@ -234,7 +237,7 @@ private fun MonthChart(days: List<MonthlyDay>, selectedId: String?, onSelect: (S
     }
     LazyColumn(state = listState, modifier = modifier.padding(horizontal = 14.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
         itemsIndexed(days, key = { _, d -> d.id }) { index, day ->
-            val divider = if (index > 0 && day.monthIndex != days[index - 1].monthIndex) MonthlyFormat.monthName(day.monthIndex).uppercase() else null
+            val divider = if (index > 0 && day.monthIndex != days[index - 1].monthIndex) localeUppercase(MonthlyFormat.monthName(day.monthIndex)) else null
             MonthChartRow(day, day.id == selectedId, divider, theme) { onSelect(day.id) }
         }
     }

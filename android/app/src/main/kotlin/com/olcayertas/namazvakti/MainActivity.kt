@@ -42,8 +42,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,11 +66,11 @@ import com.olcayertas.namazvakti.ui.theme.ThemeId
 import com.olcayertas.namazvakti.ui.theme.themedBackground
 import com.olcayertas.namazvakti.ui.today.TodayScreen
 
-private enum class Tab(val label: String, val icon: ImageVector) {
-    TODAY("Today", Icons.Filled.WbSunny),
-    MONTHLY("Monthly", Icons.Filled.CalendarMonth),
-    QIBLA("Qibla", Icons.Filled.Explore),
-    SETTINGS("Settings", Icons.Filled.Settings),
+private enum class Tab(@StringRes val labelRes: Int, val icon: ImageVector) {
+    TODAY(R.string.tab_today, Icons.Filled.WbSunny),
+    MONTHLY(R.string.tab_monthly, Icons.Filled.CalendarMonth),
+    QIBLA(R.string.tab_qibla, Icons.Filled.Explore),
+    SETTINGS(R.string.tab_settings, Icons.Filled.Settings),
 }
 
 class MainActivity : ComponentActivity() {
@@ -129,7 +131,7 @@ class MainActivity : ComponentActivity() {
                                     Tab.TODAY, Tab.MONTHLY -> when (val ps = prayerState) {
                                         PrayerUiState.Loading -> CircularProgressIndicator(color = theme.accent, modifier = Modifier.align(Alignment.Center))
                                         is PrayerUiState.Error -> Text(
-                                            "Couldn't load times: ${ps.message}",
+                                            stringResource(R.string.error_load_times, ps.message),
                                             color = theme.error, fontFamily = theme.fonts.body,
                                             modifier = Modifier.align(Alignment.Center).padding(24.dp),
                                         )
@@ -159,13 +161,14 @@ private fun NavBar(current: Tab, onSelect: (Tab) -> Unit, theme: NamazTheme) {
             Tab.entries.forEach { t ->
                 val selected = t == current
                 val tint = if (selected) theme.accent else theme.muted
+                val label = stringResource(t.labelRes)
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                     modifier = Modifier.clip(RoundedCornerShape(12.dp)).clickable { onSelect(t) }.padding(horizontal = 18.dp, vertical = 6.dp),
                 ) {
-                    Icon(t.icon, contentDescription = t.label, tint = tint, modifier = Modifier.size(22.dp))
-                    Text(t.label, color = tint, fontFamily = theme.fonts.body, fontSize = 11.sp, fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal)
+                    Icon(t.icon, contentDescription = label, tint = tint, modifier = Modifier.size(22.dp))
+                    Text(label, color = tint, fontFamily = theme.fonts.body, fontSize = 11.sp, fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal)
                 }
             }
         }

@@ -39,15 +39,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.olcayertas.namazvakti.R
 import com.olcayertas.namazvakti.data.Settings
 import com.olcayertas.namazvakti.domain.City
 import com.olcayertas.namazvakti.domain.Config
 import com.olcayertas.namazvakti.domain.PlacesRepository
 import com.olcayertas.namazvakti.domain.foldedForSearch
 import com.olcayertas.namazvakti.notifications.NotificationScheduler
+import com.olcayertas.namazvakti.ui.localeUppercase
 import com.olcayertas.namazvakti.ui.theme.LocalNamazTheme
 import com.olcayertas.namazvakti.ui.theme.NamazTheme
 import com.olcayertas.namazvakti.ui.theme.ThemeId
@@ -69,32 +72,32 @@ fun SettingsScreen(
         modifier.fillMaxSize().verticalScroll(rememberScrollState()).statusBarsPadding().padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
-        Text("Settings", fontFamily = theme.fonts.display, fontWeight = FontWeight.Bold, fontSize = 34.sp, color = theme.text)
+        Text(stringResource(R.string.settings_title), fontFamily = theme.fonts.display, fontWeight = FontWeight.Bold, fontSize = 34.sp, color = theme.text)
 
-        Section("Appearance", theme) {
+        Section(stringResource(R.string.settings_appearance), theme) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                SegButton("Default", settings.themeId == ThemeId.DEFAULT, Modifier.weight(1f), theme) { onSetTheme(ThemeId.DEFAULT) }
-                SegButton("Arc", settings.themeId == ThemeId.ARC, Modifier.weight(1f), theme) { onSetTheme(ThemeId.ARC) }
+                SegButton(stringResource(R.string.theme_default), settings.themeId == ThemeId.DEFAULT, Modifier.weight(1f), theme) { onSetTheme(ThemeId.DEFAULT) }
+                SegButton(stringResource(R.string.theme_arc), settings.themeId == ThemeId.ARC, Modifier.weight(1f), theme) { onSetTheme(ThemeId.ARC) }
             }
             Text(
-                if (settings.themeId == ThemeId.ARC) "A dark palette with gold accents." else "Follows your system light and dark appearance.",
+                if (settings.themeId == ThemeId.ARC) stringResource(R.string.theme_arc_desc) else stringResource(R.string.theme_default_desc),
                 fontFamily = theme.fonts.body, fontSize = 12.sp, color = theme.muted,
             )
         }
 
-        Section("Location", theme) {
+        Section(stringResource(R.string.settings_location), theme) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Column {
-                    Text("Current", fontFamily = theme.fonts.body, fontSize = 12.sp, color = theme.muted)
+                    Text(stringResource(R.string.settings_current), fontFamily = theme.fonts.body, fontSize = 12.sp, color = theme.muted)
                     Text(settings.districtName, fontFamily = theme.fonts.body, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = theme.text)
                 }
-                Pill("Change", theme) { showPicker = true }
+                Pill(stringResource(R.string.action_change), theme) { showPicker = true }
             }
         }
 
-        Section("Notifications", theme) {
+        Section(stringResource(R.string.settings_notifications), theme) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text("Prayer notifications", fontFamily = theme.fonts.body, fontSize = 16.sp, color = theme.text)
+                Text(stringResource(R.string.prayer_notifications), fontFamily = theme.fonts.body, fontSize = 16.sp, color = theme.text)
                 Switch(
                     checked = settings.notificationsEnabled,
                     onCheckedChange = onSetNotifications,
@@ -105,8 +108,8 @@ fun SettingsScreen(
             if (settings.notificationsEnabled && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S &&
                 !NotificationScheduler(ctx).canScheduleExact()
             ) {
-                Text("For on-time alerts, allow exact alarms — otherwise they can be a few minutes late.", fontFamily = theme.fonts.body, fontSize = 12.sp, color = theme.muted)
-                Pill("Allow exact alarms", theme) {
+                Text(stringResource(R.string.exact_alarms_hint), fontFamily = theme.fonts.body, fontSize = 12.sp, color = theme.muted)
+                Pill(stringResource(R.string.allow_exact_alarms), theme) {
                     ctx.startActivity(
                         android.content.Intent(
                             android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
@@ -119,13 +122,13 @@ fun SettingsScreen(
 
         val ctx = LocalContext.current
         val version = remember { runCatching { ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName }.getOrNull() ?: "—" }
-        Section("About", theme) {
+        Section(stringResource(R.string.settings_about), theme) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Version", fontFamily = theme.fonts.body, fontSize = 15.sp, color = theme.text)
+                Text(stringResource(R.string.settings_version), fontFamily = theme.fonts.body, fontSize = 15.sp, color = theme.text)
                 Text(version, fontFamily = theme.fonts.mono, fontSize = 15.sp, color = theme.muted)
             }
             Text(
-                "Prayer times are sourced from the EzanVakti service, based on the Turkish Directorate of Religious Affairs (Diyanet).",
+                stringResource(R.string.about_source),
                 fontFamily = theme.fonts.body, fontSize = 12.sp, color = theme.muted,
             )
         }
@@ -144,7 +147,7 @@ fun SettingsScreen(
 @Composable
 private fun Section(title: String, theme: NamazTheme, content: @Composable ColumnScope.() -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(title.uppercase(), fontFamily = theme.fonts.body, fontWeight = FontWeight.Bold, fontSize = 11.sp, letterSpacing = 1.5.sp, color = theme.faint)
+        Text(localeUppercase(title), fontFamily = theme.fonts.body, fontWeight = FontWeight.Bold, fontSize = 11.sp, letterSpacing = 1.5.sp, color = theme.faint)
         Column(
             Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(theme.surface).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -198,17 +201,17 @@ private fun LocationPickerSheet(placesRepository: PlacesRepository, theme: Namaz
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = theme.elevatedCardTop) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             if (step == PickStep.DISTRICT) {
-                Text("‹ Cities", color = theme.accent, fontFamily = theme.fonts.body, modifier = Modifier.clickable { step = PickStep.CITY; query = "" })
+                Text(stringResource(R.string.picker_back_cities), color = theme.accent, fontFamily = theme.fonts.body, modifier = Modifier.clickable { step = PickStep.CITY; query = "" })
             }
             Text(
-                if (step == PickStep.CITY) "Choose a city" else "Choose a district in $cityName",
+                if (step == PickStep.CITY) stringResource(R.string.picker_choose_city) else stringResource(R.string.picker_choose_district, cityName),
                 fontFamily = theme.fonts.display, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = theme.text,
             )
-            OutlinedTextField(value = query, onValueChange = { query = it }, placeholder = { Text("Search") }, singleLine = true, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(value = query, onValueChange = { query = it }, placeholder = { Text(stringResource(R.string.action_search)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
 
             when {
                 loading -> Box(Modifier.fillMaxWidth().height(120.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = theme.accent) }
-                error != null -> Text("Couldn't load: $error", color = theme.error, fontFamily = theme.fonts.body)
+                error != null -> Text(stringResource(R.string.error_load_generic, error!!), color = theme.error, fontFamily = theme.fonts.body)
                 else -> LazyColumn(Modifier.fillMaxWidth().heightIn(max = 420.dp)) {
                     if (step == PickStep.CITY) {
                         items(cities.filter { it.name.foldedForSearch().contains(query.foldedForSearch()) }, key = { it.id }) { city ->

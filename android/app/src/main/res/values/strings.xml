@@ -1,9 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Namaz Vakti</string>
-    <!-- Prayer notifications -->
+    <string name="app_name" translatable="false">Namaz Vakti</string>
+
+    <!-- Prayer names -->
+    <string name="prayer_dawn">Dawn</string>
+    <string name="prayer_sunrise">Sunrise</string>
+    <string name="prayer_noon">Noon</string>
+    <string name="prayer_afternoon">Afternoon</string>
+    <string name="prayer_sunset">Sunset</string>
+    <string name="prayer_night">Night</string>
+
+    <!-- Bottom navigation -->
+    <string name="tab_today">Today</string>
+    <string name="tab_monthly">Monthly</string>
+    <string name="tab_qibla">Qibla</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Today -->
+    <string name="next_prayer">Next prayer</string>
+    <string name="countdown_remaining">remaining</string>
+    <string name="qibla_time">Qibla time</string>
+    <string name="error_load_today">Couldn\'t load today\'s times</string>
+    <string name="error_load_times">Couldn\'t load times: %1$s</string>
+
+    <!-- Monthly -->
+    <string name="month_focus_eyebrow">PRAYER TIMES</string>
+    <string name="month_next_chip">Next · %1$s</string>
+    <string name="month_focus_today">%1$s · Today</string>
+    <string name="month_eyebrow">THE MONTH</string>
+    <string name="month_tap_hint">tap a day</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="theme_default">Default</string>
+    <string name="theme_arc">Arc</string>
+    <string name="theme_arc_desc">A dark palette with gold accents.</string>
+    <string name="theme_default_desc">Follows your system light and dark appearance.</string>
+    <string name="settings_location">Location</string>
+    <string name="settings_current">Current</string>
+    <string name="action_change">Change</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="prayer_notifications">Prayer notifications</string>
+    <string name="allow_exact_alarms">Allow exact alarms</string>
+    <string name="exact_alarms_hint">For on-time alerts, allow exact alarms — otherwise they can be a few minutes late.</string>
+    <string name="settings_about">About</string>
+    <string name="settings_version">Version</string>
+    <string name="about_source">Prayer times are sourced from the EzanVakti service, based on the Turkish Directorate of Religious Affairs (Diyanet).</string>
+    <string name="picker_choose_city">Choose a city</string>
+    <string name="picker_choose_district">Choose a district in %1$s</string>
+    <string name="picker_back_cities">‹ Cities</string>
+    <string name="action_search">Search</string>
+    <string name="error_load_generic">Couldn\'t load: %1$s</string>
+
+    <!-- Qibla -->
+    <string name="qibla_find_title">Find the Qibla</string>
+    <string name="qibla_find_body">Prayer Times uses your location to point the compass toward the Kaaba in Mecca.</string>
+    <string name="qibla_allow_location">Allow location</string>
+    <string name="qibla_location_needed_title">Location needed</string>
+    <string name="qibla_location_needed_body">Enable location access for Prayer Times in Settings to point the compass toward Mecca.</string>
+    <string name="qibla_open_settings">Open settings</string>
+    <string name="qibla_no_compass_title">No compass</string>
+    <string name="qibla_no_compass_body">This device doesn\'t have a compass, so the Qibla direction can\'t be shown here.</string>
+    <string name="qibla_locating">Finding your location…</string>
+    <string name="qibla_still_searching_title">Still searching…</string>
+    <string name="qibla_still_searching_body">Couldn\'t get a location fix yet. Make sure location is on — choosing Precise location helps most.</string>
+    <string name="qibla_try_again">Try again</string>
+    <string name="qibla_facing">Facing the Qibla</string>
+    <string name="qibla_degrees_from_north">%1$d° from North</string>
+    <string name="qibla_calibrate">Move your phone in a figure 8 to calibrate the compass.</string>
+
+    <!-- Notifications -->
     <string name="notif_channel_name">Prayer times</string>
-    <string name="notif_channel_desc">A notification at each prayer time.</string>
+    <string name="notif_channel_desc">Notifies you at each prayer time.</string>
     <string name="notif_title">%1$s time</string>
     <string name="notif_body">It\'s %1$s time in %2$s.</string>
 </resources>
