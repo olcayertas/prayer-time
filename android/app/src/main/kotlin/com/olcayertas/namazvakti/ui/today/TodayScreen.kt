@@ -22,12 +22,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.olcayertas.namazvakti.R
 import com.olcayertas.namazvakti.domain.CountdownFormatter
+import com.olcayertas.namazvakti.domain.DateLocalizer
 import com.olcayertas.namazvakti.domain.Prayer
 import com.olcayertas.namazvakti.domain.PrayerDay
 import com.olcayertas.namazvakti.domain.PrayerSchedule
@@ -72,7 +74,12 @@ private fun Header(location: String, today: PrayerDay?, theme: NamazTheme) {
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(location, fontFamily = theme.fonts.display, fontWeight = FontWeight.Bold, fontSize = 34.sp, color = theme.text)
         if (today != null) {
-            val line = listOfNotNull(today.miladiTarihUzun, today.hicriTarihUzun).joinToString("  ·  ")
+            // Re-localize the API's Turkish-only long dates to the app locale (Gregorian via
+            // java.time; Hijri from the Diyanet numeric triple). Falls back to the API string.
+            val locale = LocalConfiguration.current.locales[0]
+            val greg = DateLocalizer.gregorianLong(today.miladiTarihKisa, locale) ?: today.miladiTarihUzun
+            val hij = DateLocalizer.hijriLong(today.hicriTarihKisa, locale) ?: today.hicriTarihUzun
+            val line = listOfNotNull(greg, hij).joinToString("  ·  ")
             if (line.isNotEmpty()) Text(line, fontFamily = theme.fonts.body, fontSize = 15.sp, color = theme.muted)
         }
     }
