@@ -73,4 +73,7 @@
     <string name="notif_channel_desc">يُنبّهك عند كل وقت صلاة.</string>
     <string name="notif_title">وقت %1$s</string>
     <string name="notif_body">حان وقت %1$s في %2$s.</string>
+
+    <!-- Widget -->
+    <string name="widget_description">وقت الصلاة التالي على شاشتك الرئيسية.</string>
 </resources>

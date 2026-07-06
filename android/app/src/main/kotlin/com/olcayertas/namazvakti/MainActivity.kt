@@ -64,7 +64,9 @@ import com.olcayertas.namazvakti.ui.theme.LocalNamazTheme
 import com.olcayertas.namazvakti.ui.theme.NamazVaktiTheme
 import com.olcayertas.namazvakti.ui.theme.ThemeId
 import com.olcayertas.namazvakti.ui.theme.themedBackground
+import androidx.glance.appwidget.updateAll
 import com.olcayertas.namazvakti.ui.today.TodayScreen
+import com.olcayertas.namazvakti.widget.PrayerWidget
 
 private enum class Tab(@StringRes val labelRes: Int, val icon: ImageVector) {
     TODAY(R.string.tab_today, Icons.Filled.WbSunny),
@@ -115,6 +117,7 @@ class MainActivity : ComponentActivity() {
                             val ps = prayerState
                             if (s.notificationsEnabled && ps is PrayerUiState.Loaded) scheduler.schedule(ps.schedule, ps.locationName)
                             else if (!s.notificationsEnabled) scheduler.cancelAll()
+                            if (ps is PrayerUiState.Loaded) PrayerWidget().updateAll(context) // refresh the home-screen widget
                         }
 
                         Column(Modifier.fillMaxSize()) {

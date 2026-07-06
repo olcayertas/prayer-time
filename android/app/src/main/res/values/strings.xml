@@ -75,4 +75,7 @@
     <string name="notif_channel_desc">Notifies you at each prayer time.</string>
     <string name="notif_title">%1$s time</string>
     <string name="notif_body">It\'s %1$s time in %2$s.</string>
+
+    <!-- Widget -->
+    <string name="widget_description">The next prayer time on your home screen.</string>
 </resources>
