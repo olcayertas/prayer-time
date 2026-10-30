@@ -1,3 +1,5 @@
-What's new in 1.0.1:
-• The Home Screen widget now follows your selected location instead of a fixed default.
+What's new in 1.0.2:
+• Automatic location now works outside Türkiye (for example Mecca, Medina, Sarajevo, Munich), with times on the local clock.
+• New calculation method setting: in Saudi Arabia you can use the Umm al-Qura times instead of Diyanet's.
+• The Home Screen widget follows your selected location.
 • Turkish and Arabic fixes in the Monthly view.

@@ -1,3 +1,5 @@
-1.0.1 sürümündeki yenilikler:
-• Ana ekran widget'ı artık sabit bir varsayılan yerine seçtiğiniz konumu gösterir.
+1.0.2 sürümündeki yenilikler:
+• Otomatik konum artık Türkiye dışında da çalışıyor (örneğin Mekke, Medine, Saraybosna, Münih). Vakitler yerel saatle gösteriliyor.
+• Yeni hesaplama yöntemi ayarı: Suudi Arabistan'da Diyanet yerine Ümmülkura vakitlerini kullanabilirsiniz.
+• Ana Ekran widget'ı seçtiğiniz konumu takip ediyor.
 • Aylık görünümde Türkçe ve Arapça düzeltmeleri.
