@@ -80,4 +80,11 @@
 
     <!-- Widget -->
     <string name="widget_description">وقت الصلاة التالي على شاشتك الرئيسية.</string>
+
+    <!-- Calculation method -->
+    <string name="settings_calculation_method">طريقة الحساب</string>
+    <string name="method_diyanet">ديانت</string>
+    <string name="method_umm_al_qura">أم القرى</string>
+    <string name="method_local_desc">تُحسب الأوقات على هذا الجهاز بطريقة الجهة المحلية. يبقى التاريخ الهجري تاريخ ديانت.</string>
+    <string name="method_diyanet_desc">الأوقات من ديانت. يمكنك استخدام طريقة الجهة المحلية لهذا الموقع بدلًا منها.</string>
 </resources>

@@ -44,6 +44,16 @@ final class LocationPickerModel: ObservableObject {
         districts.first { $0.id == selectedDistrictId }?.name
     }
 
+    /// "MECCA, SAUDI ARABIA": the English names geocode best; falls back to the Turkish ones.
+    func geocodeQuery(for district: District) -> String {
+        let country = countries.first { $0.id == selectedCountryId }
+        let city = cities.first { $0.id == selectedCityId }
+        let parts = [district.nameEn ?? district.name,
+                     cities.count > 1 ? (city?.nameEn ?? city?.name) : nil,
+                     country?.nameEn ?? country?.name]
+        return parts.compactMap { $0?.trimmingCharacters(in: .whitespaces) }.joined(separator: ", ")
+    }
+
     func loadCountriesIfNeeded() {
         guard countries.isEmpty else { return }
         isLoading = true

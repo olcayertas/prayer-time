@@ -49,6 +49,24 @@ struct SettingsView: View {
                 }
             }
 
+            if let local = store.availableLocalMethod {
+                Section("Calculation method") {
+                    Picker("Method", selection: Binding(
+                        get: { store.calculationMethod },
+                        // Deferred like the pickers above (no publishing from within a view update).
+                        set: { method in Task { @MainActor in store.setCalculationMethod(method) } }
+                    )) {
+                        Text("Diyanet").tag(CalculationMethod.diyanet)
+                        Text(local.displayName).tag(CalculationMethod.local)
+                    }
+                    .pickerStyle(.segmented)
+                    Text(store.calculationMethod == .local
+                         ? "Times are calculated on this device with the local authority's method. The Hijri date stays Diyanet's."
+                         : "Times are Diyanet's. You can use the local authority's method for this place instead.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+
             Section("Notifications") {
                 Toggle("Prayer notifications", isOn: Binding(
                     get: { store.notificationsEnabled },
@@ -129,6 +147,9 @@ private struct AutomaticLocationStatusView: View {
             }
         case .unavailable:
             Text("Couldn't determine your location — showing \(store.locationName).")
+                .font(.caption).foregroundStyle(.secondary)
+        case .noNearbyPlace:
+            Text("No Diyanet location found near you — showing \(store.locationName). Choose one under Pinned.")
                 .font(.caption).foregroundStyle(.secondary)
         }
     }

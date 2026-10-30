@@ -29,7 +29,8 @@ struct PrayerTimelineProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping @Sendable (PrayerEntry) -> Void) {
-        let days = PrayerCache().load(districtId: districtId) ?? []
+        // Same calculation method as the app (both read it from the App Group).
+        let days = EffectiveTimes.days(PrayerCache().load(districtId: districtId) ?? [])
         completion(entries(from: days, now: Date()).first ?? placeholder(in: context))
     }
 
@@ -52,7 +53,8 @@ struct PrayerTimelineProvider: TimelineProvider {
         }
     }
 
-    private func makeTimeline(from days: [PrayerDay]) -> Timeline<PrayerEntry> {
+    private func makeTimeline(from rawDays: [PrayerDay]) -> Timeline<PrayerEntry> {
+        let days = EffectiveTimes.days(rawDays) // same calculation method as the app
         let now = Date()
         let entries = self.entries(from: days, now: now)
         let reload = entries.last?.nextDate ?? now.addingTimeInterval(3600)

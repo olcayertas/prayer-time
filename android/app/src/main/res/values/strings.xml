@@ -82,4 +82,11 @@
 
     <!-- Widget -->
     <string name="widget_description">The next prayer time on your home screen.</string>
+
+    <!-- Calculation method -->
+    <string name="settings_calculation_method">Calculation method</string>
+    <string name="method_diyanet">Diyanet</string>
+    <string name="method_umm_al_qura">Umm al-Qura</string>
+    <string name="method_local_desc">Times are calculated on this device with the local authority\'s method. The Hijri date stays Diyanet\'s.</string>
+    <string name="method_diyanet_desc">Times are Diyanet\'s. You can use the local authority\'s method for this place instead.</string>
 </resources>

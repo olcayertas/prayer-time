@@ -51,7 +51,9 @@ import androidx.compose.ui.unit.sp
 import com.olcayertas.namazvakti.R
 import com.olcayertas.namazvakti.data.LocationMode
 import com.olcayertas.namazvakti.data.Settings
+import com.olcayertas.namazvakti.domain.CalculationMethod
 import com.olcayertas.namazvakti.domain.City
+import com.olcayertas.namazvakti.domain.LocalMethod
 import com.olcayertas.namazvakti.domain.Config
 import com.olcayertas.namazvakti.domain.PlacesRepository
 import com.olcayertas.namazvakti.domain.foldedForSearch
@@ -70,6 +72,7 @@ fun SettingsScreen(
     onSetDistrict: (String, String) -> Unit,
     onSetNotifications: (Boolean) -> Unit,
     onSetLocationMode: (LocationMode) -> Unit,
+    onSetCalculationMethod: (CalculationMethod) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val theme = LocalNamazTheme.current
@@ -123,6 +126,20 @@ fun SettingsScreen(
             if (settings.locationMode == LocationMode.AUTOMATIC) {
                 Text(
                     stringResource(if (locationGranted) R.string.location_auto_hint else R.string.location_auto_permission),
+                    fontFamily = theme.fonts.body, fontSize = 12.sp, color = theme.muted,
+                )
+            }
+        }
+
+        settings.placeContext.localMethod?.let { local ->
+            Section(stringResource(R.string.settings_calculation_method), theme) {
+                val isLocal = settings.calculationMethod == CalculationMethod.LOCAL
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    SegButton(stringResource(R.string.method_diyanet), !isLocal, Modifier.weight(1f), theme) { onSetCalculationMethod(CalculationMethod.DIYANET) }
+                    SegButton(stringResource(local.labelRes()), isLocal, Modifier.weight(1f), theme) { onSetCalculationMethod(CalculationMethod.LOCAL) }
+                }
+                Text(
+                    stringResource(if (isLocal) R.string.method_local_desc else R.string.method_diyanet_desc),
                     fontFamily = theme.fonts.body, fontSize = 12.sp, color = theme.muted,
                 )
             }
@@ -205,6 +222,10 @@ private fun Pill(label: String, theme: NamazTheme, onClick: () -> Unit) {
         label, color = theme.accent, fontFamily = theme.fonts.body, fontWeight = FontWeight.SemiBold, fontSize = 13.sp,
         modifier = Modifier.clip(RoundedCornerShape(50)).background(theme.accentSoft).clickable(onClick = onClick).padding(horizontal = 16.dp, vertical = 8.dp),
     )
+}
+
+private fun LocalMethod.labelRes(): Int = when (this) {
+    LocalMethod.UMM_AL_QURA -> R.string.method_umm_al_qura
 }
 
 private enum class PickStep { CITY, DISTRICT }

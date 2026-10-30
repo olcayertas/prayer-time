@@ -11,10 +11,16 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.CancellationSignal
 import androidx.core.content.ContextCompat
+import com.olcayertas.namazvakti.domain.AbroadMatcher
+import com.olcayertas.namazvakti.domain.City
 import com.olcayertas.namazvakti.domain.Config
+import com.olcayertas.namazvakti.domain.CountryCodes
 import com.olcayertas.namazvakti.domain.LocationMatcher
+import com.olcayertas.namazvakti.domain.PlaceContext
 import com.olcayertas.namazvakti.domain.PlacesRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import java.util.Locale
 import kotlin.coroutines.resume
 
@@ -24,10 +30,16 @@ import kotlin.coroutines.resume
  * Gracefully returns null (the caller keeps the pinned district) when there's no permission, no fix,
  * no geocoder backend (de-Googled devices), or no match. A bundled district-centroid offline
  * geocoder for the no-Geocoder case is a follow-up — it needs the centroid dataset.
+ *
+ * Two paths, chosen by the address's ISO country code (mirrors the Swift `LocationResolver`):
+ * - "TR" or no code: the Türkiye path, exactly as before.
+ * - any other code: [CountryCodes] → EzanVakti country, then [AbroadMatcher]; on a miss, geocode once
+ *   more in English (the catalog's twin names are English). Codes the table leaves out give null.
  */
 class AutoLocation(private val context: Context, private val places: PlacesRepository) {
 
-    data class Match(val districtId: String, val districtName: String)
+    /** A resolved district plus the place context the calculation method needs. */
+    data class Match(val districtId: String, val districtName: String, val place: PlaceContext)
 
     fun hasPermission(): Boolean =
         ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
@@ -37,18 +49,43 @@ class AutoLocation(private val context: Context, private val places: PlacesRepos
         if (!hasPermission()) return null
         val location = currentLocation() ?: return null
         val address = reverseGeocode(location.latitude, location.longitude) ?: return null
-        val province = address.adminArea
-        val district = address.subAdminArea ?: address.locality
-        val cities = runCatching { places.cities(Config.TURKIYE_COUNTRY_ID) }.getOrNull() ?: return null
-        val city = LocationMatcher.matchCity(province, cities) ?: return null
-        val districts = runCatching { places.districts(city.id) }.getOrNull() ?: return null
-        val match = LocationMatcher.bestMatch(province, district, districts) ?: return null
-        return Match(match.id, match.name)
+        val iso = address.countryCode?.uppercase()
+        val place = PlaceContext(iso ?: "TR", location.latitude, location.longitude)
+        if (iso == null || iso == "TR") {
+            val province = address.adminArea
+            val district = address.subAdminArea ?: address.locality
+            val cities = runCatching { places.cities(Config.TURKIYE_COUNTRY_ID) }.getOrNull() ?: return null
+            val city = LocationMatcher.matchCity(province, cities) ?: return null
+            val districts = runCatching { places.districts(city.id) }.getOrNull() ?: return null
+            val match = LocationMatcher.bestMatch(province, district, districts) ?: return null
+            return Match(match.id, match.name, place)
+        }
+        val countryId = CountryCodes.ezanVaktiCountryId[iso] ?: return null
+        val cities = runCatching { places.cities(countryId) }.getOrNull() ?: return null
+        val match = matchAbroad(address.toPlace(), cities)
+            ?: reverseGeocode(location.latitude, location.longitude, Locale.ENGLISH)
+                ?.let { matchAbroad(it.toPlace(), cities) }
+            ?: return null
+        // Show the name in the device's Turkish-locale geocode, as the Türkiye path shows catalog names.
+        return Match(match.id, address.locality ?: match.nameEn?.trim() ?: match.name, place)
     }
 
-    private suspend fun reverseGeocode(lat: Double, lon: Double): Address? {
+    private suspend fun matchAbroad(place: AbroadMatcher.Place, cities: List<City>) =
+        AbroadMatcher.matchCity(place, cities)?.let { city ->
+            runCatching { places.districts(city.id) }.getOrNull()?.let { AbroadMatcher.matchDistrict(place, it) }
+        }
+
+    private fun Address.toPlace() = AbroadMatcher.Place(
+        isoCountryCode = countryCode?.uppercase(),
+        administrativeArea = adminArea,
+        subAdministrativeArea = subAdminArea,
+        locality = locality,
+        subLocality = subLocality,
+    )
+
+    private suspend fun reverseGeocode(lat: Double, lon: Double, locale: Locale = Locale("tr")): Address? {
         if (!Geocoder.isPresent()) return null
-        val geocoder = Geocoder(context, Locale("tr")) // Turkish names, to match the EzanVakti catalog
+        val geocoder = Geocoder(context, locale) // Turkish names by default, to match the EzanVakti catalog
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             suspendCancellableCoroutine { cont ->
                 geocoder.getFromLocation(lat, lon, 1, object : Geocoder.GeocodeListener {
@@ -57,8 +94,11 @@ class AutoLocation(private val context: Context, private val places: PlacesRepos
                 })
             }
         } else {
-            @Suppress("DEPRECATION")
-            runCatching { geocoder.getFromLocation(lat, lon, 1)?.firstOrNull() }.getOrNull()
+            // The pre-33 call blocks on the network: keep it off the main thread.
+            withContext(Dispatchers.IO) {
+                @Suppress("DEPRECATION")
+                runCatching { geocoder.getFromLocation(lat, lon, 1)?.firstOrNull() }.getOrNull()
+            }
         }
     }
 

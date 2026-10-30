@@ -29,7 +29,9 @@ struct LocationPickerView: View {
 
             Button("Save this location") {
                 if let district = model.selectedDistrict {
-                    store.selectLocation(districtId: district.id, name: district.name)
+                    store.selectPinnedLocation(districtId: district.id, name: district.name,
+                                               countryId: model.selectedCountryId,
+                                               geocodeQuery: model.geocodeQuery(for: district))
                 }
             }
             .disabled(model.selectedDistrict == nil)

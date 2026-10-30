@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.olcayertas.namazvakti.data.LocationMode
+import com.olcayertas.namazvakti.domain.PlaceContext
 import com.olcayertas.namazvakti.domain.PlacesRepository
 import com.olcayertas.namazvakti.location.AutoLocation
 import dagger.hilt.android.AndroidEntryPoint
@@ -100,7 +101,9 @@ class MainActivity : ComponentActivity() {
                     } else {
                         var tab by rememberSaveable { mutableStateOf(Tab.TODAY) }
                         val prayerVm: PrayerViewModel = hiltViewModel()
-                        LaunchedEffect(s.districtId, s.districtName) { prayerVm.ensureLoaded(s.districtId, s.districtName) }
+                        LaunchedEffect(s.districtId, s.districtName, s.calculationMethod, s.placeContext) {
+                            prayerVm.ensureLoaded(s.districtId, s.districtName, s.calculationMethod, s.placeContext)
+                        }
 
                         // Automatic location: reverse-geocode the device location to a Diyanet
                         // district and pin it (which triggers the reload above). No-op without a
@@ -108,7 +111,9 @@ class MainActivity : ComponentActivity() {
                         LaunchedEffect(s.locationMode) {
                             if (s.locationMode == LocationMode.AUTOMATIC) {
                                 autoLocation.resolve()?.let { match ->
-                                    if (match.districtId != s.districtId) settingsVm.setDistrict(match.districtId, match.districtName)
+                                    if (match.districtId != s.districtId || !match.place.isNear(s.placeContext)) {
+                                        settingsVm.setDistrict(match.districtId, match.districtName, match.place)
+                                    }
                                 }
                             }
                         }
@@ -140,7 +145,9 @@ class MainActivity : ComponentActivity() {
                                         settings = s,
                                         placesRepository = placesRepository,
                                         onSetTheme = settingsVm::setTheme,
-                                        onSetDistrict = settingsVm::setDistrict,
+                                        // The Android picker lists Türkiye only, so a pinned place is Turkish.
+                                        onSetDistrict = { id, name -> settingsVm.setDistrict(id, name, PlaceContext("TR")) },
+                                        onSetCalculationMethod = settingsVm::setCalculationMethod,
                                         onSetNotifications = settingsVm::setNotifications,
                                         onSetLocationMode = settingsVm::setLocationMode,
                                     )
@@ -190,4 +197,14 @@ private fun NavBar(current: Tab, onSelect: (Tab) -> Unit, theme: NamazTheme) {
             }
         }
     }
+}
+
+/** Same country and within ~1 km: no need to rewrite the stored place (avoids a reload on every fix). */
+private fun PlaceContext.isNear(other: PlaceContext): Boolean {
+    if (isoCountryCode != other.isoCountryCode) return false
+    val lat = latitude ?: return other.latitude == null
+    val lon = longitude ?: return other.longitude == null
+    val oLat = other.latitude ?: return false
+    val oLon = other.longitude ?: return false
+    return kotlin.math.abs(lat - oLat) < 0.01 && kotlin.math.abs(lon - oLon) < 0.01
 }

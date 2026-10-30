@@ -10,10 +10,13 @@ protocol NamedPlace: Identifiable, Hashable, Sendable where ID == String {
 struct Country: Codable, Identifiable, Hashable, Sendable {
     let id: String
     let name: String
+    /// English (or local ASCII) name from `UlkeAdiEn`. Optional, so a response without it still decodes.
+    var nameEn: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case id = "UlkeID"
         case name = "UlkeAdi"
+        case nameEn = "UlkeAdiEn"
     }
 }
 
@@ -21,10 +24,13 @@ struct Country: Codable, Identifiable, Hashable, Sendable {
 struct City: Codable, Identifiable, Hashable, Sendable {
     let id: String
     let name: String
+    /// English (or local ASCII) name from `SehirAdiEn`. Optional, so a response without it still decodes.
+    var nameEn: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case id = "SehirID"
         case name = "SehirAdi"
+        case nameEn = "SehirAdiEn"
     }
 }
 
@@ -33,10 +39,13 @@ struct City: Codable, Identifiable, Hashable, Sendable {
 struct District: Codable, Identifiable, Hashable, Sendable {
     let id: String
     let name: String
+    /// English (or local ASCII) name from `IlceAdiEn`. Optional, so a response without it still decodes.
+    var nameEn: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case id = "IlceID"
         case name = "IlceAdi"
+        case nameEn = "IlceAdiEn"
     }
 }
 

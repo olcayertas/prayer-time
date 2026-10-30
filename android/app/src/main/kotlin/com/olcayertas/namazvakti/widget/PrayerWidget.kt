@@ -29,12 +29,14 @@ import androidx.glance.unit.ColorProvider
 import com.olcayertas.namazvakti.MainActivity
 import com.olcayertas.namazvakti.di.AppEntryPoint
 import com.olcayertas.namazvakti.domain.Config
+import com.olcayertas.namazvakti.domain.EffectiveTimes
 import com.olcayertas.namazvakti.domain.Prayer
 import com.olcayertas.namazvakti.domain.PrayerSchedule
 import com.olcayertas.namazvakti.ui.prayerNameRes
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.flow.first
 import java.time.Instant
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 /**
@@ -47,7 +49,9 @@ class PrayerWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val ep = EntryPointAccessors.fromApplication(context.applicationContext, AppEntryPoint::class.java)
         val settings = ep.settingsStore().settings.first()
-        val schedule = ep.monthCache().load(settings.districtId)?.let { PrayerSchedule(it) }
+        // Same calculation method as the app.
+        val schedule = ep.monthCache().load(settings.districtId)
+            ?.let { PrayerSchedule(EffectiveTimes.days(it, settings.calculationMethod, settings.placeContext)) }
         provideContent { WidgetContent(context, settings.districtName, schedule) }
     }
 }
@@ -61,7 +65,8 @@ private object WidgetColors {
 }
 
 private val hhmm = DateTimeFormatter.ofPattern("HH:mm")
-private fun clock(instant: Instant): String = hhmm.format(instant.atZone(Config.ISTANBUL_ZONE))
+/** The place's clock (the schedule's zone), so the widget is right abroad too. */
+private fun clock(instant: Instant, zone: ZoneId): String = hhmm.format(instant.atZone(zone))
 
 @Composable
 private fun WidgetContent(context: Context, location: String, schedule: PrayerSchedule?) {
@@ -82,7 +87,7 @@ private fun WidgetContent(context: Context, location: String, schedule: PrayerSc
                 context.getString(prayerNameRes(upcoming.prayer)),
                 style = TextStyle(color = ColorProvider(WidgetColors.accent), fontSize = 26.sp, fontWeight = FontWeight.Bold),
             )
-            Text(clock(upcoming.instant), style = TextStyle(color = ColorProvider(WidgetColors.text), fontSize = 18.sp, fontWeight = FontWeight.Medium))
+            Text(clock(upcoming.instant, schedule?.zone ?: Config.ISTANBUL_ZONE), style = TextStyle(color = ColorProvider(WidgetColors.text), fontSize = 18.sp, fontWeight = FontWeight.Medium))
         } else {
             Text("—", style = TextStyle(color = ColorProvider(WidgetColors.muted), fontSize = 22.sp))
         }
