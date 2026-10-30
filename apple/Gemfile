@@ -1,0 +1,4 @@
+source "https://rubygems.org"
+
+# Run lanes from apple/ with `bundle exec fastlane <lane>`, so everyone uses the version in Gemfile.lock.
+gem "fastlane", "~> 2.240"

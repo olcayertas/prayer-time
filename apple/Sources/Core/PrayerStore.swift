@@ -12,7 +12,14 @@ final class PrayerStore: ObservableObject {
     /// scenes observe the same store.
     static let shared = PrayerStore()
 
+    /// The month the app shows: the raw Diyanet month after `EffectiveTimes` (the calculation method).
     @Published private(set) var days: [PrayerDay] = []
+    /// The month as Diyanet publishes it; `days` is derived from it.
+    private var rawDays: [PrayerDay] = []
+    /// Diyanet (default) or the local authority's method. Persisted in the App Group (widget).
+    @Published private(set) var calculationMethod: CalculationMethod
+    /// Country and coordinates of the selected place, for the local method. Persisted in the App Group.
+    @Published private(set) var placeContext: PlaceContext
     @Published private(set) var menuTitle: String = String(localized: "Prayer Times")
     @Published private(set) var isLoading = false
     @Published private(set) var lastError: String?
@@ -67,7 +74,9 @@ final class PrayerStore: ObservableObject {
         self.cache = cache
         self.tracker = tracker
         self.resolver = resolver
-        self.days = cache.load(districtId: savedId) ?? []
+        self.calculationMethod = CalculationMethod.load()
+        self.placeContext = PlaceContext.load()
+        publish(raw: cache.load(districtId: savedId) ?? [])
         self.notificationsEnabled = defaults.bool(forKey: Self.notificationsKey)
         updateMenuTitle()
         // Show cached times immediately; only hit the network if the cached month is stale.
@@ -98,6 +107,40 @@ final class PrayerStore: ObservableObject {
 
     var schedule: PrayerSchedule { PrayerSchedule(days: days) }
 
+    /// Stores a raw Diyanet month and publishes it through the calculation method.
+    private func publish(raw: [PrayerDay]) {
+        rawDays = raw
+        days = EffectiveTimes.days(raw, method: calculationMethod, place: placeContext)
+    }
+
+    /// The local method the current place offers, or nil (then only Diyanet is available).
+    var availableLocalMethod: LocalMethod? { placeContext.localMethod }
+
+    /// Switches the calculation method, persists it, and re-derives times, notifications and widget.
+    func setCalculationMethod(_ method: CalculationMethod) {
+        guard method != calculationMethod else { return }
+        calculationMethod = method
+        AppGroup.defaults.set(method.rawValue, forKey: CalculationMethod.key)
+        republish()
+    }
+
+    private func setPlaceContext(_ context: PlaceContext) {
+        guard context != placeContext else { return }
+        placeContext = context
+        context.save()
+        republish()
+    }
+
+    /// Re-applies the method to the raw month and refreshes everything that shows times.
+    private func republish() {
+        publish(raw: rawDays)
+        updateMenuTitle()
+        if notificationsEnabled {
+            scheduler.reschedule(schedule: schedule, locationName: locationName)
+        }
+        WidgetCenter.shared.reloadAllTimelines()
+    }
+
     var hasData: Bool { !days.isEmpty }
 
     /// Fetches the month and publishes it. The fetch + decode run off the main actor (the
@@ -126,7 +169,7 @@ final class PrayerStore: ObservableObject {
     /// Applies a freshly fetched month on the main actor: publishes it, refreshes the menu
     /// title, reschedules notifications if enabled, and reloads the widget.
     private func applyRefreshed(_ days: [PrayerDay]) {
-        self.days = days
+        publish(raw: days)
         lastUpdated = Date()
         lastError = nil
         isLoading = false
@@ -178,6 +221,23 @@ final class PrayerStore: ObservableObject {
         }
     }
 
+    /// Saves a district the user chose in the picker (pinned). When its country has a local
+    /// calculation method, forward-geocodes `geocodeQuery` once to get the coordinates the method needs.
+    func selectPinnedLocation(districtId newId: String, name newName: String,
+                              countryId: String, geocodeQuery: String) {
+        let iso = CountryCodes.isoCode(forCountryId: countryId)
+        setPlaceContext(PlaceContext(isoCountryCode: iso, latitude: nil, longitude: nil))
+        selectLocation(districtId: newId, name: newName)
+        guard LocalMethod.forCountry(iso) != nil else { return }
+        Task { [weak self] in
+            guard let location = try? await CLGeocoder().geocodeAddressString(geocodeQuery).first?.location,
+                  let self, self.districtId == newId else { return }
+            self.setPlaceContext(PlaceContext(isoCountryCode: iso,
+                                              latitude: location.coordinate.latitude,
+                                              longitude: location.coordinate.longitude))
+        }
+    }
+
     /// Switches to a new district: persists it, shows its cached times (or empty) while a
     /// fresh fetch runs, then the refresh reschedules notifications and reloads the widget.
     func selectLocation(districtId newId: String, name newName: String) {
@@ -187,7 +247,7 @@ final class PrayerStore: ObservableObject {
         let shared = AppGroup.defaults   // shared with the widget
         shared.set(newId, forKey: Self.selectedDistrictIdKey)
         shared.set(newName, forKey: Self.selectedDistrictNameKey)
-        days = cache.load(districtId: newId) ?? []
+        publish(raw: cache.load(districtId: newId) ?? [])
         updateMenuTitle()
         refresh()
     }
@@ -287,9 +347,11 @@ final class PrayerStore: ObservableObject {
             if Task.isCancelled { return }
             if let match {
                 trackingStatus = .resolved(match.name)
+                setPlaceContext(PlaceContext(isoCountryCode: match.isoCountryCode,
+                                             latitude: coordinate.latitude, longitude: coordinate.longitude))
                 applyAutomaticSelection(districtId: match.id, name: match.name)
             } else {
-                trackingStatus = .unavailable
+                trackingStatus = .noNearbyPlace
                 refreshIfStale()
             }
         } catch {

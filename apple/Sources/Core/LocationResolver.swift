@@ -71,26 +71,35 @@ enum LocationMatcher {
 /// against the EzanVakti hierarchy via `PlacesProvider`. Pure async I/O (not `@MainActor`) — the
 /// caller awaits it from a `Task` and applies the result on the main actor.
 ///
-/// CLGeocoder is rate-limited (~50 req/hr), so successful matches are cached by a coarse coordinate
-/// bucket; combined with `PrayerStore`'s ~500 m coordinate de-dupe and one-shot fixes, the geocoder
-/// is hit at most about once per genuine move. Turkey/Diyanet-focused: it resolves within Türkiye
-/// (`countryId` "2"); elsewhere it returns nil and the caller keeps the pinned/default district.
+/// Two paths, chosen by the placemark's ISO country code:
+/// - "TR" or no code: the Türkiye path, exactly as before (country "2", `LocationMatcher`).
+/// - any other code: `CountryCodes` → EzanVakti country, then `AbroadMatcher`. On a miss it geocodes
+///   once more in English, because the catalog's twin names are English ("Mecca", not "Makkah Al
+///   Mukarramah"). Codes the table leaves out (CY, and so on) give nil: no guess.
+///
+/// CLGeocoder is rate-limited (~50 req/hr), so results are cached by a coarse coordinate bucket —
+/// matches for the session, misses abroad for an hour — and `PrayerStore` de-dupes fixes at ~500 m.
 final class LocationResolver: Sendable {
     struct Match: Sendable, Equatable {
         let id: String     // district id == /vakitler/{id}
         let name: String   // display name in catalog casing, e.g. "KÜÇÜKÇEKMECE"
+        var countryId: String = Config.turkiyeCountryId
+        /// ISO 3166-1 code of the place ("TR", "SA"); picks the local calculation method.
+        var isoCountryCode: String? = nil
     }
+
+    typealias Geocode = @Sendable (CLLocation, Locale?) async throws -> [CLPlacemark]
 
     private let provider: PlacesProvider
     private let countryId: String
-    private let geocode: @Sendable (CLLocation) async throws -> [CLPlacemark]
+    private let geocode: Geocode
     private let cache = ResolverCache()
 
     init(
         provider: PlacesProvider = EzanVaktiProvider(),
-        countryId: String = "2", // Türkiye
-        geocode: @escaping @Sendable (CLLocation) async throws -> [CLPlacemark] = { location in
-            try await CLGeocoder().reverseGeocodeLocation(location)
+        countryId: String = Config.turkiyeCountryId,
+        geocode: @escaping Geocode = { location, locale in
+            try await CLGeocoder().reverseGeocodeLocation(location, preferredLocale: locale)
         }
     ) {
         self.provider = provider
@@ -102,16 +111,33 @@ final class LocationResolver: Sendable {
     /// transport/geocoder error.
     func resolve(coordinate: CLLocationCoordinate2D) async throws -> Match? {
         let key = Self.cacheKey(coordinate)
-        if let hit = await cache.value(for: key) { return hit }
+        switch await cache.value(for: key) {
+        case .hit(let match): return match
+        case .miss: return nil
+        case .none: break
+        }
 
         // 1. Reverse geocode, then extract Sendable Strings out of the non-Sendable CLPlacemark.
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-        guard let placemark = try await geocode(location).first else { return nil }
+        guard let placemark = try await geocode(location, nil).first else { return nil }
+        let iso = placemark.isoCountryCode?.uppercased()
+
+        if iso == nil || iso == "TR" {
+            let match = try await resolveInTurkiye(placemark)
+            if let match { await cache.set(match, for: key) } // as before: matches only
+            return match
+        }
+        let match = try await resolveAbroad(Self.place(placemark), location: location)
+        await cache.set(match, for: key)
+        return match
+    }
+
+    /// The Türkiye path, unchanged: province → City (within Türkiye), then its ilçe list → District.
+    private func resolveInTurkiye(_ placemark: CLPlacemark) async throws -> Match? {
         let province = placemark.administrativeArea // il (province)
         // ilçe (district) placement drifts across OS versions — try most-specific first.
         let districtName = placemark.subAdministrativeArea ?? placemark.locality ?? placemark.subLocality
 
-        // 2. Match province → City (within Türkiye), then its ilçe list → District.
         let cities = try await provider.cities(countryId: countryId)
         guard let city = LocationMatcher.matchCity(province: province, in: cities) else { return nil }
         let districts = try await provider.districts(cityId: city.id)
@@ -121,9 +147,43 @@ final class LocationResolver: Sendable {
         // Display the geocoded ilçe name (specific + nicely cased, e.g. "Üsküdar" / "Küçükçekmece"),
         // but keep the matched EzanVakti `id` for the times — central İstanbul ilçe fold into the
         // "İSTANBUL" entry, yet the user should still see their own district.
-        let match = Match(id: district.id, name: districtName ?? district.name)
-        await cache.set(match, for: key)
-        return match
+        return Match(id: district.id, name: districtName ?? district.name,
+                     countryId: countryId, isoCountryCode: placemark.isoCountryCode?.uppercased())
+    }
+
+    /// The abroad path: ISO → country → city (state) → district, in the device locale, then once in English.
+    private func resolveAbroad(_ place: AbroadMatcher.Place, location: CLLocation) async throws -> Match? {
+        guard let iso = place.isoCountryCode,
+              let abroadCountryId = CountryCodes.ezanVaktiCountryId[iso] else { return nil }
+        let cities = try await provider.cities(countryId: abroadCountryId)
+
+        var candidate = place
+        var city = AbroadMatcher.matchCity(candidate, in: cities)
+        var district: District? = nil
+        if let city {
+            district = AbroadMatcher.matchDistrict(candidate, in: try await provider.districts(cityId: city.id))
+        }
+        if district == nil, let english = try await geocode(location, Locale(identifier: "en_US")).first {
+            candidate = Self.place(english)
+            city = AbroadMatcher.matchCity(candidate, in: cities)
+            if let city {
+                district = AbroadMatcher.matchDistrict(candidate, in: try await provider.districts(cityId: city.id))
+            }
+        }
+        guard let district else { return nil }
+        // Show the name in the user's own language (first geocode), as the Türkiye path does.
+        let name = place.locality ?? place.subAdministrativeArea ?? district.nameEn ?? district.name
+        return Match(id: district.id, name: name, countryId: abroadCountryId, isoCountryCode: iso)
+    }
+
+    private static func place(_ p: CLPlacemark) -> AbroadMatcher.Place {
+        AbroadMatcher.Place(
+            isoCountryCode: p.isoCountryCode?.uppercased(),
+            administrativeArea: p.administrativeArea,
+            subAdministrativeArea: p.subAdministrativeArea,
+            locality: p.locality,
+            subLocality: p.subLocality
+        )
     }
 
     /// ~0.01° (~1 km) bucket so jitter neither busts the cache nor burns geocoder quota.
@@ -132,9 +192,22 @@ final class LocationResolver: Sendable {
     }
 }
 
-/// Tiny actor-isolated cache so `LocationResolver` stays `Sendable` without a lock.
+/// Tiny actor-isolated cache so `LocationResolver` stays `Sendable` without a lock. Matches are kept
+/// for the session; misses for `missTTL`, so an unmatched place abroad does not re-geocode on every fix.
 private actor ResolverCache {
-    private var store: [String: LocationResolver.Match] = [:]
-    func value(for key: String) -> LocationResolver.Match? { store[key] }
-    func set(_ value: LocationResolver.Match, for key: String) { store[key] = value }
+    enum Lookup { case hit(LocationResolver.Match), miss }
+
+    private static let missTTL: TimeInterval = 3600
+    private var matches: [String: LocationResolver.Match] = [:]
+    private var misses: [String: Date] = [:]
+
+    func value(for key: String, now: Date = Date()) -> Lookup? {
+        if let match = matches[key] { return .hit(match) }
+        if let at = misses[key], now.timeIntervalSince(at) < Self.missTTL { return .miss }
+        return nil
+    }
+
+    func set(_ value: LocationResolver.Match?, for key: String, now: Date = Date()) {
+        if let value { matches[key] = value } else { misses[key] = now }
+    }
 }

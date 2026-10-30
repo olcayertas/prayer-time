@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.olcayertas.namazvakti.di.AppEntryPoint
+import com.olcayertas.namazvakti.domain.EffectiveTimes
 import com.olcayertas.namazvakti.domain.PrayerSchedule
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +29,8 @@ class BootReceiver : BroadcastReceiver() {
                 val settings = ep.settingsStore().settings.first()
                 if (settings.notificationsEnabled) {
                     ep.monthCache().load(settings.districtId)?.let { days ->
-                        NotificationScheduler(context).schedule(PrayerSchedule(days), settings.districtName)
+                        val effective = EffectiveTimes.days(days, settings.calculationMethod, settings.placeContext)
+                        NotificationScheduler(context).schedule(PrayerSchedule(effective), settings.districtName)
                     }
                 }
             } catch (_: Exception) {

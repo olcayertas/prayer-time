@@ -4,18 +4,22 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 
 /** The next prayer relative to a moment, with how long until it begins. Ported from `UpcomingPrayer`. */
 data class UpcomingPrayer(val prayer: Prayer, val instant: Instant, val remaining: Duration)
 
 /**
  * Turns a month of [PrayerDay] rows into instants and answers "what's the next prayer and how long
- * until it?". All instants are built in Europe/Istanbul — the clock the published times refer to —
- * regardless of the device zone. Ported from the Swift `PrayerSchedule`.
+ * until it?". The published times are local clock times of the place: each day's instants use that
+ * day's UTC offset from the API (Türkiye +03:00, Sarajevo +01:00/+02:00, Mecca +03:00), regardless of
+ * the device zone. Days without an offset (months cached by an older version) fall back to
+ * Europe/Istanbul, the old behaviour. Ported from the Swift `PrayerSchedule`.
  */
 data class PrayerSchedule(
     val days: List<PrayerDay>,
-    val zone: ZoneId = Config.ISTANBUL_ZONE,
+    /** The place's zone for "which row is today?" and display: the first day's offset, else Istanbul. */
+    val zone: ZoneId = zoneOf(days.firstOrNull()) ?: Config.ISTANBUL_ZONE,
 ) {
     /** All (prayer, instant) pairs across the loaded month, ascending. */
     fun sortedTimes(): List<Pair<Prayer, Instant>> =
@@ -41,8 +45,8 @@ data class PrayerSchedule(
         sortedTimes().filter { it.second > now && (includeInformational || !it.first.isInformational) }.take(limit)
 
     /**
-     * The [PrayerDay] whose Gregorian date matches [now] in Istanbul time. Also the cache-freshness
-     * predicate: a cached month is fresh only while it still contains today's Istanbul date.
+     * The [PrayerDay] whose Gregorian date matches [now] in the place's zone. Also the cache-freshness
+     * predicate: a cached month is fresh only while it still contains today's date there.
      */
     fun day(now: Instant): PrayerDay? {
         val date = now.atZone(zone).toLocalDate()
@@ -53,17 +57,20 @@ data class PrayerSchedule(
         }
     }
 
-    /** Builds the instant for one prayer on one day, in Istanbul time. */
+    /** Builds the instant for one prayer on one day, in that day's own zone (see the class doc). */
     fun instant(prayer: Prayer, day: PrayerDay): Instant? {
         val ymd = parseDate(day.miladiTarihKisa) ?: return null
         val hm = parseTime(day.time(prayer)) ?: return null
         return runCatching {
             LocalDateTime.of(ymd.year, ymd.month, ymd.day, hm.hour, hm.minute)
-                .atZone(zone).toInstant()
+                .atZone(zoneOf(day) ?: zone).toInstant()
         }.getOrNull()
     }
 
     companion object {
+        /** Fixed-offset zone of one day, or null when the day has no offset. */
+        fun zoneOf(day: PrayerDay?): ZoneId? = day?.utcOffsetSeconds?.let { ZoneOffset.ofTotalSeconds(it) }
+
         data class Ymd(val year: Int, val month: Int, val day: Int)
         data class Hm(val hour: Int, val minute: Int)
 

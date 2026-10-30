@@ -1,0 +1,2282 @@
+{
+ "_comment": "Golden cases for AbroadMatcher (Swift + Kotlin). Lists are trimmed copies of live /sehirler and /ilceler data (2026-10-30). expectedDistrictId null = no match.",
+ "cases": [
+  {
+   "name": "Mecca, en_US geocode",
+   "place": {
+    "isoCountryCode": "SA",
+    "administrativeArea": "Mecca",
+    "subAdministrativeArea": "Mecca Governorate",
+    "locality": "Mecca",
+    "subLocality": "Al Haram"
+   },
+   "cities": [
+    {
+     "id": "819",
+     "name": "SUUDİ ARABİSTAN",
+     "nameEn": "SAUDI ARABIA"
+    }
+   ],
+   "districts": [
+    {
+     "id": "16311",
+     "name": "AD DAMMAM",
+     "nameEn": "AD DAMMAM"
+    },
+    {
+     "id": "16314",
+     "name": "AL HUFUF",
+     "nameEn": "AL HUFUF"
+    },
+    {
+     "id": "16315",
+     "name": "BURAYDAH",
+     "nameEn": "BURAYDAH"
+    },
+    {
+     "id": "16310",
+     "name": "CIDDE",
+     "nameEn": "JEDDAH"
+    },
+    {
+     "id": "16312",
+     "name": "HAIL",
+     "nameEn": "HAIL"
+    },
+    {
+     "id": "16308",
+     "name": "MEDINE",
+     "nameEn": "MEDINA"
+    },
+    {
+     "id": "16309",
+     "name": "MEKKE",
+     "nameEn": "MECCA"
+    },
+    {
+     "id": "16307",
+     "name": "RIYAD",
+     "nameEn": "RIYADH"
+    },
+    {
+     "id": "16313",
+     "name": "SHAQRA",
+     "nameEn": "SHAQRA"
+    },
+    {
+     "id": "16316",
+     "name": "TABUK",
+     "nameEn": "TABUK"
+    }
+   ],
+   "expectedCityId": "819",
+   "expectedDistrictId": "16309"
+  },
+  {
+   "name": "Mecca, tr_TR geocode",
+   "place": {
+    "isoCountryCode": "SA",
+    "administrativeArea": "Mekke Eyaleti",
+    "subAdministrativeArea": "Makkah muḥafazah",
+    "locality": "Makkah Al Mukarramah",
+    "subLocality": "Al Haram"
+   },
+   "cities": [
+    {
+     "id": "819",
+     "name": "SUUDİ ARABİSTAN",
+     "nameEn": "SAUDI ARABIA"
+    }
+   ],
+   "districts": [
+    {
+     "id": "16311",
+     "name": "AD DAMMAM",
+     "nameEn": "AD DAMMAM"
+    },
+    {
+     "id": "16314",
+     "name": "AL HUFUF",
+     "nameEn": "AL HUFUF"
+    },
+    {
+     "id": "16315",
+     "name": "BURAYDAH",
+     "nameEn": "BURAYDAH"
+    },
+    {
+     "id": "16310",
+     "name": "CIDDE",
+     "nameEn": "JEDDAH"
+    },
+    {
+     "id": "16312",
+     "name": "HAIL",
+     "nameEn": "HAIL"
+    },
+    {
+     "id": "16308",
+     "name": "MEDINE",
+     "nameEn": "MEDINA"
+    },
+    {
+     "id": "16309",
+     "name": "MEKKE",
+     "nameEn": "MECCA"
+    },
+    {
+     "id": "16307",
+     "name": "RIYAD",
+     "nameEn": "RIYADH"
+    },
+    {
+     "id": "16313",
+     "name": "SHAQRA",
+     "nameEn": "SHAQRA"
+    },
+    {
+     "id": "16316",
+     "name": "TABUK",
+     "nameEn": "TABUK"
+    }
+   ],
+   "expectedCityId": "819",
+   "expectedDistrictId": "16309",
+   "note": "alias makkahalmukarramah -> mecca"
+  },
+  {
+   "name": "Jeddah: province is Mecca, locality must win",
+   "place": {
+    "isoCountryCode": "SA",
+    "administrativeArea": "Mecca",
+    "subAdministrativeArea": "Jeddah Governorate",
+    "locality": "Jeddah",
+    "subLocality": "Al Andalus District"
+   },
+   "cities": [
+    {
+     "id": "819",
+     "name": "SUUDİ ARABİSTAN",
+     "nameEn": "SAUDI ARABIA"
+    }
+   ],
+   "districts": [
+    {
+     "id": "16311",
+     "name": "AD DAMMAM",
+     "nameEn": "AD DAMMAM"
+    },
+    {
+     "id": "16314",
+     "name": "AL HUFUF",
+     "nameEn": "AL HUFUF"
+    },
+    {
+     "id": "16315",
+     "name": "BURAYDAH",
+     "nameEn": "BURAYDAH"
+    },
+    {
+     "id": "16310",
+     "name": "CIDDE",
+     "nameEn": "JEDDAH"
+    },
+    {
+     "id": "16312",
+     "name": "HAIL",
+     "nameEn": "HAIL"
+    },
+    {
+     "id": "16308",
+     "name": "MEDINE",
+     "nameEn": "MEDINA"
+    },
+    {
+     "id": "16309",
+     "name": "MEKKE",
+     "nameEn": "MECCA"
+    },
+    {
+     "id": "16307",
+     "name": "RIYAD",
+     "nameEn": "RIYADH"
+    },
+    {
+     "id": "16313",
+     "name": "SHAQRA",
+     "nameEn": "SHAQRA"
+    },
+    {
+     "id": "16316",
+     "name": "TABUK",
+     "nameEn": "TABUK"
+    }
+   ],
+   "expectedCityId": "819",
+   "expectedDistrictId": "16310"
+  },
+  {
+   "name": "Taif: no entry, falls back to the province namesake",
+   "place": {
+    "isoCountryCode": "SA",
+    "administrativeArea": "Mecca",
+    "subAdministrativeArea": "Taif Governorate",
+    "locality": "Taif",
+    "subLocality": null
+   },
+   "cities": [
+    {
+     "id": "819",
+     "name": "SUUDİ ARABİSTAN",
+     "nameEn": "SAUDI ARABIA"
+    }
+   ],
+   "districts": [
+    {
+     "id": "16311",
+     "name": "AD DAMMAM",
+     "nameEn": "AD DAMMAM"
+    },
+    {
+     "id": "16314",
+     "name": "AL HUFUF",
+     "nameEn": "AL HUFUF"
+    },
+    {
+     "id": "16315",
+     "name": "BURAYDAH",
+     "nameEn": "BURAYDAH"
+    },
+    {
+     "id": "16310",
+     "name": "CIDDE",
+     "nameEn": "JEDDAH"
+    },
+    {
+     "id": "16312",
+     "name": "HAIL",
+     "nameEn": "HAIL"
+    },
+    {
+     "id": "16308",
+     "name": "MEDINE",
+     "nameEn": "MEDINA"
+    },
+    {
+     "id": "16309",
+     "name": "MEKKE",
+     "nameEn": "MECCA"
+    },
+    {
+     "id": "16307",
+     "name": "RIYAD",
+     "nameEn": "RIYADH"
+    },
+    {
+     "id": "16313",
+     "name": "SHAQRA",
+     "nameEn": "SHAQRA"
+    },
+    {
+     "id": "16316",
+     "name": "TABUK",
+     "nameEn": "TABUK"
+    }
+   ],
+   "expectedCityId": "819",
+   "expectedDistrictId": "16309"
+  },
+  {
+   "name": "Riyadh",
+   "place": {
+    "isoCountryCode": "SA",
+    "administrativeArea": "Riyadh Province",
+    "subAdministrativeArea": "Riyadh",
+    "locality": "Riyadh",
+    "subLocality": null
+   },
+   "cities": [
+    {
+     "id": "819",
+     "name": "SUUDİ ARABİSTAN",
+     "nameEn": "SAUDI ARABIA"
+    }
+   ],
+   "districts": [
+    {
+     "id": "16311",
+     "name": "AD DAMMAM",
+     "nameEn": "AD DAMMAM"
+    },
+    {
+     "id": "16314",
+     "name": "AL HUFUF",
+     "nameEn": "AL HUFUF"
+    },
+    {
+     "id": "16315",
+     "name": "BURAYDAH",
+     "nameEn": "BURAYDAH"
+    },
+    {
+     "id": "16310",
+     "name": "CIDDE",
+     "nameEn": "JEDDAH"
+    },
+    {
+     "id": "16312",
+     "name": "HAIL",
+     "nameEn": "HAIL"
+    },
+    {
+     "id": "16308",
+     "name": "MEDINE",
+     "nameEn": "MEDINA"
+    },
+    {
+     "id": "16309",
+     "name": "MEKKE",
+     "nameEn": "MECCA"
+    },
+    {
+     "id": "16307",
+     "name": "RIYAD",
+     "nameEn": "RIYADH"
+    },
+    {
+     "id": "16313",
+     "name": "SHAQRA",
+     "nameEn": "SHAQRA"
+    },
+    {
+     "id": "16316",
+     "name": "TABUK",
+     "nameEn": "TABUK"
+    }
+   ],
+   "expectedCityId": "819",
+   "expectedDistrictId": "16307"
+  },
+  {
+   "name": "Sarajevo, en_US",
+   "place": {
+    "isoCountryCode": "BA",
+    "administrativeArea": "Federation of Bosnia and Herzegovina",
+    "subAdministrativeArea": "Sarajevo",
+    "locality": "Sarajevo",
+    "subLocality": "Sarajevo"
+   },
+   "cities": [
+    {
+     "id": "670",
+     "name": "BOSNA HERSEK",
+     "nameEn": "BOSNIA-HERZEGOVINA"
+    }
+   ],
+   "districts": [
+    {
+     "id": "12027",
+     "name": "BANJA LUKA",
+     "nameEn": "BANJA LUKA"
+    },
+    {
+     "id": "11993",
+     "name": "BIHAC",
+     "nameEn": "BIHAC"
+    },
+    {
+     "id": "11985",
+     "name": "BIJELJINA",
+     "nameEn": "BIJELJINA"
+    },
+    {
+     "id": "11988",
+     "name": "BOSANSKA GRADISKA",
+     "nameEn": "BOSANSKA GRADISKA"
+    },
+    {
+     "id": "12006",
+     "name": "BOSANSKA KRUPA ",
+     "nameEn": "BOSANSKA KRUPA "
+    },
+    {
+     "id": "11994",
+     "name": "BOZANSKI PETROVAC",
+     "nameEn": "BOZANSKI PETROVAC"
+    },
+    {
+     "id": "11995",
+     "name": "BRCKO",
+     "nameEn": "BRCKO"
+    },
+    {
+     "id": "11986",
+     "name": "BUGOJNO",
+     "nameEn": "BUGOJNO"
+    },
+    {
+     "id": "12008",
+     "name": "CAPLJINA ",
+     "nameEn": "CAPLJINA "
+    },
+    {
+     "id": "11996",
+     "name": "DERVENTA",
+     "nameEn": "DERVENTA"
+    },
+    {
+     "id": "11997",
+     "name": "DOBOJ",
+     "nameEn": "DOBOJ"
+    },
+    {
+     "id": "11990",
+     "name": "DONJI VAKUF",
+     "nameEn": "DONJI VAKUF"
+    },
+    {
+     "id": "11998",
+     "name": "FOCA",
+     "nameEn": "FOCA"
+    },
+    {
+     "id": "12016",
+     "name": "GLAMOC ",
+     "nameEn": "GLAMOC "
+    },
+    {
+     "id": "12024",
+     "name": "GORAZDE",
+     "nameEn": "GORAZDE"
+    },
+    {
+     "id": "11987",
+     "name": "GORNJI VAKUF",
+     "nameEn": "GORNJI VAKUF"
+    },
+    {
+     "id": "11999",
+     "name": "GRACANICA",
+     "nameEn": "GRACANICA"
+    },
+    {
+     "id": "12000",
+     "name": "GRADACAC",
+     "nameEn": "GRADACAC"
+    },
+    {
+     "id": "12009",
+     "name": "JABLANICA ",
+     "nameEn": "JABLANICA "
+    },
+    {
+     "id": "11991",
+     "name": "JAJCE",
+     "nameEn": "JAJCE"
+    },
+    {
+     "id": "12001",
+     "name": "KONJIC",
+     "nameEn": "KONJIC"
+    },
+    {
+     "id": "12023",
+     "name": "KOSOVA",
+     "nameEn": "KOSOVA"
+    },
+    {
+     "id": "12019",
+     "name": "LIPNICA ",
+     "nameEn": "LIPNICA "
+    },
+    {
+     "id": "11989",
+     "name": "LIVNO",
+     "nameEn": "LIVNO"
+    },
+    {
+     "id": "12010",
+     "name": "LJUBUSKI ",
+     "nameEn": "LJUBUSKI "
+    },
+    {
+     "id": "12020",
+     "name": "LOPARE ",
+     "nameEn": "LOPARE "
+    },
+    {
+     "id": "11992",
+     "name": "MAGLAJ",
+     "nameEn": "MAGLAJ"
+    },
+    {
+     "id": "12021",
+     "name": "MAOCA ",
+     "nameEn": "MAOCA "
+    },
+    {
+     "id": "12022",
+     "name": "MODRICA ",
+     "nameEn": "MODRICA "
+    },
+    {
+     "id": "12030",
+     "name": "MOSTAR",
+     "nameEn": "MOSTAR"
+    },
+    {
+     "id": "12007",
+     "name": "MUTNIK ",
+     "nameEn": "MUTNIK "
+    },
+    {
+     "id": "12011",
+     "name": "NEVESINJE ",
+     "nameEn": "NEVESINJE "
+    },
+    {
+     "id": "12012",
+     "name": "POTOCI ",
+     "nameEn": "POTOCI "
+    },
+    {
+     "id": "12002",
+     "name": "PRIJEDOR",
+     "nameEn": "PRIJEDOR"
+    },
+    {
+     "id": "12017",
+     "name": "PUCAREVO ",
+     "nameEn": "PUCAREVO "
+    },
+    {
+     "id": "12029",
+     "name": "SARAYBOSNA(sarajevo)",
+     "nameEn": "SARAJEVO"
+    },
+    {
+     "id": "12003",
+     "name": "SREBRENICA",
+     "nameEn": "SREBRENICA"
+    },
+    {
+     "id": "12013",
+     "name": "STOLAC",
+     "nameEn": "STOLAC"
+    },
+    {
+     "id": "12025",
+     "name": "TRAVNIK",
+     "nameEn": "TRAVNIK"
+    },
+    {
+     "id": "12004",
+     "name": "TREBINJE",
+     "nameEn": "TREBINJE"
+    },
+    {
+     "id": "12018",
+     "name": "TURBE ",
+     "nameEn": "TURBE "
+    },
+    {
+     "id": "12028",
+     "name": "TUZLA",
+     "nameEn": "TUZLA"
+    },
+    {
+     "id": "12015",
+     "name": "VISEGRAD ",
+     "nameEn": "VISEGRAD "
+    },
+    {
+     "id": "12026",
+     "name": "VISOKO",
+     "nameEn": "VISOKO"
+    },
+    {
+     "id": "12014",
+     "name": "VITINA ",
+     "nameEn": "VITINA "
+    },
+    {
+     "id": "12031",
+     "name": "ZENICA",
+     "nameEn": "ZENICA"
+    },
+    {
+     "id": "12005",
+     "name": "ZVORNIK",
+     "nameEn": "ZVORNIK"
+    }
+   ],
+   "expectedCityId": "670",
+   "expectedDistrictId": "12029"
+  },
+  {
+   "name": "Sarajevo, tr_TR (Saraybosna)",
+   "place": {
+    "isoCountryCode": "BA",
+    "administrativeArea": "Bosna-Hersek Federasyonu",
+    "subAdministrativeArea": "Sarajevo",
+    "locality": "Saraybosna",
+    "subLocality": "Saraybosna"
+   },
+   "cities": [
+    {
+     "id": "670",
+     "name": "BOSNA HERSEK",
+     "nameEn": "BOSNIA-HERZEGOVINA"
+    }
+   ],
+   "districts": [
+    {
+     "id": "12027",
+     "name": "BANJA LUKA",
+     "nameEn": "BANJA LUKA"
+    },
+    {
+     "id": "11993",
+     "name": "BIHAC",
+     "nameEn": "BIHAC"
+    },
+    {
+     "id": "11985",
+     "name": "BIJELJINA",
+     "nameEn": "BIJELJINA"
+    },
+    {
+     "id": "11988",
+     "name": "BOSANSKA GRADISKA",
+     "nameEn": "BOSANSKA GRADISKA"
+    },
+    {
+     "id": "12006",
+     "name": "BOSANSKA KRUPA ",
+     "nameEn": "BOSANSKA KRUPA "
+    },
+    {
+     "id": "11994",
+     "name": "BOZANSKI PETROVAC",
+     "nameEn": "BOZANSKI PETROVAC"
+    },
+    {
+     "id": "11995",
+     "name": "BRCKO",
+     "nameEn": "BRCKO"
+    },
+    {
+     "id": "11986",
+     "name": "BUGOJNO",
+     "nameEn": "BUGOJNO"
+    },
+    {
+     "id": "12008",
+     "name": "CAPLJINA ",
+     "nameEn": "CAPLJINA "
+    },
+    {
+     "id": "11996",
+     "name": "DERVENTA",
+     "nameEn": "DERVENTA"
+    },
+    {
+     "id": "11997",
+     "name": "DOBOJ",
+     "nameEn": "DOBOJ"
+    },
+    {
+     "id": "11990",
+     "name": "DONJI VAKUF",
+     "nameEn": "DONJI VAKUF"
+    },
+    {
+     "id": "11998",
+     "name": "FOCA",
+     "nameEn": "FOCA"
+    },
+    {
+     "id": "12016",
+     "name": "GLAMOC ",
+     "nameEn": "GLAMOC "
+    },
+    {
+     "id": "12024",
+     "name": "GORAZDE",
+     "nameEn": "GORAZDE"
+    },
+    {
+     "id": "11987",
+     "name": "GORNJI VAKUF",
+     "nameEn": "GORNJI VAKUF"
+    },
+    {
+     "id": "11999",
+     "name": "GRACANICA",
+     "nameEn": "GRACANICA"
+    },
+    {
+     "id": "12000",
+     "name": "GRADACAC",
+     "nameEn": "GRADACAC"
+    },
+    {
+     "id": "12009",
+     "name": "JABLANICA ",
+     "nameEn": "JABLANICA "
+    },
+    {
+     "id": "11991",
+     "name": "JAJCE",
+     "nameEn": "JAJCE"
+    },
+    {
+     "id": "12001",
+     "name": "KONJIC",
+     "nameEn": "KONJIC"
+    },
+    {
+     "id": "12023",
+     "name": "KOSOVA",
+     "nameEn": "KOSOVA"
+    },
+    {
+     "id": "12019",
+     "name": "LIPNICA ",
+     "nameEn": "LIPNICA "
+    },
+    {
+     "id": "11989",
+     "name": "LIVNO",
+     "nameEn": "LIVNO"
+    },
+    {
+     "id": "12010",
+     "name": "LJUBUSKI ",
+     "nameEn": "LJUBUSKI "
+    },
+    {
+     "id": "12020",
+     "name": "LOPARE ",
+     "nameEn": "LOPARE "
+    },
+    {
+     "id": "11992",
+     "name": "MAGLAJ",
+     "nameEn": "MAGLAJ"
+    },
+    {
+     "id": "12021",
+     "name": "MAOCA ",
+     "nameEn": "MAOCA "
+    },
+    {
+     "id": "12022",
+     "name": "MODRICA ",
+     "nameEn": "MODRICA "
+    },
+    {
+     "id": "12030",
+     "name": "MOSTAR",
+     "nameEn": "MOSTAR"
+    },
+    {
+     "id": "12007",
+     "name": "MUTNIK ",
+     "nameEn": "MUTNIK "
+    },
+    {
+     "id": "12011",
+     "name": "NEVESINJE ",
+     "nameEn": "NEVESINJE "
+    },
+    {
+     "id": "12012",
+     "name": "POTOCI ",
+     "nameEn": "POTOCI "
+    },
+    {
+     "id": "12002",
+     "name": "PRIJEDOR",
+     "nameEn": "PRIJEDOR"
+    },
+    {
+     "id": "12017",
+     "name": "PUCAREVO ",
+     "nameEn": "PUCAREVO "
+    },
+    {
+     "id": "12029",
+     "name": "SARAYBOSNA(sarajevo)",
+     "nameEn": "SARAJEVO"
+    },
+    {
+     "id": "12003",
+     "name": "SREBRENICA",
+     "nameEn": "SREBRENICA"
+    },
+    {
+     "id": "12013",
+     "name": "STOLAC",
+     "nameEn": "STOLAC"
+    },
+    {
+     "id": "12025",
+     "name": "TRAVNIK",
+     "nameEn": "TRAVNIK"
+    },
+    {
+     "id": "12004",
+     "name": "TREBINJE",
+     "nameEn": "TREBINJE"
+    },
+    {
+     "id": "12018",
+     "name": "TURBE ",
+     "nameEn": "TURBE "
+    },
+    {
+     "id": "12028",
+     "name": "TUZLA",
+     "nameEn": "TUZLA"
+    },
+    {
+     "id": "12015",
+     "name": "VISEGRAD ",
+     "nameEn": "VISEGRAD "
+    },
+    {
+     "id": "12026",
+     "name": "VISOKO",
+     "nameEn": "VISOKO"
+    },
+    {
+     "id": "12014",
+     "name": "VITINA ",
+     "nameEn": "VITINA "
+    },
+    {
+     "id": "12031",
+     "name": "ZENICA",
+     "nameEn": "ZENICA"
+    },
+    {
+     "id": "12005",
+     "name": "ZVORNIK",
+     "nameEn": "ZVORNIK"
+    }
+   ],
+   "expectedCityId": "670",
+   "expectedDistrictId": "12029"
+  },
+  {
+   "name": "Munich: alias, not DORFEN (Munih)",
+   "place": {
+    "isoCountryCode": "DE",
+    "administrativeArea": "Bavaria",
+    "subAdministrativeArea": "Upper Bavaria",
+    "locality": "Munich",
+    "subLocality": null
+   },
+   "cities": [
+    {
+     "id": "850",
+     "name": "BADEN WURTTEMBERG",
+     "nameEn": "BADEN WURTTEMBERG"
+    },
+    {
+     "id": "851",
+     "name": "BAYERN",
+     "nameEn": "BAVARIA"
+    },
+    {
+     "id": "852",
+     "name": "BERLIN",
+     "nameEn": "BERLIN"
+    },
+    {
+     "id": "853",
+     "name": "BRANDENBURG",
+     "nameEn": "BRANDENBURG"
+    },
+    {
+     "id": "854",
+     "name": "BREMEN",
+     "nameEn": "BREMEN"
+    },
+    {
+     "id": "855",
+     "name": "HAMBURG",
+     "nameEn": "HAMBURG"
+    },
+    {
+     "id": "856",
+     "name": "HESSEN",
+     "nameEn": "HESSEN"
+    },
+    {
+     "id": "858",
+     "name": "MECKLENBURG-VORPOMMERN",
+     "nameEn": "MECKLENBURG-VORPOMMERN"
+    },
+    {
+     "id": "857",
+     "name": "NIEDERSACHSEN",
+     "nameEn": "LOWER SAXONY"
+    },
+    {
+     "id": "859",
+     "name": "NORDRHEIN-WESTFALEN",
+     "nameEn": "NORTH RHEIN WESTPHALIA"
+    },
+    {
+     "id": "860",
+     "name": "RHEINLAND-PFALZ",
+     "nameEn": "RHINELAND-PALATINATE"
+    },
+    {
+     "id": "861",
+     "name": "SAARLAND",
+     "nameEn": "SAARLAND"
+    },
+    {
+     "id": "863",
+     "name": "SACHSEN",
+     "nameEn": "SAXONY"
+    },
+    {
+     "id": "864",
+     "name": "SACHSEN ANHALT",
+     "nameEn": "SACHSEN ANHALT"
+    },
+    {
+     "id": "865",
+     "name": "SCHLESWIG HOLSTEIN",
+     "nameEn": "SCHLESWIG HOLSTEIN"
+    },
+    {
+     "id": "862",
+     "name": "THURINGEN",
+     "nameEn": "THURINGEN"
+    }
+   ],
+   "districts": [
+    {
+     "id": "11036",
+     "name": "AUGSBURG",
+     "nameEn": "AUGSBURG"
+    },
+    {
+     "id": "10817",
+     "name": "DORFEN (Munih)",
+     "nameEn": "DORFEN (Munih)"
+    },
+    {
+     "id": "10822",
+     "name": "HAAR (Munih)",
+     "nameEn": "HAAR (Munih)"
+    },
+    {
+     "id": "10216",
+     "name": "MUNCHBERG",
+     "nameEn": "MUNCHBERG"
+    },
+    {
+     "id": "11022",
+     "name": "MUNCHEN",
+     "nameEn": "MUNCHEN"
+    },
+    {
+     "id": "11024",
+     "name": "NURNBERG",
+     "nameEn": "NURNBERG"
+    }
+   ],
+   "expectedCityId": "851",
+   "expectedDistrictId": "11022"
+  },
+  {
+   "name": "Munchen, de_DE",
+   "place": {
+    "isoCountryCode": "DE",
+    "administrativeArea": "Bayern",
+    "subAdministrativeArea": "Oberbayern",
+    "locality": "München",
+    "subLocality": null
+   },
+   "cities": [
+    {
+     "id": "850",
+     "name": "BADEN WURTTEMBERG",
+     "nameEn": "BADEN WURTTEMBERG"
+    },
+    {
+     "id": "851",
+     "name": "BAYERN",
+     "nameEn": "BAVARIA"
+    },
+    {
+     "id": "852",
+     "name": "BERLIN",
+     "nameEn": "BERLIN"
+    },
+    {
+     "id": "853",
+     "name": "BRANDENBURG",
+     "nameEn": "BRANDENBURG"
+    },
+    {
+     "id": "854",
+     "name": "BREMEN",
+     "nameEn": "BREMEN"
+    },
+    {
+     "id": "855",
+     "name": "HAMBURG",
+     "nameEn": "HAMBURG"
+    },
+    {
+     "id": "856",
+     "name": "HESSEN",
+     "nameEn": "HESSEN"
+    },
+    {
+     "id": "858",
+     "name": "MECKLENBURG-VORPOMMERN",
+     "nameEn": "MECKLENBURG-VORPOMMERN"
+    },
+    {
+     "id": "857",
+     "name": "NIEDERSACHSEN",
+     "nameEn": "LOWER SAXONY"
+    },
+    {
+     "id": "859",
+     "name": "NORDRHEIN-WESTFALEN",
+     "nameEn": "NORTH RHEIN WESTPHALIA"
+    },
+    {
+     "id": "860",
+     "name": "RHEINLAND-PFALZ",
+     "nameEn": "RHINELAND-PALATINATE"
+    },
+    {
+     "id": "861",
+     "name": "SAARLAND",
+     "nameEn": "SAARLAND"
+    },
+    {
+     "id": "863",
+     "name": "SACHSEN",
+     "nameEn": "SAXONY"
+    },
+    {
+     "id": "864",
+     "name": "SACHSEN ANHALT",
+     "nameEn": "SACHSEN ANHALT"
+    },
+    {
+     "id": "865",
+     "name": "SCHLESWIG HOLSTEIN",
+     "nameEn": "SCHLESWIG HOLSTEIN"
+    },
+    {
+     "id": "862",
+     "name": "THURINGEN",
+     "nameEn": "THURINGEN"
+    }
+   ],
+   "districts": [
+    {
+     "id": "11036",
+     "name": "AUGSBURG",
+     "nameEn": "AUGSBURG"
+    },
+    {
+     "id": "10817",
+     "name": "DORFEN (Munih)",
+     "nameEn": "DORFEN (Munih)"
+    },
+    {
+     "id": "10822",
+     "name": "HAAR (Munih)",
+     "nameEn": "HAAR (Munih)"
+    },
+    {
+     "id": "10216",
+     "name": "MUNCHBERG",
+     "nameEn": "MUNCHBERG"
+    },
+    {
+     "id": "11022",
+     "name": "MUNCHEN",
+     "nameEn": "MUNCHEN"
+    },
+    {
+     "id": "11024",
+     "name": "NURNBERG",
+     "nameEn": "NURNBERG"
+    }
+   ],
+   "expectedCityId": "851",
+   "expectedDistrictId": "11022"
+  },
+  {
+   "name": "Saint-Avold: duplicate key, lowest id",
+   "place": {
+    "isoCountryCode": "FR",
+    "administrativeArea": "Grand Est",
+    "subAdministrativeArea": "Moselle",
+    "locality": "Saint-Avold",
+    "subLocality": null
+   },
+   "cities": [
+    {
+     "id": "704",
+     "name": "FRANSA",
+     "nameEn": "FRANSA"
+    }
+   ],
+   "districts": [
+    {
+     "id": "13394",
+     "name": "ALBI",
+     "nameEn": "ALBI"
+    },
+    {
+     "id": "12955",
+     "name": "ALENCON",
+     "nameEn": "ALENCON"
+    },
+    {
+     "id": "13037",
+     "name": "SAINT AVOLD",
+     "nameEn": "SAINT AVOLD"
+    },
+    {
+     "id": "13004",
+     "name": "SAINT-AVOLD",
+     "nameEn": "SAINT-AVOLD"
+    }
+   ],
+   "expectedCityId": "704",
+   "expectedDistrictId": "13004"
+  },
+  {
+   "name": "Bandung: token prefix",
+   "place": {
+    "isoCountryCode": "ID",
+    "administrativeArea": "West Java",
+    "subAdministrativeArea": "Bandung",
+    "locality": "Bandung",
+    "subLocality": null
+   },
+   "cities": [
+    {
+     "id": "693",
+     "name": "ENDONEZYA",
+     "nameEn": "ENDONEZYA"
+    }
+   ],
+   "districts": [
+    {
+     "id": "12727",
+     "name": "AMBON",
+     "nameEn": "AMBON"
+    },
+    {
+     "id": "12729",
+     "name": "BALIKPAPAN",
+     "nameEn": "BALIKPAPAN"
+    },
+    {
+     "id": "12773",
+     "name": "BANDA ACEH",
+     "nameEn": "BANDA ACEH"
+    },
+    {
+     "id": "12730",
+     "name": "BANDAR LAMPUNG",
+     "nameEn": "BANDAR LAMPUNG"
+    },
+    {
+     "id": "12731",
+     "name": "BANDUNG (JAWA BARAT)",
+     "nameEn": "BANDUNG (JAWA BARAT)"
+    },
+    {
+     "id": "12738",
+     "name": "BANJARMASIN",
+     "nameEn": "BANJARMASIN"
+    },
+    {
+     "id": "12733",
+     "name": "BEKASI",
+     "nameEn": "BEKASI"
+    },
+    {
+     "id": "12767",
+     "name": "BENGKULU",
+     "nameEn": "BENGKULU"
+    }
+   ],
+   "expectedCityId": "693",
+   "expectedDistrictId": "12731"
+  },
+  {
+   "name": "Doha",
+   "place": {
+    "isoCountryCode": "QA",
+    "administrativeArea": "Doha",
+    "subAdministrativeArea": "Doha",
+    "locality": "Doha",
+    "subLocality": null
+   },
+   "cities": [
+    {
+     "id": "740",
+     "name": "KATAR",
+     "nameEn": "KATAR"
+    }
+   ],
+   "districts": [
+    {
+     "id": "14877",
+     "name": "AR RAYYAN",
+     "nameEn": "AR RAYYAN"
+    },
+    {
+     "id": "14879",
+     "name": "DOHA",
+     "nameEn": "DOHA"
+    },
+    {
+     "id": "14878",
+     "name": "DUKHAN",
+     "nameEn": "DUKHAN"
+    }
+   ],
+   "expectedCityId": "740",
+   "expectedDistrictId": "14879"
+  },
+  {
+   "name": "Birmingham AL: state abbreviation",
+   "place": {
+    "isoCountryCode": "US",
+    "administrativeArea": "AL",
+    "subAdministrativeArea": "Jefferson County",
+    "locality": "Birmingham",
+    "subLocality": null
+   },
+   "cities": [
+    {
+     "id": "581",
+     "name": "ALABAMA",
+     "nameEn": "ALABAMA"
+    },
+    {
+     "id": "582",
+     "name": "ALASKA",
+     "nameEn": "ALASKA"
+    },
+    {
+     "id": "583",
+     "name": "ARIZONA",
+     "nameEn": "ARIZONA"
+    },
+    {
+     "id": "584",
+     "name": "ARKANSAS",
+     "nameEn": "ARKANSAS"
+    },
+    {
+     "id": "585",
+     "name": "CALIFORNIA",
+     "nameEn": "CALIFORNIA"
+    },
+    {
+     "id": "587",
+     "name": "COLORADO",
+     "nameEn": "COLORADO"
+    },
+    {
+     "id": "588",
+     "name": "CONNECTICUT",
+     "nameEn": "CONNECTICUT"
+    },
+    {
+     "id": "589",
+     "name": "D.C",
+     "nameEn": "D.C"
+    },
+    {
+     "id": "590",
+     "name": "DELAWARE",
+     "nameEn": "DELAWARE"
+    },
+    {
+     "id": "591",
+     "name": "FLORIDA",
+     "nameEn": "FLORIDA"
+    },
+    {
+     "id": "592",
+     "name": "GEORGIA",
+     "nameEn": "GEORGIA"
+    },
+    {
+     "id": "593",
+     "name": "HAVAI ADALARI",
+     "nameEn": "HAVAI ADALARI"
+    },
+    {
+     "id": "594",
+     "name": "IDAHO",
+     "nameEn": "IDAHO"
+    },
+    {
+     "id": "595",
+     "name": "ILLINOIS",
+     "nameEn": "ILLINOIS"
+    },
+    {
+     "id": "596",
+     "name": "INDIANA",
+     "nameEn": "INDIANA"
+    },
+    {
+     "id": "597",
+     "name": "IOWA",
+     "nameEn": "IOWA"
+    },
+    {
+     "id": "598",
+     "name": "KANSAS",
+     "nameEn": "KANSAS"
+    },
+    {
+     "id": "599",
+     "name": "KENTUCKY",
+     "nameEn": "KENTUCKY"
+    },
+    {
+     "id": "600",
+     "name": "LOUISIANA",
+     "nameEn": "LOUISIANA"
+    },
+    {
+     "id": "601",
+     "name": "MAINE",
+     "nameEn": "MAINE"
+    },
+    {
+     "id": "602",
+     "name": "MARYLAND",
+     "nameEn": "MARYLAND"
+    },
+    {
+     "id": "603",
+     "name": "MASSACHUSETTS",
+     "nameEn": "MASSACHUSETTS"
+    },
+    {
+     "id": "604",
+     "name": "MICHIGAN",
+     "nameEn": "MICHIGAN"
+    },
+    {
+     "id": "605",
+     "name": "MINNESOTA",
+     "nameEn": "MINNESOTA"
+    },
+    {
+     "id": "606",
+     "name": "MISSISSIPPI",
+     "nameEn": "MISSISSIPPI"
+    },
+    {
+     "id": "607",
+     "name": "MISSOURI",
+     "nameEn": "MISSOURI"
+    },
+    {
+     "id": "608",
+     "name": "MONTANA",
+     "nameEn": "MONTANA"
+    },
+    {
+     "id": "609",
+     "name": "NEBRASKA",
+     "nameEn": "NEBRASKA"
+    },
+    {
+     "id": "610",
+     "name": "NEVADA",
+     "nameEn": "NEVADA"
+    },
+    {
+     "id": "611",
+     "name": "NEW HAMPSHIRE",
+     "nameEn": "NEW HAMPSHIRE"
+    },
+    {
+     "id": "612",
+     "name": "NEW JERSEY",
+     "nameEn": "NEW JERSEY"
+    },
+    {
+     "id": "613",
+     "name": "NEW MEXICO",
+     "nameEn": "NEW MEXICO"
+    },
+    {
+     "id": "614",
+     "name": "NEW YORK",
+     "nameEn": "NEW YORK"
+    },
+    {
+     "id": "615",
+     "name": "NORTH CAROLINA",
+     "nameEn": "NORTH CAROLINA"
+    },
+    {
+     "id": "616",
+     "name": "NORTH DAKOTA",
+     "nameEn": "NORTH DAKOTA"
+    },
+    {
+     "id": "617",
+     "name": "OHIO",
+     "nameEn": "OHIO"
+    },
+    {
+     "id": "618",
+     "name": "OKLAHOMA",
+     "nameEn": "OKLAHOMA"
+    },
+    {
+     "id": "619",
+     "name": "OREGON",
+     "nameEn": "OREGON"
+    },
+    {
+     "id": "620",
+     "name": "PENNSYLVANIA",
+     "nameEn": "PENNSYLVANIA"
+    },
+    {
+     "id": "621",
+     "name": "RHODE ISLAND",
+     "nameEn": "RHODE ISLAND"
+    },
+    {
+     "id": "622",
+     "name": "SOUTH CAROLINA",
+     "nameEn": "SOUTH CAROLINA"
+    },
+    {
+     "id": "623",
+     "name": "SOUTH DAKOTA",
+     "nameEn": "SOUTH DAKOTA"
+    },
+    {
+     "id": "624",
+     "name": "TENNESSEE",
+     "nameEn": "TENNESSEE"
+    },
+    {
+     "id": "625",
+     "name": "TEXAS",
+     "nameEn": "TEXAS"
+    },
+    {
+     "id": "626",
+     "name": "UTAH",
+     "nameEn": "UTAH"
+    },
+    {
+     "id": "627",
+     "name": "VERMONT",
+     "nameEn": "VERMONT"
+    },
+    {
+     "id": "628",
+     "name": "VIRGINIA",
+     "nameEn": "VIRGINIA"
+    },
+    {
+     "id": "629",
+     "name": "WASHINGTON",
+     "nameEn": "WASHINGTON"
+    },
+    {
+     "id": "630",
+     "name": "WEST VIRGINIA",
+     "nameEn": "WEST VIRGINIA"
+    },
+    {
+     "id": "631",
+     "name": "WISCONSIN",
+     "nameEn": "WISCONSIN"
+    },
+    {
+     "id": "632",
+     "name": "WYOMING",
+     "nameEn": "WYOMING"
+    }
+   ],
+   "districts": [
+    {
+     "id": "8573",
+     "name": "AUBURN",
+     "nameEn": "AUBURN"
+    },
+    {
+     "id": "8574",
+     "name": "BIRMINGHAM",
+     "nameEn": "BIRMINGHAM"
+    },
+    {
+     "id": "8575",
+     "name": "DOTHAN",
+     "nameEn": "DOTHAN"
+    },
+    {
+     "id": "8576",
+     "name": "FLORENCE",
+     "nameEn": "FLORENCE"
+    },
+    {
+     "id": "8577",
+     "name": "GULF SHORES",
+     "nameEn": "GULF SHORES"
+    },
+    {
+     "id": "8578",
+     "name": "HUNTSVILLE",
+     "nameEn": "HUNTSVILLE"
+    },
+    {
+     "id": "8579",
+     "name": "MOBILE",
+     "nameEn": "MOBILE"
+    },
+    {
+     "id": "8580",
+     "name": "MONTGOMERY",
+     "nameEn": "MONTGOMERY"
+    },
+    {
+     "id": "8582",
+     "name": "TROY",
+     "nameEn": "TROY"
+    }
+   ],
+   "expectedCityId": "581",
+   "expectedDistrictId": "8574"
+  },
+  {
+   "name": "US small town: no entry, no match",
+   "place": {
+    "isoCountryCode": "US",
+    "administrativeArea": "AL",
+    "subAdministrativeArea": "Elmore County",
+    "locality": "Wetumpka",
+    "subLocality": null
+   },
+   "cities": [
+    {
+     "id": "581",
+     "name": "ALABAMA",
+     "nameEn": "ALABAMA"
+    },
+    {
+     "id": "582",
+     "name": "ALASKA",
+     "nameEn": "ALASKA"
+    },
+    {
+     "id": "583",
+     "name": "ARIZONA",
+     "nameEn": "ARIZONA"
+    },
+    {
+     "id": "584",
+     "name": "ARKANSAS",
+     "nameEn": "ARKANSAS"
+    },
+    {
+     "id": "585",
+     "name": "CALIFORNIA",
+     "nameEn": "CALIFORNIA"
+    },
+    {
+     "id": "587",
+     "name": "COLORADO",
+     "nameEn": "COLORADO"
+    },
+    {
+     "id": "588",
+     "name": "CONNECTICUT",
+     "nameEn": "CONNECTICUT"
+    },
+    {
+     "id": "589",
+     "name": "D.C",
+     "nameEn": "D.C"
+    },
+    {
+     "id": "590",
+     "name": "DELAWARE",
+     "nameEn": "DELAWARE"
+    },
+    {
+     "id": "591",
+     "name": "FLORIDA",
+     "nameEn": "FLORIDA"
+    },
+    {
+     "id": "592",
+     "name": "GEORGIA",
+     "nameEn": "GEORGIA"
+    },
+    {
+     "id": "593",
+     "name": "HAVAI ADALARI",
+     "nameEn": "HAVAI ADALARI"
+    },
+    {
+     "id": "594",
+     "name": "IDAHO",
+     "nameEn": "IDAHO"
+    },
+    {
+     "id": "595",
+     "name": "ILLINOIS",
+     "nameEn": "ILLINOIS"
+    },
+    {
+     "id": "596",
+     "name": "INDIANA",
+     "nameEn": "INDIANA"
+    },
+    {
+     "id": "597",
+     "name": "IOWA",
+     "nameEn": "IOWA"
+    },
+    {
+     "id": "598",
+     "name": "KANSAS",
+     "nameEn": "KANSAS"
+    },
+    {
+     "id": "599",
+     "name": "KENTUCKY",
+     "nameEn": "KENTUCKY"
+    },
+    {
+     "id": "600",
+     "name": "LOUISIANA",
+     "nameEn": "LOUISIANA"
+    },
+    {
+     "id": "601",
+     "name": "MAINE",
+     "nameEn": "MAINE"
+    },
+    {
+     "id": "602",
+     "name": "MARYLAND",
+     "nameEn": "MARYLAND"
+    },
+    {
+     "id": "603",
+     "name": "MASSACHUSETTS",
+     "nameEn": "MASSACHUSETTS"
+    },
+    {
+     "id": "604",
+     "name": "MICHIGAN",
+     "nameEn": "MICHIGAN"
+    },
+    {
+     "id": "605",
+     "name": "MINNESOTA",
+     "nameEn": "MINNESOTA"
+    },
+    {
+     "id": "606",
+     "name": "MISSISSIPPI",
+     "nameEn": "MISSISSIPPI"
+    },
+    {
+     "id": "607",
+     "name": "MISSOURI",
+     "nameEn": "MISSOURI"
+    },
+    {
+     "id": "608",
+     "name": "MONTANA",
+     "nameEn": "MONTANA"
+    },
+    {
+     "id": "609",
+     "name": "NEBRASKA",
+     "nameEn": "NEBRASKA"
+    },
+    {
+     "id": "610",
+     "name": "NEVADA",
+     "nameEn": "NEVADA"
+    },
+    {
+     "id": "611",
+     "name": "NEW HAMPSHIRE",
+     "nameEn": "NEW HAMPSHIRE"
+    },
+    {
+     "id": "612",
+     "name": "NEW JERSEY",
+     "nameEn": "NEW JERSEY"
+    },
+    {
+     "id": "613",
+     "name": "NEW MEXICO",
+     "nameEn": "NEW MEXICO"
+    },
+    {
+     "id": "614",
+     "name": "NEW YORK",
+     "nameEn": "NEW YORK"
+    },
+    {
+     "id": "615",
+     "name": "NORTH CAROLINA",
+     "nameEn": "NORTH CAROLINA"
+    },
+    {
+     "id": "616",
+     "name": "NORTH DAKOTA",
+     "nameEn": "NORTH DAKOTA"
+    },
+    {
+     "id": "617",
+     "name": "OHIO",
+     "nameEn": "OHIO"
+    },
+    {
+     "id": "618",
+     "name": "OKLAHOMA",
+     "nameEn": "OKLAHOMA"
+    },
+    {
+     "id": "619",
+     "name": "OREGON",
+     "nameEn": "OREGON"
+    },
+    {
+     "id": "620",
+     "name": "PENNSYLVANIA",
+     "nameEn": "PENNSYLVANIA"
+    },
+    {
+     "id": "621",
+     "name": "RHODE ISLAND",
+     "nameEn": "RHODE ISLAND"
+    },
+    {
+     "id": "622",
+     "name": "SOUTH CAROLINA",
+     "nameEn": "SOUTH CAROLINA"
+    },
+    {
+     "id": "623",
+     "name": "SOUTH DAKOTA",
+     "nameEn": "SOUTH DAKOTA"
+    },
+    {
+     "id": "624",
+     "name": "TENNESSEE",
+     "nameEn": "TENNESSEE"
+    },
+    {
+     "id": "625",
+     "name": "TEXAS",
+     "nameEn": "TEXAS"
+    },
+    {
+     "id": "626",
+     "name": "UTAH",
+     "nameEn": "UTAH"
+    },
+    {
+     "id": "627",
+     "name": "VERMONT",
+     "nameEn": "VERMONT"
+    },
+    {
+     "id": "628",
+     "name": "VIRGINIA",
+     "nameEn": "VIRGINIA"
+    },
+    {
+     "id": "629",
+     "name": "WASHINGTON",
+     "nameEn": "WASHINGTON"
+    },
+    {
+     "id": "630",
+     "name": "WEST VIRGINIA",
+     "nameEn": "WEST VIRGINIA"
+    },
+    {
+     "id": "631",
+     "name": "WISCONSIN",
+     "nameEn": "WISCONSIN"
+    },
+    {
+     "id": "632",
+     "name": "WYOMING",
+     "nameEn": "WYOMING"
+    }
+   ],
+   "districts": [
+    {
+     "id": "8573",
+     "name": "AUBURN",
+     "nameEn": "AUBURN"
+    },
+    {
+     "id": "8574",
+     "name": "BIRMINGHAM",
+     "nameEn": "BIRMINGHAM"
+    },
+    {
+     "id": "8575",
+     "name": "DOTHAN",
+     "nameEn": "DOTHAN"
+    },
+    {
+     "id": "8576",
+     "name": "FLORENCE",
+     "nameEn": "FLORENCE"
+    },
+    {
+     "id": "8577",
+     "name": "GULF SHORES",
+     "nameEn": "GULF SHORES"
+    },
+    {
+     "id": "8578",
+     "name": "HUNTSVILLE",
+     "nameEn": "HUNTSVILLE"
+    },
+    {
+     "id": "8579",
+     "name": "MOBILE",
+     "nameEn": "MOBILE"
+    },
+    {
+     "id": "8580",
+     "name": "MONTGOMERY",
+     "nameEn": "MONTGOMERY"
+    },
+    {
+     "id": "8582",
+     "name": "TROY",
+     "nameEn": "TROY"
+    }
+   ],
+   "expectedCityId": "581",
+   "expectedDistrictId": null
+  },
+  {
+   "name": "Short candidate never prefix-matches",
+   "place": {
+    "isoCountryCode": "SA",
+    "administrativeArea": null,
+    "subAdministrativeArea": null,
+    "locality": "Ta",
+    "subLocality": null
+   },
+   "cities": [
+    {
+     "id": "819",
+     "name": "SUUDİ ARABİSTAN",
+     "nameEn": "SAUDI ARABIA"
+    }
+   ],
+   "districts": [
+    {
+     "id": "16311",
+     "name": "AD DAMMAM",
+     "nameEn": "AD DAMMAM"
+    },
+    {
+     "id": "16314",
+     "name": "AL HUFUF",
+     "nameEn": "AL HUFUF"
+    },
+    {
+     "id": "16315",
+     "name": "BURAYDAH",
+     "nameEn": "BURAYDAH"
+    },
+    {
+     "id": "16310",
+     "name": "CIDDE",
+     "nameEn": "JEDDAH"
+    },
+    {
+     "id": "16312",
+     "name": "HAIL",
+     "nameEn": "HAIL"
+    },
+    {
+     "id": "16308",
+     "name": "MEDINE",
+     "nameEn": "MEDINA"
+    },
+    {
+     "id": "16309",
+     "name": "MEKKE",
+     "nameEn": "MECCA"
+    },
+    {
+     "id": "16307",
+     "name": "RIYAD",
+     "nameEn": "RIYADH"
+    },
+    {
+     "id": "16313",
+     "name": "SHAQRA",
+     "nameEn": "SHAQRA"
+    },
+    {
+     "id": "16316",
+     "name": "TABUK",
+     "nameEn": "TABUK"
+    }
+   ],
+   "expectedCityId": "819",
+   "expectedDistrictId": null
+  },
+  {
+   "name": "Unknown state",
+   "place": {
+    "isoCountryCode": "US",
+    "administrativeArea": "Puerto Rico",
+    "subAdministrativeArea": null,
+    "locality": "San Juan",
+    "subLocality": null
+   },
+   "cities": [
+    {
+     "id": "581",
+     "name": "ALABAMA",
+     "nameEn": "ALABAMA"
+    },
+    {
+     "id": "582",
+     "name": "ALASKA",
+     "nameEn": "ALASKA"
+    },
+    {
+     "id": "583",
+     "name": "ARIZONA",
+     "nameEn": "ARIZONA"
+    },
+    {
+     "id": "584",
+     "name": "ARKANSAS",
+     "nameEn": "ARKANSAS"
+    },
+    {
+     "id": "585",
+     "name": "CALIFORNIA",
+     "nameEn": "CALIFORNIA"
+    },
+    {
+     "id": "587",
+     "name": "COLORADO",
+     "nameEn": "COLORADO"
+    },
+    {
+     "id": "588",
+     "name": "CONNECTICUT",
+     "nameEn": "CONNECTICUT"
+    },
+    {
+     "id": "589",
+     "name": "D.C",
+     "nameEn": "D.C"
+    },
+    {
+     "id": "590",
+     "name": "DELAWARE",
+     "nameEn": "DELAWARE"
+    },
+    {
+     "id": "591",
+     "name": "FLORIDA",
+     "nameEn": "FLORIDA"
+    },
+    {
+     "id": "592",
+     "name": "GEORGIA",
+     "nameEn": "GEORGIA"
+    },
+    {
+     "id": "593",
+     "name": "HAVAI ADALARI",
+     "nameEn": "HAVAI ADALARI"
+    },
+    {
+     "id": "594",
+     "name": "IDAHO",
+     "nameEn": "IDAHO"
+    },
+    {
+     "id": "595",
+     "name": "ILLINOIS",
+     "nameEn": "ILLINOIS"
+    },
+    {
+     "id": "596",
+     "name": "INDIANA",
+     "nameEn": "INDIANA"
+    },
+    {
+     "id": "597",
+     "name": "IOWA",
+     "nameEn": "IOWA"
+    },
+    {
+     "id": "598",
+     "name": "KANSAS",
+     "nameEn": "KANSAS"
+    },
+    {
+     "id": "599",
+     "name": "KENTUCKY",
+     "nameEn": "KENTUCKY"
+    },
+    {
+     "id": "600",
+     "name": "LOUISIANA",
+     "nameEn": "LOUISIANA"
+    },
+    {
+     "id": "601",
+     "name": "MAINE",
+     "nameEn": "MAINE"
+    },
+    {
+     "id": "602",
+     "name": "MARYLAND",
+     "nameEn": "MARYLAND"
+    },
+    {
+     "id": "603",
+     "name": "MASSACHUSETTS",
+     "nameEn": "MASSACHUSETTS"
+    },
+    {
+     "id": "604",
+     "name": "MICHIGAN",
+     "nameEn": "MICHIGAN"
+    },
+    {
+     "id": "605",
+     "name": "MINNESOTA",
+     "nameEn": "MINNESOTA"
+    },
+    {
+     "id": "606",
+     "name": "MISSISSIPPI",
+     "nameEn": "MISSISSIPPI"
+    },
+    {
+     "id": "607",
+     "name": "MISSOURI",
+     "nameEn": "MISSOURI"
+    },
+    {
+     "id": "608",
+     "name": "MONTANA",
+     "nameEn": "MONTANA"
+    },
+    {
+     "id": "609",
+     "name": "NEBRASKA",
+     "nameEn": "NEBRASKA"
+    },
+    {
+     "id": "610",
+     "name": "NEVADA",
+     "nameEn": "NEVADA"
+    },
+    {
+     "id": "611",
+     "name": "NEW HAMPSHIRE",
+     "nameEn": "NEW HAMPSHIRE"
+    },
+    {
+     "id": "612",
+     "name": "NEW JERSEY",
+     "nameEn": "NEW JERSEY"
+    },
+    {
+     "id": "613",
+     "name": "NEW MEXICO",
+     "nameEn": "NEW MEXICO"
+    },
+    {
+     "id": "614",
+     "name": "NEW YORK",
+     "nameEn": "NEW YORK"
+    },
+    {
+     "id": "615",
+     "name": "NORTH CAROLINA",
+     "nameEn": "NORTH CAROLINA"
+    },
+    {
+     "id": "616",
+     "name": "NORTH DAKOTA",
+     "nameEn": "NORTH DAKOTA"
+    },
+    {
+     "id": "617",
+     "name": "OHIO",
+     "nameEn": "OHIO"
+    },
+    {
+     "id": "618",
+     "name": "OKLAHOMA",
+     "nameEn": "OKLAHOMA"
+    },
+    {
+     "id": "619",
+     "name": "OREGON",
+     "nameEn": "OREGON"
+    },
+    {
+     "id": "620",
+     "name": "PENNSYLVANIA",
+     "nameEn": "PENNSYLVANIA"
+    },
+    {
+     "id": "621",
+     "name": "RHODE ISLAND",
+     "nameEn": "RHODE ISLAND"
+    },
+    {
+     "id": "622",
+     "name": "SOUTH CAROLINA",
+     "nameEn": "SOUTH CAROLINA"
+    },
+    {
+     "id": "623",
+     "name": "SOUTH DAKOTA",
+     "nameEn": "SOUTH DAKOTA"
+    },
+    {
+     "id": "624",
+     "name": "TENNESSEE",
+     "nameEn": "TENNESSEE"
+    },
+    {
+     "id": "625",
+     "name": "TEXAS",
+     "nameEn": "TEXAS"
+    },
+    {
+     "id": "626",
+     "name": "UTAH",
+     "nameEn": "UTAH"
+    },
+    {
+     "id": "627",
+     "name": "VERMONT",
+     "nameEn": "VERMONT"
+    },
+    {
+     "id": "628",
+     "name": "VIRGINIA",
+     "nameEn": "VIRGINIA"
+    },
+    {
+     "id": "629",
+     "name": "WASHINGTON",
+     "nameEn": "WASHINGTON"
+    },
+    {
+     "id": "630",
+     "name": "WEST VIRGINIA",
+     "nameEn": "WEST VIRGINIA"
+    },
+    {
+     "id": "631",
+     "name": "WISCONSIN",
+     "nameEn": "WISCONSIN"
+    },
+    {
+     "id": "632",
+     "name": "WYOMING",
+     "nameEn": "WYOMING"
+    }
+   ],
+   "districts": [
+    {
+     "id": "8573",
+     "name": "AUBURN",
+     "nameEn": "AUBURN"
+    },
+    {
+     "id": "8574",
+     "name": "BIRMINGHAM",
+     "nameEn": "BIRMINGHAM"
+    },
+    {
+     "id": "8575",
+     "name": "DOTHAN",
+     "nameEn": "DOTHAN"
+    },
+    {
+     "id": "8576",
+     "name": "FLORENCE",
+     "nameEn": "FLORENCE"
+    },
+    {
+     "id": "8577",
+     "name": "GULF SHORES",
+     "nameEn": "GULF SHORES"
+    },
+    {
+     "id": "8578",
+     "name": "HUNTSVILLE",
+     "nameEn": "HUNTSVILLE"
+    },
+    {
+     "id": "8579",
+     "name": "MOBILE",
+     "nameEn": "MOBILE"
+    },
+    {
+     "id": "8580",
+     "name": "MONTGOMERY",
+     "nameEn": "MONTGOMERY"
+    },
+    {
+     "id": "8582",
+     "name": "TROY",
+     "nameEn": "TROY"
+    }
+   ],
+   "expectedCityId": null,
+   "expectedDistrictId": null
+  }
+ ]
+}

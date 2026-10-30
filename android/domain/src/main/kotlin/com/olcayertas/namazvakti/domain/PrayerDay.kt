@@ -23,9 +23,37 @@ data class PrayerDay(
     @SerialName("HicriTarihKisa") val hicriTarihKisa: String? = null,
     @SerialName("MiladiTarihKisa") val miladiTarihKisa: String? = null,
     @SerialName("MiladiTarihUzun") val miladiTarihUzun: String? = null,
+    /** "2026-10-26T00:00:00.0000000+01:00": local midnight of the day with the place's UTC offset. */
+    @SerialName("MiladiTarihUzunIso8601") val miladiTarihUzunIso8601: String? = null,
 ) {
     /** Stable id (one row per day). */
     val id: String get() = miladiTarihKisa ?: "$imsak-$ogle-$yatsi"
+
+    /**
+     * The day's UTC offset in seconds, read from the trailing "+hh:mm" / "-hh:mm" / "Z" of
+     * [miladiTarihUzunIso8601]. Null when absent (a month cached by an older version): the caller then
+     * falls back to Europe/Istanbul. The offset is the one at local midnight, so on a DST change day the
+     * times after the change are an hour off for that one day.
+     */
+    val utcOffsetSeconds: Int?
+        get() {
+            val iso = miladiTarihUzunIso8601?.trim().orEmpty()
+            if (iso.isEmpty()) return null
+            if (iso.endsWith("Z")) return 0
+            if (iso.length < 6) return null
+            val tail = iso.takeLast(6)
+            val sign = when (tail[0]) { '+' -> 1; '-' -> -1; else -> return null }
+            val parts = tail.drop(1).split(":")
+            if (parts.size != 2) return null
+            val h = parts[0].toIntOrNull() ?: return null
+            val m = parts[1].toIntOrNull() ?: return null
+            return sign * (h * 3600 + m * 60)
+        }
+
+    /** A copy with the six times (and the sunrise/sunset extras) replaced; dates, Hijri and offset kept. */
+    fun replacingTimes(imsak: String, gunes: String, ogle: String, ikindi: String, aksam: String, yatsi: String) =
+        copy(imsak = imsak, gunes = gunes, ogle = ogle, ikindi = ikindi, aksam = aksam, yatsi = yatsi,
+            gunesDogus = gunes, gunesBatis = aksam)
 
     /** The published `HH:mm` string for a given prayer. */
     fun time(prayer: Prayer): String = when (prayer) {

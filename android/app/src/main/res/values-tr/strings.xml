@@ -80,4 +80,11 @@
 
     <!-- Widget -->
     <string name="widget_description">Ana ekranınızda sıradaki namaz vakti.</string>
+
+    <!-- Calculation method -->
+    <string name="settings_calculation_method">Hesaplama yöntemi</string>
+    <string name="method_diyanet">Diyanet</string>
+    <string name="method_umm_al_qura">Ümmülkura</string>
+    <string name="method_local_desc">Vakitler bu cihazda yerel otoritenin yöntemiyle hesaplanır. Hicri tarih Diyanet\'in tarihidir.</string>
+    <string name="method_diyanet_desc">Vakitler Diyanet\'indir. Bu konum için yerel otoritenin yöntemini de kullanabilirsiniz.</string>
 </resources>

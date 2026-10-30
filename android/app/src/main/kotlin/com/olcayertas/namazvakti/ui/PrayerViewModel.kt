@@ -2,6 +2,9 @@ package com.olcayertas.namazvakti.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.olcayertas.namazvakti.domain.CalculationMethod
+import com.olcayertas.namazvakti.domain.EffectiveTimes
+import com.olcayertas.namazvakti.domain.PlaceContext
 import com.olcayertas.namazvakti.domain.PrayerSchedule
 import com.olcayertas.namazvakti.domain.PrayerTimesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,18 +31,28 @@ class PrayerViewModel @Inject constructor(private val repo: PrayerTimesRepositor
     private val _state = MutableStateFlow<PrayerUiState>(PrayerUiState.Loading)
     val state: StateFlow<PrayerUiState> = _state.asStateFlow()
 
-    private var loadedDistrict: String? = null
+    private var loadedKey: Any? = null
 
-    /** Fetch the month for [districtId] unless it's already loaded (idempotent per district). */
-    fun ensureLoaded(districtId: String, locationName: String) {
-        if (districtId == loadedDistrict && _state.value is PrayerUiState.Loaded) return
-        loadedDistrict = districtId
+    /**
+     * Fetch the month for [districtId] unless it's already loaded with the same method and place
+     * (idempotent). The raw Diyanet month goes through [EffectiveTimes] for the calculation method.
+     */
+    fun ensureLoaded(
+        districtId: String,
+        locationName: String,
+        method: CalculationMethod = CalculationMethod.DIYANET,
+        place: PlaceContext = PlaceContext(),
+    ) {
+        val key = listOf(districtId, locationName, method, place)
+        if (key == loadedKey && _state.value is PrayerUiState.Loaded) return
+        loadedKey = key
         viewModelScope.launch {
             _state.value = PrayerUiState.Loading
             _state.value = try {
-                PrayerUiState.Loaded(PrayerSchedule(repo.monthlyTimes(districtId)), locationName)
+                val days = EffectiveTimes.days(repo.monthlyTimes(districtId), method, place)
+                PrayerUiState.Loaded(PrayerSchedule(days), locationName)
             } catch (e: Exception) {
-                loadedDistrict = null // let a later attempt retry
+                loadedKey = null // let a later attempt retry
                 PrayerUiState.Error(e.message ?: "Unknown error")
             }
         }

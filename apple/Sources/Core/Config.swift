@@ -9,6 +9,9 @@ enum Config {
     /// Diyanet district id used for `/vakitler/{id}`.
     static let defaultDistrictId = "9543"
 
+    /// EzanVakti country id of Türkiye (`/sehirler/2`).
+    static let turkiyeCountryId = "2"
+
     /// Human-readable name for the default district.
     static let defaultLocationName = "Küçükçekmece"
 

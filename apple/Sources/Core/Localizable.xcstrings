@@ -243,6 +243,22 @@
         }
       }
     },
+    "Calculation method" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "طريقة الحساب"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hesaplama yöntemi"
+          }
+        }
+      }
+    },
     "Cancel" : {
       "localizations" : {
         "ar" : {
@@ -407,6 +423,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "İlçe"
+          }
+        }
+      }
+    },
+    "Diyanet" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ديانت"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diyanet"
           }
         }
       }
@@ -734,6 +766,22 @@
         }
       }
     },
+    "Method" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الطريقة"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yöntem"
+          }
+        }
+      }
+    },
     "Mode" : {
       "comment" : "Location mode picker label",
       "localizations" : {
@@ -885,6 +933,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sunucudan veri alınamadı."
+          }
+        }
+      }
+    },
+    "No Diyanet location found near you — showing %@. Choose one under Pinned." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم يُعثر على موقع من ديانت بالقرب منك — يتم عرض %@. اختر موقعًا من قسم «مثبّت»."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yakınınızda Diyanet konumu bulunamadı — %@ gösteriliyor. Sabit sekmesinden bir konum seçin."
           }
         }
       }
@@ -1438,6 +1502,38 @@
         }
       }
     },
+    "Times are calculated on this device with the local authority's method. The Hijri date stays Diyanet's." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تُحسب الأوقات على هذا الجهاز بطريقة الجهة المحلية. يبقى التاريخ الهجري تاريخ ديانت."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vakitler bu cihazda yerel otoritenin yöntemiyle hesaplanır. Hicri tarih Diyanet'in tarihidir."
+          }
+        }
+      }
+    },
+    "Times are Diyanet's. You can use the local authority's method for this place instead." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الأوقات من ديانت. يمكنك استخدام طريقة الجهة المحلية لهذا الموقع بدلًا منها."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vakitler Diyanet'indir. Bu konum için yerel otoritenin yöntemini de kullanabilirsiniz."
+          }
+        }
+      }
+    },
     "Today" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1451,6 +1547,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bugün"
+          }
+        }
+      }
+    },
+    "Umm al-Qura" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أم القرى"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ümmülkura"
           }
         }
       }

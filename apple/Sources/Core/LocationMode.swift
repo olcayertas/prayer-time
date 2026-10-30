@@ -18,5 +18,6 @@ enum LocationTrackingStatus: Equatable, Sendable {
     case resolving             // have a coordinate, reverse-geocoding + matching a district
     case resolved(String)      // using <city/district name>
     case permissionDenied      // location denied/restricted → fell back to the saved district
-    case unavailable           // no fix or no confident match → fell back to the saved district
+    case unavailable           // no fix, or the geocoder failed → fell back to the saved district
+    case noNearbyPlace         // located, but no Diyanet place matches it → fell back to the saved district
 }
