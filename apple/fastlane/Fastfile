@@ -1,13 +1,33 @@
+require "shellwords"
+
+# xcodebuild's output passes through Ruby strings (fastlane, xcpretty). Ruby takes its default
+# encoding from the locale when the process starts, so a shell without a UTF-8 LANG makes it
+# US-ASCII and the archive dies on the first non-ASCII byte in the build log. Force UTF-8 here, for
+# this process and for the tools it starts (same fix as sarp-mobil's Fastfile).
+Encoding.default_external = Encoding::UTF_8
+ENV["LANG"] = "en_US.UTF-8" if ENV["LANG"].to_s.empty?
+ENV["LC_ALL"] = "en_US.UTF-8" if ENV["LC_ALL"].to_s.empty?
+
 default_platform(:ios)
 
 APP_ID = "com.olcayertas.NamazVakti.iOS"
+TEAM_ID = "SNZ29V4PJZ"
+IOS_SCHEME = "NamazVaktiiOS"
+OUTPUT_DIR = "build/fastlane" # relative to apple/, where actions run (gitignored: build/)
 
 # App Store Connect API key from the environment (never committed):
 #   ASC_KEY_ID     – the 10-char Key ID (the XXXX in AuthKey_XXXX.p8)
-#   ASC_ISSUER_ID  – the Issuer ID (UUID) from Users and Access → Integrations → Keys
+#   ASC_ISSUER_ID  – the Issuer ID (UUID) from Users and Access → Integrations → Keys. When it is not
+#                    set, it is read from the login keychain (generic password, service
+#                    "ASC_ISSUER_ID"), so it never has to sit in a file or the shell history.
 #   ASC_KEY_PATH   – absolute path to the AuthKey_XXXX.p8 file
 # The key's role must be App Manager or Admin — a Developer-role key (e.g. one made only for
 # notarization) cannot edit App Store metadata and will fail with 403s.
+if ENV["ASC_ISSUER_ID"].to_s.strip.empty?
+  issuer = `security find-generic-password -s ASC_ISSUER_ID -w 2>/dev/null`.strip
+  ENV["ASC_ISSUER_ID"] = issuer unless issuer.empty?
+end
+
 def asc_api_key
   app_store_connect_api_key(
     key_id: ENV.fetch("ASC_KEY_ID"),
@@ -18,12 +38,49 @@ def asc_api_key
 end
 
 platform :ios do
-  desc "Push App Store listing metadata + screenshots (no binary; the build comes from Xcode Cloud). Does NOT submit."
+  desc "Archive NamazVaktiiOS (Release), export for App Store Connect, upload to TestFlight (internal), wait for processing."
+  desc "Options: build_number:<n> (default: latest TestFlight build number + 1). Does NOT submit for review."
+  lane :beta do |options|
+    api_key = asc_api_key
+    sh("cd .. && xcodegen generate") # the .xcodeproj is generated (gitignored); lanes run in fastlane/
+
+    number = (options[:build_number] || latest_testflight_build_number(
+      api_key: api_key, app_identifier: APP_ID, initial_build_number: 0
+    ).to_i + 1).to_s
+    UI.important("Build number #{number}")
+
+    # Signing uses the Xcode-signed-in account (automatic, -allowProvisioningUpdates), never the API
+    # key: an -authenticationKey* export failed with a cloud-signing permission error (sarp-mobil,
+    # 2026-09-27). The key is only for the App Store Connect calls.
+    build_app(
+      project: "NamazVakti.xcodeproj",
+      scheme: IOS_SCHEME,
+      configuration: "Release",
+      export_method: "app-store",
+      export_options: "Distribution/ExportOptions-AppStore.plist",
+      skip_profile_detection: true, # else a detected profile mapping forces signingStyle=manual
+      xcargs: "-allowProvisioningUpdates CURRENT_PROJECT_VERSION=#{number.shellescape}",
+      archive_path: "#{OUTPUT_DIR}/NamazVaktiiOS.xcarchive",
+      output_directory: OUTPUT_DIR,
+      output_name: "NamazVaktiiOS.ipa"
+    )
+
+    upload_to_testflight(
+      api_key: api_key,
+      app_identifier: APP_ID,
+      changelog: File.read("metadata/en-US/release_notes.txt").strip, # TestFlight "What to Test"
+      skip_waiting_for_build_processing: false,
+      distribute_external: false
+    )
+    UI.success("Uploaded #{APP_ID} build #{number}; processing finished")
+  end
+
+  desc "Push App Store listing metadata + screenshots (no binary; the build comes from the beta lane). Does NOT submit."
   lane :metadata do
     deliver(
       api_key: asc_api_key,
       app_identifier: APP_ID,
-      skip_binary_upload: true,        # the .ipa is delivered by Xcode Cloud, not here
+      skip_binary_upload: true,        # the .ipa is uploaded by `fastlane ios beta`, not here
       skip_screenshots: false,
       overwrite_screenshots: true,
       submit_for_review: false,        # review + submit stays a manual, deliberate step

@@ -25,3 +25,7 @@ apple/fastlane/report.xml
 apple/fastlane/Preview.html
 apple/fastlane/test_output/
 *.p8
+
+# Bundler (apple/Gemfile): gems and local config stay on this machine
+apple/vendor/
+apple/.bundle/
