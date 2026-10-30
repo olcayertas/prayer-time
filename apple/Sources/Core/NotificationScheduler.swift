@@ -4,12 +4,6 @@ import UserNotifications
 /// Schedules local notifications at upcoming prayer times. Local-only (no push), so it
 /// needs runtime authorization but no special entitlement.
 struct NotificationScheduler: Sendable {
-    let timeZone: TimeZone
-
-    init(timeZone: TimeZone = Config.timeZone) {
-        self.timeZone = timeZone
-    }
-
     private var center: UNUserNotificationCenter { .current() }
 
     /// Prompts for alert+sound permission; returns whether it was granted.
@@ -22,6 +16,8 @@ struct NotificationScheduler: Sendable {
     func reschedule(schedule: PrayerSchedule, locationName: String, daysAhead: Int = 3, now: Date = Date()) {
         center.removeAllPendingNotificationRequests()
 
+        // The place's zone, so the trigger fires at the published local time abroad too.
+        let timeZone = schedule.timeZone
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = timeZone
         guard let cutoff = calendar.date(byAdding: .day, value: daysAhead, to: now) else { return }

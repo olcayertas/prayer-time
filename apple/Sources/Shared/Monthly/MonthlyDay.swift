@@ -38,12 +38,12 @@ enum MonthlyDayBuilder {
     /// Maps `schedule.days` to view models, in order. `now` decides "today".
     static func build(schedule: PrayerSchedule, now: Date) -> [MonthlyDay] {
         var cal = Calendar(identifier: .gregorian)
-        cal.timeZone = Config.timeZone
+        cal.timeZone = schedule.timeZone
         let todayKey = schedule.day(on: now)?.miladiTarihKisa
 
         let weekdayFmt = DateFormatter()
         weekdayFmt.calendar = cal
-        weekdayFmt.timeZone = Config.timeZone
+        weekdayFmt.timeZone = schedule.timeZone
         weekdayFmt.locale = .autoupdatingCurrent
         weekdayFmt.setLocalizedDateFormatFromTemplate("EEEE")
 

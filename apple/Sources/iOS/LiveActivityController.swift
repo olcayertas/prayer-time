@@ -16,7 +16,6 @@ final class LiveActivityController: ObservableObject {
         isEnabled = UserDefaults.standard.bool(forKey: Self.key)
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = Config.timeZone
         formatter.dateFormat = "HH:mm"
         timeFormatter = formatter
     }
@@ -35,6 +34,7 @@ final class LiveActivityController: ObservableObject {
     func sync(schedule: PrayerSchedule, locationName: String) {
         guard isEnabled, ActivityAuthorizationInfo().areActivitiesEnabled else { return }
         guard let upcoming = schedule.upcoming(now: Date()) else { endAll(); return }
+        timeFormatter.timeZone = schedule.timeZone // the place's clock, also abroad
         let state = PrayerActivityAttributes.ContentState(
             prayerName: upcoming.prayer.displayName,
             symbolName: upcoming.prayer.symbolName,

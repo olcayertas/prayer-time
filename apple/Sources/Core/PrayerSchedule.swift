@@ -10,15 +10,24 @@ struct UpcomingPrayer: Equatable, Sendable {
 /// Turns a month of `PrayerDay` rows into time-of-day instants and answers
 /// "what's the next prayer and how long until it?".
 ///
-/// All instants are built in Türkiye local time (`Europe/Istanbul`) because that is the
-/// clock the published times refer to, regardless of where the Mac's own clock is set.
+/// The published times are local clock times of the place. Each day's instants are built with
+/// that day's UTC offset from the API (Türkiye +03:00, Sarajevo +01:00/+02:00, Mecca +03:00),
+/// regardless of where the device clock is set. Days without an offset (months cached by an older
+/// version) fall back to Türkiye time (`Europe/Istanbul`), the old behaviour.
 struct PrayerSchedule: Equatable, Sendable {
     var days: [PrayerDay]
+    /// The place's zone for calendar-day questions ("which row is today?") and display. Defaults
+    /// to the first day's offset, else Europe/Istanbul.
     var timeZone: TimeZone
 
-    init(days: [PrayerDay], timeZone: TimeZone = Config.timeZone) {
+    init(days: [PrayerDay], timeZone: TimeZone? = nil) {
         self.days = days
-        self.timeZone = timeZone
+        self.timeZone = timeZone ?? Self.zone(of: days.first) ?? Config.timeZone
+    }
+
+    /// Fixed-offset zone of one day, or nil when the day has no offset.
+    static func zone(of day: PrayerDay?) -> TimeZone? {
+        day?.utcOffsetSeconds.flatMap(TimeZone.init(secondsFromGMT:))
     }
 
     private var calendar: Calendar {
@@ -51,7 +60,7 @@ struct PrayerSchedule: Equatable, Sendable {
         sortedTimes().last(where: { $0.date <= now })?.prayer
     }
 
-    /// The `PrayerDay` row whose Gregorian date matches `date` in Istanbul time.
+    /// The `PrayerDay` row whose Gregorian date matches `date` in the place's zone.
     func day(on date: Date) -> PrayerDay? {
         let comps = calendar.dateComponents([.year, .month, .day], from: date)
         return days.first { day in
@@ -60,7 +69,7 @@ struct PrayerSchedule: Equatable, Sendable {
         }
     }
 
-    /// Builds the instant for one prayer on one day, in Istanbul time.
+    /// Builds the instant for one prayer on one day, in that day's own zone (see the type doc).
     func date(for prayer: Prayer, on day: PrayerDay) -> Date? {
         guard let ymd = Self.parseDate(day.miladiTarihKisa),
               let hm = Self.parseTime(day.time(for: prayer)) else { return nil }
@@ -70,7 +79,9 @@ struct PrayerSchedule: Equatable, Sendable {
         comps.day = ymd.day
         comps.hour = hm.hour
         comps.minute = hm.minute
-        return calendar.date(from: comps)
+        var dayCalendar = calendar
+        if let zone = Self.zone(of: day) { dayCalendar.timeZone = zone }
+        return dayCalendar.date(from: comps)
     }
 
     // MARK: - Parsing helpers

@@ -54,6 +54,9 @@ struct PrayerDay: Codable, Equatable, Sendable, Identifiable {
     let hicriTarihKisa: String?
     let miladiTarihKisa: String?
     let miladiTarihUzun: String?
+    /// "2026-10-26T00:00:00.0000000+01:00": local midnight of the day with the place's UTC offset.
+    /// Abroad the times are local clock times, so this offset (not Europe/Istanbul) anchors them.
+    let miladiTarihUzunIso8601: String?
 
     enum CodingKeys: String, CodingKey {
         case imsak = "Imsak"
@@ -69,6 +72,7 @@ struct PrayerDay: Codable, Equatable, Sendable, Identifiable {
         case hicriTarihKisa = "HicriTarihKisa"
         case miladiTarihKisa = "MiladiTarihKisa"
         case miladiTarihUzun = "MiladiTarihUzun"
+        case miladiTarihUzunIso8601 = "MiladiTarihUzunIso8601"
     }
 
     init(
@@ -84,7 +88,8 @@ struct PrayerDay: Codable, Equatable, Sendable, Identifiable {
         hicriTarihUzun: String? = nil,
         hicriTarihKisa: String? = nil,
         miladiTarihKisa: String? = nil,
-        miladiTarihUzun: String? = nil
+        miladiTarihUzun: String? = nil,
+        miladiTarihUzunIso8601: String? = nil
     ) {
         self.imsak = imsak
         self.gunes = gunes
@@ -99,6 +104,36 @@ struct PrayerDay: Codable, Equatable, Sendable, Identifiable {
         self.hicriTarihKisa = hicriTarihKisa
         self.miladiTarihKisa = miladiTarihKisa
         self.miladiTarihUzun = miladiTarihUzun
+        self.miladiTarihUzunIso8601 = miladiTarihUzunIso8601
+    }
+
+    /// The day's UTC offset in seconds, read from the trailing "+hh:mm" / "-hh:mm" / "Z" of
+    /// `miladiTarihUzunIso8601`. Nil when absent (e.g. a month cached by an older version), so the
+    /// caller falls back to Europe/Istanbul. The offset is the one at local midnight: on a DST change
+    /// day the times after the change are an hour off for that one day.
+    var utcOffsetSeconds: Int? {
+        guard let iso = miladiTarihUzunIso8601?.trimmingCharacters(in: .whitespaces), !iso.isEmpty else { return nil }
+        if iso.hasSuffix("Z") { return 0 }
+        guard iso.count >= 6 else { return nil }
+        let tail = iso.suffix(6) // "+01:00"
+        guard let sign = tail.first, sign == "+" || sign == "-" else { return nil }
+        let parts = tail.dropFirst().split(separator: ":")
+        guard parts.count == 2, let h = Int(parts[0]), let m = Int(parts[1]) else { return nil }
+        return (sign == "-" ? -1 : 1) * (h * 3600 + m * 60)
+    }
+
+    /// A copy with the six prayer times (and the sunrise/sunset extras) replaced, everything else
+    /// (dates, Hijri, offset) kept. Used by on-device calculation methods.
+    func replacingTimes(
+        imsak: String, gunes: String, ogle: String, ikindi: String, aksam: String, yatsi: String
+    ) -> PrayerDay {
+        PrayerDay(
+            imsak: imsak, gunes: gunes, ogle: ogle, ikindi: ikindi, aksam: aksam, yatsi: yatsi,
+            gunesDogus: gunes, gunesBatis: aksam, kibleSaati: kibleSaati,
+            hicriTarihUzun: hicriTarihUzun, hicriTarihKisa: hicriTarihKisa,
+            miladiTarihKisa: miladiTarihKisa, miladiTarihUzun: miladiTarihUzun,
+            miladiTarihUzunIso8601: miladiTarihUzunIso8601
+        )
     }
 
     /// The published `HH:mm` string for a given prayer.
