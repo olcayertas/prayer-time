@@ -38,8 +38,16 @@ def asc_api_key
 end
 
 platform :ios do
+  # How to run (from apple/, on a clean checkout of main). fastlane rewrites fastlane/README.md on every
+  # run, so these steps live here:
+  #   1. bundle config set --local path vendor/bundle && bundle install   (first time only)
+  #   2. export ASC_KEY_ID and ASC_KEY_PATH (absolute path to the .p8, outside git)
+  #   3. keep the issuer ID in the login keychain, service ASC_ISSUER_ID (read when the env lacks it)
+  #   4. bundle exec fastlane ios beta                         (signs with the Xcode account)
+  #      bundle exec fastlane ios beta sign_with_api_key:true  (no Xcode account on this Mac)
+  # Build with a RELEASE Xcode: App Store Connect rejects an upload from a beta Xcode (error 90534).
   desc "Archive NamazVaktiiOS (Release), export for App Store Connect, upload to TestFlight (internal), wait for processing."
-  desc "Options: build_number:<n> (default: latest TestFlight build number + 1). Does NOT submit for review."
+  desc "Options: build_number:<n> (default: latest TestFlight build number + 1), sign_with_api_key:true. Does NOT submit for review."
   lane :beta do |options|
     api_key = asc_api_key
     sh("cd .. && xcodegen generate") # the .xcodeproj is generated (gitignored); lanes run in fastlane/
@@ -49,17 +57,40 @@ platform :ios do
     ).to_i + 1).to_s
     UI.important("Build number #{number}")
 
-    # Signing uses the Xcode-signed-in account (automatic, -allowProvisioningUpdates), never the API
-    # key: an -authenticationKey* export failed with a cloud-signing permission error (sarp-mobil,
-    # 2026-09-27). The key is only for the App Store Connect calls.
+    # Signing uses the Xcode-signed-in account (automatic, -allowProvisioningUpdates) by default.
+    # sign_with_api_key:true lets xcodebuild use the API key instead, for a Mac with no Xcode account.
+    # It needs the Apple Distribution certificate in the login keychain (a missing one made the export
+    # fail with a cloud-signing permission error in sarp-mobil, 2026-09-27).
+    auth = ""
+    export_options = "Distribution/ExportOptions-AppStore.plist"
+    if options[:sign_with_api_key]
+      # The key may not use cloud-managed signing ("Cloud signing permission error"), so the export is
+      # manual: App Store profiles from the portal (fetched, or created when missing) + the local
+      # Apple Distribution certificate.
+      profiles = [APP_ID, "#{APP_ID}.Widget"].to_h do |id|
+        get_provisioning_profile(api_key: api_key, app_identifier: id, platform: "ios",
+                                 output_path: OUTPUT_DIR, skip_certificate_verification: false)
+        [id, lane_context[SharedValues::SIGH_NAME]]
+      end
+      export_options = {
+        teamID: TEAM_ID, signingStyle: "manual", signingCertificate: "Apple Distribution",
+        provisioningProfiles: profiles, manageAppVersionAndBuildNumber: false, uploadSymbols: true
+      }
+      auth = " -authenticationKeyPath #{File.expand_path(ENV.fetch('ASC_KEY_PATH')).shellescape}" \
+             " -authenticationKeyID #{ENV.fetch('ASC_KEY_ID').shellescape}" \
+             " -authenticationKeyIssuerID #{ENV.fetch('ASC_ISSUER_ID').shellescape}"
+    end
     build_app(
       project: "NamazVakti.xcodeproj",
       scheme: IOS_SCHEME,
       configuration: "Release",
       export_method: "app-store",
-      export_options: "Distribution/ExportOptions-AppStore.plist",
+      export_options: export_options,
       skip_profile_detection: true, # else a detected profile mapping forces signingStyle=manual
-      xcargs: "-allowProvisioningUpdates CURRENT_PROJECT_VERSION=#{number.shellescape}",
+      # Release names "Apple Distribution" for the manual Xcode-Organizer flow. With automatic signing,
+      # current Xcode rejects that identity for an archive ("conflicting provisioning settings"), so
+      # archive with Apple Development; the app-store export re-signs with Apple Distribution.
+      xcargs: "-allowProvisioningUpdates CODE_SIGN_IDENTITY=\"Apple Development\" CURRENT_PROJECT_VERSION=#{number.shellescape}#{auth}",
       archive_path: "#{OUTPUT_DIR}/NamazVaktiiOS.xcarchive",
       output_directory: OUTPUT_DIR,
       output_name: "NamazVaktiiOS.ipa"
