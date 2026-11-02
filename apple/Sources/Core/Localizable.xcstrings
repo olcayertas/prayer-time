@@ -1058,6 +1058,22 @@
         }
       }
     },
+    "Open the app to load prayer times." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتح التطبيق لتحميل أوقات الصلاة."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vakitleri yüklemek için uygulamayı açın."
+          }
+        }
+      }
+    },
     "Pinned" : {
       "comment" : "Location mode: a fixed city",
       "localizations" : {

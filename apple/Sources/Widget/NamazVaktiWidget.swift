@@ -34,9 +34,16 @@ struct PrayerTimelineProvider: TimelineProvider {
         completion(entries(from: days, now: Date()).first ?? placeholder(in: context))
     }
 
+    /// How soon the widget asks again when it has no times to show (no cache, fetch failed).
+    private static let retryInterval: TimeInterval = 15 * 60
+
     func getTimeline(in context: Context, completion: @escaping @Sendable (Timeline<PrayerEntry>) -> Void) {
         let cache = PrayerCache()
-        if let cached = cache.load(districtId: districtId), !cached.isEmpty {
+        let cached = cache.load(districtId: districtId) ?? []
+        // Use the cache while it still has a prayer more than a day ahead. A month that runs out
+        // (the app was not opened for weeks) used to leave the widget with no times at all.
+        let lastTime = PrayerSchedule(days: EffectiveTimes.days(cached)).sortedTimes().last?.date
+        if let lastTime, lastTime > Date().addingTimeInterval(24 * 3600) {
             completion(makeTimeline(from: cached))
             return
         }
@@ -46,9 +53,7 @@ struct PrayerTimelineProvider: TimelineProvider {
                 cache.save(days, districtId: districtId)
                 completion(makeTimeline(from: days))
             } catch {
-                let entry = PrayerEntry(date: Date(), nextPrayer: nil, nextDate: nil,
-                                        day: nil, locationName: locationName)
-                completion(Timeline(entries: [entry], policy: .after(Date().addingTimeInterval(3600))))
+                completion(makeTimeline(from: cached)) // the rest of the cache, or the empty state
             }
         }
     }
@@ -57,7 +62,7 @@ struct PrayerTimelineProvider: TimelineProvider {
         let days = EffectiveTimes.days(rawDays) // same calculation method as the app
         let now = Date()
         let entries = self.entries(from: days, now: now)
-        let reload = entries.last?.nextDate ?? now.addingTimeInterval(3600)
+        let reload = entries.last?.nextDate ?? now.addingTimeInterval(Self.retryInterval)
         let safeEntries = entries.isEmpty
             ? [PrayerEntry(date: now, nextPrayer: nil, nextDate: nil, day: days.first, locationName: locationName)]
             : entries
@@ -104,19 +109,30 @@ struct NamazVaktiWidgetEntryView: View {
             Spacer(minLength: 0)
             if let next = entry.nextPrayer, let nextDate = entry.nextDate {
                 Label(next.displayName, systemImage: next.symbolName)
-                    .font(.headline)
+                    .font(.headline).lineLimit(1).minimumScaleFactor(0.7)
                 Text(timerInterval: entry.date...nextDate, countsDown: true)
                     .font(.system(.title2, design: .rounded)).monospacedDigit()
+                    .lineLimit(1).minimumScaleFactor(0.6)
                 if let day = entry.day {
                     Text("Time \(day.time(for: next))")
                         .font(.caption2).foregroundStyle(.secondary)
                 }
             } else {
-                Text("Prayer Times").font(.headline)
+                emptyView
             }
             Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// Shown when there are no times yet (no cache and no network). Says what to do instead of
+    /// showing only the app name.
+    private var emptyView: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Label("Prayer Times", systemImage: "moon.stars.fill").font(.headline).lineLimit(1)
+            Text("Open the app to load prayer times.")
+                .font(.caption2).foregroundStyle(.secondary).lineLimit(2).minimumScaleFactor(0.8)
+        }
     }
 
     private var mediumView: some View {
@@ -128,11 +144,12 @@ struct NamazVaktiWidgetEntryView: View {
                 if let next = entry.nextPrayer, let nextDate = entry.nextDate {
                     Text("Next").font(.caption2).foregroundStyle(.secondary)
                     Label(next.displayName, systemImage: next.symbolName)
-                        .font(.headline)
+                        .font(.headline).lineLimit(1).minimumScaleFactor(0.7)
                     Text(timerInterval: entry.date...nextDate, countsDown: true)
                         .font(.system(.title2, design: .rounded)).monospacedDigit()
+                        .lineLimit(1).minimumScaleFactor(0.6)
                 } else {
-                    Text("Prayer Times").font(.headline)
+                    emptyView
                 }
                 Spacer(minLength: 0)
             }
@@ -141,8 +158,8 @@ struct NamazVaktiWidgetEntryView: View {
                     ForEach(Prayer.allCases) { prayer in
                         let isNext = prayer == entry.nextPrayer
                         HStack {
-                            Text(prayer.displayName)
-                            Spacer()
+                            Text(prayer.displayName).lineLimit(1).minimumScaleFactor(0.7)
+                            Spacer(minLength: 4)
                             Text(day.time(for: prayer)).monospacedDigit()
                         }
                         .font(.caption)
@@ -161,15 +178,16 @@ struct NamazVaktiWidgetEntryView: View {
         VStack(alignment: .leading, spacing: 1) {
             if let next = entry.nextPrayer, let nextDate = entry.nextDate {
                 Label(next.displayName, systemImage: next.symbolName)
-                    .font(.headline).lineLimit(1)
+                    .font(.headline).lineLimit(1).minimumScaleFactor(0.7)
                 Text(timerInterval: entry.date...nextDate, countsDown: true)
                     .font(.system(.title3, design: .rounded)).monospacedDigit()
+                    .lineLimit(1).minimumScaleFactor(0.6)
                 if let day = entry.day {
                     Text("Time \(day.time(for: next))")
                         .font(.caption2).foregroundStyle(.secondary)
                 }
             } else {
-                Text("Prayer Times").font(.headline)
+                emptyView
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
