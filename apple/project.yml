@@ -11,8 +11,8 @@ options:
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    MARKETING_VERSION: "1.0.2"
-    CURRENT_PROJECT_VERSION: "8"   # 1.0.2: automatic location abroad + calculation method (Xcode Cloud manages the actual build number).
+    MARKETING_VERSION: "1.0.3"
+    CURRENT_PROJECT_VERSION: "9"   # 1.0.3: Live Activity moves to the next prayer, fit and empty-widget fixes (Xcode Cloud manages the actual build number).
     # Local ad-hoc signing — no Apple Developer account / team required.
     CODE_SIGN_STYLE: Manual
     CODE_SIGN_IDENTITY: "-"
