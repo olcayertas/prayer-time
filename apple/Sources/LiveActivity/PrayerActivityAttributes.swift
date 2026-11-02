@@ -11,8 +11,12 @@ struct PrayerActivityAttributes: ActivityAttributes {
         var symbolName: String
         var time: String
         var endDate: Date
+        /// The place shown in the activity. In the state, not the attributes, so a location
+        /// change reaches a running activity. Nil in payloads from older versions.
+        var locationName: String?
     }
 
-    /// Fixed for the activity's lifetime.
+    /// The place when the activity started. Fixed for the activity's lifetime, so the views read
+    /// `ContentState.locationName` first.
     var locationName: String
 }

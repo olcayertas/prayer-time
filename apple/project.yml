@@ -106,6 +106,12 @@ targets:
           - HankenGrotesk.ttf
           - SplineSansMono.ttf
         NSSupportsLiveActivities: true
+        # Background app refresh at each prayer time moves the Live Activity on to the next prayer
+        # (`LiveActivityController`); an activity cannot update itself.
+        UIBackgroundModes:
+          - fetch
+        BGTaskSchedulerPermittedIdentifiers:
+          - com.olcayertas.NamazVakti.iOS.liveActivityRefresh
         # Location serves two features: prayer times for the current city (Automatic mode) and the
         # Qibla compass. When-in-use only (no "always", no precise/temporary upgrade, and no motion
         # key — heading via CoreLocation is gated by location permission, not Motion & Fitness).

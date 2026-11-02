@@ -24,7 +24,7 @@ struct RootTabView: View {
                 .tabItem { Label(AppSection.settings.title, systemImage: AppSection.settings.systemImage) }
         }
         .tint(theme.accent)
-        .task(id: store.days.count) {
+        .task(id: LiveActivityKey(days: store.days, locationName: store.locationName)) {
             LiveActivityController.shared.sync(schedule: store.schedule, locationName: store.locationName)
         }
         .onChange(of: scenePhase) { _, phase in
@@ -34,4 +34,11 @@ struct RootTabView: View {
             }
         }
     }
+}
+
+/// Runs the Live Activity sync again when the month or the place changes. A new place often has
+/// the same number of days, so the day count alone missed a location change.
+private struct LiveActivityKey: Equatable {
+    let days: [PrayerDay]
+    let locationName: String
 }
