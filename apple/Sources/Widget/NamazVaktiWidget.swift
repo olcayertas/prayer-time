@@ -102,27 +102,33 @@ struct NamazVaktiWidgetEntryView: View {
         }
     }
 
+    /// The place at the top, the next prayer at the bottom: one spacer between them, so the
+    /// content sits on the bottom edge instead of floating with a gap under it.
     private var smallView: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 0) {
             Text(entry.locationName)
-                .font(.caption2).foregroundStyle(.secondary).lineLimit(1)
-            Spacer(minLength: 0)
+                .font(.caption).foregroundStyle(.secondary).lineLimit(1)
+            Spacer(minLength: 4)
             if let next = entry.nextPrayer, let nextDate = entry.nextDate {
                 Label(next.displayName, systemImage: next.symbolName)
                     .font(.headline).lineLimit(1).minimumScaleFactor(0.7)
-                Text(timerInterval: entry.date...nextDate, countsDown: true)
-                    .font(.system(.title2, design: .rounded)).monospacedDigit()
-                    .lineLimit(1).minimumScaleFactor(0.6)
+                countdown(to: nextDate, size: 34)
                 if let day = entry.day {
                     Text("Time \(day.time(for: next))")
-                        .font(.caption2).foregroundStyle(.secondary)
+                        .font(.caption).foregroundStyle(.secondary).lineLimit(1)
                 }
             } else {
                 emptyView
             }
-            Spacer(minLength: 0)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+    }
+
+    /// The live countdown, large and rounded. It scales down for long values (more than 10 hours).
+    private func countdown(to nextDate: Date, size: CGFloat) -> some View {
+        Text(timerInterval: entry.date...nextDate, countsDown: true)
+            .font(.system(size: size, weight: .semibold, design: .rounded)).monospacedDigit()
+            .lineLimit(1).minimumScaleFactor(0.5)
     }
 
     /// Shown when there are no times yet (no cache and no network). Says what to do instead of
@@ -135,26 +141,26 @@ struct NamazVaktiWidgetEntryView: View {
         }
     }
 
+    /// Left: the place at the top, the next prayer at the bottom. Right: the day's six times,
+    /// spread over the full height, with the next one marked.
     private var mediumView: some View {
-        HStack(alignment: .top, spacing: 16) {
-            VStack(alignment: .leading, spacing: 3) {
+        HStack(alignment: .top, spacing: 12) {
+            VStack(alignment: .leading, spacing: 0) {
                 Text(entry.locationName)
-                    .font(.caption2).foregroundStyle(.secondary).lineLimit(1)
-                Spacer(minLength: 0)
+                    .font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                Spacer(minLength: 4)
                 if let next = entry.nextPrayer, let nextDate = entry.nextDate {
-                    Text("Next").font(.caption2).foregroundStyle(.secondary)
+                    Text("Next").font(.caption).foregroundStyle(.secondary)
                     Label(next.displayName, systemImage: next.symbolName)
                         .font(.headline).lineLimit(1).minimumScaleFactor(0.7)
-                    Text(timerInterval: entry.date...nextDate, countsDown: true)
-                        .font(.system(.title2, design: .rounded)).monospacedDigit()
-                        .lineLimit(1).minimumScaleFactor(0.6)
+                    countdown(to: nextDate, size: 34)
                 } else {
                     emptyView
                 }
-                Spacer(minLength: 0)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             if let day = entry.day {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(spacing: 0) {
                     ForEach(Prayer.allCases) { prayer in
                         let isNext = prayer == entry.nextPrayer
                         HStack {
@@ -162,12 +168,19 @@ struct NamazVaktiWidgetEntryView: View {
                             Spacer(minLength: 4)
                             Text(day.time(for: prayer)).monospacedDigit()
                         }
-                        .font(.caption)
+                        .font(.subheadline)
                         .fontWeight(isNext ? .semibold : .regular)
                         .foregroundStyle(isNext ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
+                        .padding(.horizontal, 6)
+                        .frame(maxHeight: .infinity)
+                        .background {
+                            if isNext {
+                                RoundedRectangle(cornerRadius: 6, style: .continuous).fill(.tint.opacity(0.15))
+                            }
+                        }
                     }
                 }
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
     }
