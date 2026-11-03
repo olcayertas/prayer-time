@@ -1,5 +1,5 @@
-What's new in 1.0.2:
-• Automatic location now works outside Türkiye (for example Mecca, Medina, Sarajevo, Munich), with times on the local clock.
-• New calculation method setting: in Saudi Arabia you can use the Umm al-Qura times instead of Diyanet's.
-• The Home Screen widget follows your selected location.
-• Turkish and Arabic fixes in the Monthly view.
+What's new in 1.0.3:
+• The Live Activity moves on to the next prayer after a prayer time. It no longer stops at 0:00.
+• The Live Activity shows your current location after you move.
+• Texts in the Live Activity and the widgets now fit the available space.
+• The widget loads new times when the month runs out, and tells you to open the app when it has no times.

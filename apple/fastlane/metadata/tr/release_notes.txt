@@ -1,5 +1,5 @@
-1.0.2 sürümündeki yenilikler:
-• Otomatik konum artık Türkiye dışında da çalışıyor (örneğin Mekke, Medine, Saraybosna, Münih). Vakitler yerel saatle gösteriliyor.
-• Yeni hesaplama yöntemi ayarı: Suudi Arabistan'da Diyanet yerine Ümmülkura vakitlerini kullanabilirsiniz.
-• Ana Ekran widget'ı seçtiğiniz konumu takip ediyor.
-• Aylık görünümde Türkçe ve Arapça düzeltmeleri.
+1.0.3 sürümündeki yenilikler:
+• Canlı Etkinlik, vakit girdikten sonra bir sonraki vakte geçiyor. Artık 0:00'da kalmıyor.
+• Canlı Etkinlik, yer değiştirdiğinizde güncel konumunuzu gösteriyor.
+• Canlı Etkinlik ve widget'lardaki yazılar artık ekrana sığıyor.
+• Widget, ay bitince yeni vakitleri yüklüyor. Vakit yoksa uygulamayı açmanızı söylüyor.
