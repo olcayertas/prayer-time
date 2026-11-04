@@ -11,8 +11,9 @@ struct PrayerEntry: TimelineEntry, Sendable {
 
 /// Builds the widget timeline. It shares the app's App Group, so it reads the user's selected
 /// (Automatic or Pinned) district + the same cached month, and fetches once if the cache is empty.
-/// One entry per upcoming prayer boundary; the live countdown uses `Text(timerInterval:)`,
-/// so no per-second entries are needed.
+/// Home Screen: one entry per upcoming prayer boundary; the live countdown uses
+/// `Text(timerInterval:)`, so no per-second entries are needed. Lock Screen: one entry per
+/// minute, because the countdown there shows hours and minutes only (no seconds).
 struct PrayerTimelineProvider: TimelineProvider {
     // Read from the shared App Group so the widget follows the app's Automatic/Pinned location
     // (the app writes these on every location change and reloads the widget timelines).
@@ -44,24 +45,39 @@ struct PrayerTimelineProvider: TimelineProvider {
         // (the app was not opened for weeks) used to leave the widget with no times at all.
         let lastTime = PrayerSchedule(days: EffectiveTimes.days(cached)).sortedTimes().last?.date
         if let lastTime, lastTime > Date().addingTimeInterval(24 * 3600) {
-            completion(makeTimeline(from: cached))
+            completion(makeTimeline(from: cached, minuteTicks: Self.ticksEachMinute(context.family)))
             return
         }
+        let minuteTicks = Self.ticksEachMinute(context.family)
         Task {
             do {
                 let days = try await EzanVaktiProvider().monthlyTimes(districtId: districtId)
                 cache.save(days, districtId: districtId)
-                completion(makeTimeline(from: days))
+                completion(makeTimeline(from: days, minuteTicks: minuteTicks))
             } catch {
-                completion(makeTimeline(from: cached)) // the rest of the cache, or the empty state
+                // The rest of the cache, or the empty state.
+                completion(makeTimeline(from: cached, minuteTicks: minuteTicks))
             }
         }
     }
 
-    private func makeTimeline(from rawDays: [PrayerDay]) -> Timeline<PrayerEntry> {
+    /// The Lock Screen countdown has no seconds, so it needs an entry each minute.
+    private static func ticksEachMinute(_ family: WidgetFamily) -> Bool {
+        #if os(iOS)
+        family == .accessoryRectangular || family == .accessoryCircular
+        #else
+        false
+        #endif
+    }
+
+    /// How far ahead the per-minute timeline goes before the widget asks again.
+    private static let minuteHorizon: TimeInterval = 6 * 3600
+
+    private func makeTimeline(from rawDays: [PrayerDay], minuteTicks: Bool = false) -> Timeline<PrayerEntry> {
         let days = EffectiveTimes.days(rawDays) // same calculation method as the app
         let now = Date()
-        let entries = self.entries(from: days, now: now)
+        let boundaries = self.entries(from: days, now: now)
+        let entries = minuteTicks ? Self.minuteEntries(from: boundaries, now: now) : boundaries
         let reload = entries.last?.nextDate ?? now.addingTimeInterval(Self.retryInterval)
         let safeEntries = entries.isEmpty
             ? [PrayerEntry(date: now, nextPrayer: nil, nextDate: nil, day: days.first, locationName: locationName)]
@@ -81,6 +97,26 @@ struct PrayerTimelineProvider: TimelineProvider {
             result.append(PrayerEntry(date: start, nextPrayer: prayer, nextDate: date,
                                       day: day, locationName: locationName))
             start = date
+        }
+        return result
+    }
+
+    /// Splits each boundary entry into one entry per minute, at the moments when a whole number
+    /// of minutes remain. Covers at least the next prayer, then stops at `minuteHorizon`.
+    private static func minuteEntries(from boundaries: [PrayerEntry], now: Date) -> [PrayerEntry] {
+        var result: [PrayerEntry] = []
+        for entry in boundaries {
+            guard let nextDate = entry.nextDate else { continue }
+            if !result.isEmpty && nextDate > now.addingTimeInterval(minuteHorizon) { break }
+            result.append(entry)
+            var tick = nextDate.addingTimeInterval(-60 * ((nextDate.timeIntervalSince(entry.date) / 60).rounded(.up) - 1))
+            while tick < nextDate {
+                if tick > entry.date {
+                    result.append(PrayerEntry(date: tick, nextPrayer: entry.nextPrayer, nextDate: nextDate,
+                                              day: entry.day, locationName: entry.locationName))
+                }
+                tick.addTimeInterval(60)
+            }
         }
         return result
     }
@@ -192,7 +228,7 @@ struct NamazVaktiWidgetEntryView: View {
             if let next = entry.nextPrayer, let nextDate = entry.nextDate {
                 Label(next.displayName, systemImage: next.symbolName)
                     .font(.headline).lineLimit(1).minimumScaleFactor(0.7)
-                Text(timerInterval: entry.date...nextDate, countsDown: true)
+                Text(Self.hoursMinutes(until: nextDate, from: entry.date))
                     .font(.system(.title3, design: .rounded)).monospacedDigit()
                     .lineLimit(1).minimumScaleFactor(0.6)
                 if let day = entry.day {
@@ -213,7 +249,7 @@ struct NamazVaktiWidgetEntryView: View {
             if let next = entry.nextPrayer, let nextDate = entry.nextDate {
                 VStack(spacing: 0) {
                     Image(systemName: next.symbolName).font(.caption)
-                    Text(timerInterval: entry.date...nextDate, countsDown: true)
+                    Text(Self.hoursMinutes(until: nextDate, from: entry.date))
                         .font(.system(.caption2, design: .rounded))
                         .monospacedDigit().minimumScaleFactor(0.6).lineLimit(1)
                 }
@@ -221,6 +257,13 @@ struct NamazVaktiWidgetEntryView: View {
                 Image(systemName: "moon.stars.fill")
             }
         }
+    }
+
+    /// The Lock Screen countdown as `h:mm`, rounded up: it shows `0:01` in the last minute, never
+    /// `0:00`. The timeline has an entry each minute, so this static text stays current.
+    private static func hoursMinutes(until nextDate: Date, from date: Date) -> String {
+        let minutes = max(0, Int((nextDate.timeIntervalSince(date) / 60).rounded(.up)))
+        return String(format: "%d:%02d", minutes / 60, minutes % 60)
     }
 
     /// Lock Screen inline (beside the clock): next prayer + its time.
